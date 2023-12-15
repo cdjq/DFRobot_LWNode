@@ -451,8 +451,8 @@ String DFRobot_LWNode_UART::readACK(){
    if(timeout == 0 ) ack =  "NULL";
    delay(150);
     if(dbgs){
-        dbgs->flush();
-        dbgs->write(ack);
+     //   dbgs->flush();
+        dbgs->write(ack.c_str(),ack.length());
     }
    
    return ack;
