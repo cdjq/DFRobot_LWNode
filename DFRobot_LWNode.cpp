@@ -2,7 +2,7 @@
 
 
 static rxCB *_rxCB =NULL;
-uint8_t IntEnable = false;
+uint8_t IntEnable = true;
 LWNode::LWNode(const uint8_t *appEui,const uint8_t *appKey, eDeviceClass_t classType, eDataRate_t dataRate, etxPower_t txPower,bool adr, uint8_t subBand){
 
 
@@ -20,7 +20,16 @@ String uint8ArrayToHexString(const uint8_t arr[], int length) {
     str.toUpperCase();
     return str;
 }
+bool LWNode::atTest(){
+  String ack;
+  ack = sendATCmd("AT");
 
+  if(ack == "OK\r\n"){
+    return true;
+  }else{
+    return false;
+  }
+}
 bool LWNode::setRegion(eRegion_t region){
    String ack;
    switch (region){
@@ -60,10 +69,9 @@ bool LWNode:: enTrans(){
 }
 Stream *uarts;
 void serialEvent(){
-
+  if(uarts == &Serial){
   uint8_t data[256];
   uint8_t i = 0;
-  
   if(_rxCB && IntEnable){
      while(uarts->available()){
         data[i] = uarts->read();
@@ -72,9 +80,22 @@ void serialEvent(){
      data[i] =0;
      _rxCB(data,i);
   }
-  
+  }
 }
-
+void serialEvent1(){
+  if(uarts == &Serial1){
+  uint8_t data[256];
+  uint8_t i = 0;
+  if(_rxCB && IntEnable){
+     while(uarts->available()){
+        data[i] = uarts->read();
+        i++;
+     }
+     data[i] =0;
+     _rxCB(data,i);
+  }
+  }
+}
 
 void LWNode::setRxCB(rxCB *callback){
 
@@ -240,12 +261,32 @@ bool LWNode::isJoined(){
   }
 }
 bool LWNode::sendPacket(void *buffer, uint8_t size){
-  sendData((uint8_t *)buffer,size);
-  return true;
+  String AT = "AT+SEND=";
+  String ack;
+  uint8_t *data = (uint8_t *)buffer;
+  for(uint8_t i = 0;i<size;i++){
+      AT+=data[i];
+
+  }
+  ack = sendATCmd(AT);
+  if(ack == "AT+SEND=OK\r\n"){
+    return true;
+  }else{
+    return false;
+  }
 }
 bool LWNode::sendPacket(String data){
-  sendData((uint8_t *)data.c_str(),data.length());
-  return true;
+  
+
+  String AT = "AT+SEND="+data;
+  String ack;
+  ack = sendATCmd(AT);
+  //sendData((uint8_t *)data.c_str(),data.length());
+  if(ack == "AT+SEND=OK\r\n"){
+    return true;
+  }else{
+    return false;
+  }
 }
 void hexStringToByteArray(String hexString, uint8_t* byteArray, int length) {
   for (int i = 0; i < hexString.length(); i+=2) {
@@ -282,8 +323,14 @@ uint32_t LWNode::getDevAddr(){
   uint32_t devaddr = 0;
   ack = sendATCmd(AT).substring(9, 17);
   
-
+  
   devaddr = ack.toInt();
+
+
+  char buf[8];  // 为 '\0' 结尾的字符串分配空间
+  ack.toCharArray(buf, sizeof(buf));  // 将 String 转换为 char 数组
+  devaddr = strtol(buf, NULL, 16);  // 将 16 进制的 char 数组转换为 int
+
   return devaddr;
 }
 uint8_t LWNode::getDataRate(){
@@ -346,24 +393,33 @@ DFRobot_LWNode_UART::DFRobot_LWNode_UART(const uint32_t devAddr ,const uint8_t *
 
 bool DFRobot_LWNode_UART::begin(Stream &s_, Stream &dbgs_){
     String ack;
+    uint8_t timeout = 100;
     s = &s_;
     dbgs = &dbgs_;
     uarts = &s_;
     //sendATCmd("+++");
     //delay(500);
-    sendATCmd("AT+LOG=0");
+    sendATCmd("AT+REBOOT\r\n");
+
+    while(!atTest()){
+         timeout--;
+         if(timeout == 0) return false;
+    }
+    
     if(isOtaa == false){
-        setAppSKey(_appeSKey);
-        setNwkSKey(_nwkSKey);
-        setDevAddr(_devAddr);
         ack = sendATCmd("AT+JOINTYPE=ABP");
         if(ack == "+JOINTYPE=OK\r\n"){
+          setAppSKey(_appeSKey);
+          setNwkSKey(_nwkSKey);
+          setDevAddr(_devAddr);
           return true;
         }else{
           return false;
         }
     }else{
-        setAppSKey(_appKey);
+        ack = sendATCmd("AT+JOINTYPE=OTAA");
+        if(_appKey !=NULL)
+        setAppKEY(_appKey);
     }
     return true;
 }
@@ -394,7 +450,10 @@ String DFRobot_LWNode_UART::readACK(){
    }
    if(timeout == 0 ) ack =  "NULL";
    delay(150);
-   Serial.println(ack);
+    if(dbgs){
+        dbgs->flush();
+        dbgs->write(ack);
+    }
    
    return ack;
 }

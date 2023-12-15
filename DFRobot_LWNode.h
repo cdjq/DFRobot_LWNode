@@ -177,6 +177,8 @@ class LWNode
 	*/
     bool enTrans();
     uint8_t  getTxPower();
+
+    bool atTest();
     virtual void sendData(uint8_t *data ,uint8_t len ) =0 ;
     virtual String readACK() = 0;
     uint8_t _appeui[8],_appKey[16];
