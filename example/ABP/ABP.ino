@@ -12,7 +12,7 @@ void setup(void){
 
    Serial.begin(115200);
    Serial1.begin(115200);
-   node.begin();
+   node.begin(Serial1,Serial);
    if(!node.setAppSKey(APPSKEY)){
       Serial.println("APPSKEY set fail");
    }
@@ -32,7 +32,7 @@ void setup(void){
    //if(!node.setSubBand(11)){
    //   Serial.println("SubBand set fail");
    //}
-   if(!node.setADR(false)){
+   if(!node.enableADR(false)){
       Serial.println("ADR set fail");
    }
    if(node.getDevEUI(_DEVEUI)){
@@ -48,12 +48,7 @@ void setup(void){
    
    Serial.print("TxPower: ");
    Serial.println(node.getTxPower());
-   if(!node.join()){
-      Serial.println("JOIN......");
-   }
-   while(!node.isJoined()){
-     delay(5000);
-   }
+
 
    node.sendPacket("hello");
 }
@@ -62,4 +57,9 @@ void setup(void){
 void loop(){
 delay(10000);
 node.sendPacket("hello");
+
+uint8_t buf[3]={1,2,3};
+delay(10000);
+node.sendPacket(buf,3);
+
 }

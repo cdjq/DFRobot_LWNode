@@ -179,7 +179,7 @@ bool LWNode::setSubBand(uint8_t subBand){
   }
 
 }
-bool LWNode::setADR(bool adr){
+bool LWNode::enableADR(bool adr){
   String AT = "AT+ADR="+String(adr);
   String ack;
   ack = sendATCmd(AT);
@@ -412,6 +412,7 @@ bool DFRobot_LWNode_UART::begin(Stream &s_, Stream &dbgs_){
           setAppSKey(_appeSKey);
           setNwkSKey(_nwkSKey);
           setDevAddr(_devAddr);
+          join();
           return true;
         }else{
           return false;

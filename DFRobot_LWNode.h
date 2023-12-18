@@ -96,7 +96,7 @@ class LWNode
     bool setDataRate(eDataRate_t dataRate);
     bool setTXPower(uint8_t txPower);
     bool setSubBand(uint8_t subBand);
-    bool setADR(bool adr);
+    bool enableADR(bool adr);
 
 
     bool setDevAddr(const uint32_t devAddr);
