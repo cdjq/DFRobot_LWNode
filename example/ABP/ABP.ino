@@ -48,18 +48,14 @@ void setup(void){
    
    Serial.print("TxPower: ");
    Serial.println(node.getTxPower());
-
-
-   node.sendPacket("hello");
 }
 
 
 void loop(){
-delay(10000);
-node.sendPacket("hello");
+   delay(10000);
+   node.sendPacket("hello");
 
-uint8_t buf[3]={1,2,3};
-delay(10000);
-node.sendPacket(buf,3);
-
+   uint8_t buf[3]={1,2,3};
+   delay(10000);
+   node.sendPacket(buf,3);
 }
