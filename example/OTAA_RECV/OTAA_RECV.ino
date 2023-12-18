@@ -11,7 +11,7 @@ void uartRxCB(void *buffer, uint16_t size){
         Serial.print(data);
     //  }
 }
-DFRobot_LWNode_UART node(devAddr,NWKSKEY,APPSKEY);
+DFRobot_LWNode_UART node(_APPEUI,_APPKEY);
 
 void setup(void){
 
