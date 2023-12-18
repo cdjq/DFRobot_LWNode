@@ -12,7 +12,7 @@ void setup(void){
 
    Serial.begin(115200);
    Serial1.begin(115200);
-   node.begin(Serial1,Serial);
+   node.begin(/*通信com*/Serial1,/*调试dbg com*/Serial);
    if(!node.setAppSKey(APPSKEY)){
       Serial.println("APPSKEY set fail");
    }
@@ -52,10 +52,10 @@ void setup(void){
 
 
 void loop(){
-   delay(10000);
-   node.sendPacket("hello");
+    node.sendPacket("hello");
+    delay(10*1000);
 
-   uint8_t buf[3]={1,2,3};
-   delay(10000);
-   node.sendPacket(buf,3);
+    uint8_t buf[3]={1,2,3};
+    node.sendPacket(buf,3);
+    delay(10*1000);
 }

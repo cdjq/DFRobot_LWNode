@@ -11,7 +11,7 @@ DFRobot_LWNode_UART node(_APPEUI,_APPKEY);
 void setup(void){
    Serial.begin(115200);
    Serial1.begin(115200);
-   node.begin(Serial1,Serial);
+   node.begin(/*通信com*/Serial1,/*调试dbg com*/Serial);
 
    while(!node.setRegion(EU868)){
       delay(2000);
@@ -52,7 +52,7 @@ void setup(void){
    Serial.print("TxPower: ");
    Serial.println(node.getTxPower());
    
-
+   //入网
    if(node.join()){
       Serial.println("JOIN......");
    }
@@ -72,8 +72,10 @@ void setup(void){
 
 
 void loop(){
-    delay(10*1000);
     node.sendPacket("hello");
-	
-	//print(node.getRSSI());
+    delay(10*1000);
+
+    uint8_t buf[3]={1,2,3};
+    node.sendPacket(buf,3);
+    delay(10*1000);
 }

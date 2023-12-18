@@ -18,7 +18,7 @@ void setup(void){
 
    Serial.begin(115200);
    Serial1.begin(115200);
-   node.begin(Serial1,Serial);
+   node.begin(/*通信com*/Serial1,/*调试dbg com*/Serial);
    node.setRxCB(uartRxCB);
 
 
@@ -31,8 +31,8 @@ void setup(void){
 
 void loop(){
   
- //avr的中断服务函数是在 main函数里面轮询，这里不能卡死 
- delay(100);
+    //avr的中断服务函数是在 main函数里面轮询，这里不能卡死 
+    delay(100);
    
   
 }
