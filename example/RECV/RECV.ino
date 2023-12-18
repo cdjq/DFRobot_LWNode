@@ -7,10 +7,9 @@ uint32_t devAddr = 0xDF000011;
 uint8_t _DEVEUI[8]={0x0};
 void uartRxCB(void *buffer, uint16_t size){
     char *data = (char*)buffer;
-    //for(uint8_t i=0;i<size;i++){
-      
-        Serial.print(data);
-    //  }
+    for(uint8_t i=0;i<size;i++){  
+        Serial.print(data[i],HEX);
+    }
 }
 DFRobot_LWNode_UART node(devAddr,NWKSKEY,APPSKEY);
 
@@ -33,9 +32,5 @@ void setup(void){
 
 
 void loop(){
-  
- //avr的中断服务函数是在 main函数里面轮询，这里不能卡死 
- delay(100);
-   
-  
+ delay(100); 
 }
