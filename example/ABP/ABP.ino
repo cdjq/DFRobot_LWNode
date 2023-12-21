@@ -1,6 +1,5 @@
-
-
 #include "DFRobot_LWNode.h"
+
 uint8_t NWKSKEY[16]={0x87,0x88,0x88,0x88,0x88,0x88,0x88,0x88,0x88,0x88,0x88,0x88,0x88,0x88,0x88,0x88} ;
 uint8_t APPSKEY[16]={0x89,0x88,0x88,0x88,0x88,0x88,0x88,0x88,0x88,0x88,0x88,0x88,0x88,0x88,0x88,0x88};
 
@@ -12,7 +11,8 @@ void setup(void){
 
    Serial.begin(115200);
    Serial1.begin(115200);
-   node.begin(/*通信com*/Serial1,/*调试dbg com*/Serial);
+   node.begin(/*communication uart*/Serial1,/*debug uart*/Serial);
+   //node.begin(/*communication uart*/Serial,NULL);//Uno
    if(!node.setAppSKey(APPSKEY)){
       Serial.println("APPSKEY set fail");
    }
@@ -49,7 +49,6 @@ void setup(void){
    Serial.print("TxPower: ");
    Serial.println(node.getTxPower());
 }
-
 
 void loop(){
     node.sendPacket("hello");
