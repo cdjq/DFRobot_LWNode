@@ -53,20 +53,7 @@ bool LWNode::setRegion(eRegion_t region){
    return false;
   }
 }
-bool LWNode:: enTrans(){
-  String ack;
-  ack = sendATCmd("AT+LOOP=0");
-  if(ack != "+LOOP=OK\r\n"){
-    return false;
-  }
-  
-  ack = sendATCmd("AT+EXIT");
-  if(ack == "+EXIT=OK\r\n"){
-    return true;
-  }else{
-    return false;
-  }
-}
+
 Stream *uarts;
 void serialEvent(){
   if(uarts == &Serial){
@@ -77,11 +64,13 @@ void serialEvent(){
         data[i] = uarts->read();
         i++;
      }
+	 
      data[i] =0;
      _rxCB(data,i);
   }
   }
 }
+
 void serialEvent1(){
   if(uarts == &Serial1){
   uint8_t data[256];
@@ -92,6 +81,7 @@ void serialEvent1(){
         i++;
      }
      data[i] =0;
+
      _rxCB(data,i);
   }
   }
@@ -359,9 +349,9 @@ String LWNode::sendATCmd(String cmd){
    delay(300);
    IntEnable = false;
    sendData((uint8_t*) cmd.c_str(),cmd.length());
-   
+   delay(600);
    ack = readACK();
-   delay(300);
+   
    IntEnable = true;
    return ack;
 }
@@ -457,4 +447,156 @@ String DFRobot_LWNode_UART::readACK(){
     }
    
    return ack;
+}
+
+DFRobot_LWNode_IIC::DFRobot_LWNode_IIC(const uint8_t *appEui,const uint8_t *appKey, eDeviceClass_t classType, eDataRate_t dataRate, etxPower_t txPower,bool adr, uint8_t subBand)
+{
+  memcpy(_appeui,appEui,8);
+  memcpy(_appKey,appKey,16);
+  _dataRate = dataRate;
+  
+  _classType = classType;
+  _txPower = txPower;
+  _adr = adr;
+  _subBand = subBand;
+
+  _deviceAddr = 0x20;
+}
+
+DFRobot_LWNode_IIC::DFRobot_LWNode_IIC(const uint32_t devAddr ,const uint8_t *nwkSKey,const uint8_t *appSKey, eDeviceClass_t classType, eDataRate_t dataRate,etxPower_t txPower,bool adr , uint8_t subBand){
+  
+  memcpy(_appeSKey,appSKey,16);
+  memcpy(_nwkSKey,nwkSKey,16);
+  _devAddr = devAddr;
+  isOtaa = false;
+  _dataRate = dataRate;
+  _classType = classType;
+  _txPower = txPower;
+  _adr = adr;
+  _subBand = subBand;
+
+  _deviceAddr = 0x20;
+}
+bool DFRobot_LWNode_IIC::begin(TwoWire *pWire,Stream &dbgs_){
+  _pWire  = pWire;
+    String ack;
+    uint8_t timeout = 100;
+    dbgs = &dbgs_;
+    _pWire->begin();
+
+    sendATCmd("AT+REBOOT\r\n");
+
+    while(!atTest()){
+         timeout--;
+         if(timeout == 0) return false;
+    }
+    
+    if(isOtaa == false){
+        ack = sendATCmd("AT+JOINTYPE=ABP");
+        if(ack == "+JOINTYPE=OK\r\n"){
+          setAppSKey(_appeSKey);
+          setNwkSKey(_nwkSKey);
+          setDevAddr(_devAddr);
+          join();
+          return true;
+        }else{
+          return false;
+        }
+    }else{
+        ack = sendATCmd("AT+JOINTYPE=OTAA");
+        if(_appKey !=NULL)
+        setAppKEY(_appKey);
+    }
+}
+
+void DFRobot_LWNode_IIC::sendData(uint8_t *data ,uint8_t len ){
+   uint8_t dataLen = len;
+   uint8_t * dataP = data ;
+   while(dataLen > 30){
+     writeReg(REG_WRITE_AT_LONG,data,30);
+     dataLen -=30;
+     data +=30;
+     delay(100);
+   }
+   writeReg(REG_WRITE_AT,data,dataLen);
+
+}
+
+
+
+
+String DFRobot_LWNode_IIC::readACK(){
+  char data[256];
+  uint8_t * dataP = data ;
+  String ack;
+  uint8_t dataLen = readReg(REG_READ_AT_LEN);
+  uint8_t len = dataLen;
+  //Serial.print("dataLen:");
+  //Serial.println(dataLen);
+  if(len == 0){
+   return "NULL";
+  }
+  while(dataLen > 30){
+     readReg(REG_READ_AT,dataP,30);
+     dataP+=30;
+     dataLen = dataLen-30;
+  }
+  readReg(REG_READ_AT,dataP,dataLen);
+  
+  for(uint8_t i =0;i<len;i++){
+   ack += data[i];
+  }
+    if(dbgs){
+        dbgs->flush();
+        dbgs->write(ack.c_str(),ack.length());
+    }
+
+  return ack;
+}
+
+String DFRobot_LWNode_IIC::readData(){
+
+    return readACK();
+  
+}
+
+void DFRobot_LWNode_IIC::writeReg(uint8_t reg ,uint8_t * data,uint8_t len){
+  _pWire->beginTransmission(_deviceAddr);
+  _pWire->write(reg);
+  for(uint8_t i = 0 ; i < len ; i++){
+    _pWire->write(data[i]);
+
+  }
+   if(dbgs){
+      dbgs->flush();
+      dbgs->write(data,len);
+    }
+  _pWire->endTransmission();
+
+}
+uint8_t DFRobot_LWNode_IIC::readReg(uint8_t reg){
+  uint8_t value;
+  _pWire->beginTransmission(_deviceAddr);
+  _pWire->write(reg);
+  _pWire->endTransmission();
+  
+  _pWire->requestFrom(_deviceAddr,1);
+  value = _pWire->read();
+  return value;
+}
+uint8_t DFRobot_LWNode_IIC::readReg(uint16_t reg,uint8_t data[],uint8_t length)
+{
+
+  _pWire->beginTransmission(_deviceAddr);
+    _pWire->write(reg);
+  _pWire->endTransmission();
+  
+  _pWire->requestFrom(_deviceAddr,length);
+  for(uint8_t i = 0 ; i < length ;i++){
+     
+     data[i] = _pWire->read();
+
+  }
+
+  return 0;
 }
