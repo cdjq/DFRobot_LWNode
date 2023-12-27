@@ -55,6 +55,7 @@ bool LWNode::setRegion(eRegion_t region){
 }
 
 Stream *uarts;
+#if defined(HAVE_HWSERIAL0)
 void serialEvent(){
   if(uarts == &Serial){
   uint8_t data[256];
@@ -70,7 +71,9 @@ void serialEvent(){
   }
   }
 }
+#endif
 
+#if defined(HAVE_HWSERIAL1)
 void serialEvent1(){
   if(uarts == &Serial1){
   uint8_t data[256];
@@ -86,7 +89,42 @@ void serialEvent1(){
   }
   }
 }
+#endif
 
+#if defined(HAVE_HWSERIAL2)
+void serialEvent2(){
+  if(uarts == &Serial2){
+  uint8_t data[256];
+  uint8_t i = 0;
+  if(_rxCB && IntEnable){
+     while(uarts->available()){
+        data[i] = uarts->read();
+        i++;
+     }
+     data[i] =0;
+
+     _rxCB(data,i);
+  }
+  }
+}
+#endif
+#if defined(HAVE_HWSERIAL3)
+void serialEvent3(){
+  if(uarts == &Serial3){
+  uint8_t data[256];
+  uint8_t i = 0;
+  if(_rxCB && IntEnable){
+     while(uarts->available()){
+        data[i] = uarts->read();
+        i++;
+     }
+     data[i] =0;
+
+     _rxCB(data,i);
+  }
+  }
+}
+#endif
 void LWNode::setRxCB(rxCB *callback){
 
   _rxCB = callback;
@@ -278,20 +316,17 @@ bool LWNode::sendPacket(String data){
     return false;
   }
 }
-void hexStringToByteArray(String hexString, uint8_t* byteArray, int length) {
-  for (int i = 0; i < hexString.length(); i+=2) {
-    String byteString = hexString.substring(i, i+2);
-    byteArray[i/2] = (uint8_t) strtol(byteString.c_str(), NULL, 16);
-  }
-}
+
 bool LWNode::getDevEUI(uint8_t *eui){
 
   String AT = "AT+DEVEUI?";
   String ack;
   ack = sendATCmd(AT).substring(8, 27);;
   
-
-  hexStringToByteArray(ack,eui,8);
+  for (int i = 0; i < ack.length(); i+=2) {
+     String byteString = ack.substring(i, i+2);
+      eui[i/2] = (uint8_t) strtol(byteString.c_str(), NULL, 16);
+   }
   return true;
   
 }
@@ -325,9 +360,11 @@ uint32_t LWNode::getDevAddr(){
 }
 uint8_t LWNode::getDataRate(){
   String AT = "AT+DATARATE?";
-  String tmp,ack;
+  String ack;
+
   uint8_t dataRate = 0;
   ack = sendATCmd(AT).substring(10, 11);
+
   dataRate = ack.toInt();
   return dataRate;
 }
@@ -510,12 +547,15 @@ bool DFRobot_LWNode_IIC::begin(TwoWire *pWire,Stream &dbgs_){
 }
 
 void DFRobot_LWNode_IIC::sendData(uint8_t *data ,uint8_t len ){
+
    uint8_t dataLen = len;
    uint8_t * dataP = data ;
+
    while(dataLen > 30){
      writeReg(REG_WRITE_AT_LONG,data,30);
      dataLen -=30;
      data +=30;
+
      delay(100);
    }
    writeReg(REG_WRITE_AT,data,dataLen);
@@ -527,7 +567,7 @@ void DFRobot_LWNode_IIC::sendData(uint8_t *data ,uint8_t len ){
 
 String DFRobot_LWNode_IIC::readACK(){
   char data[256];
-  uint8_t * dataP = data ;
+  uint8_t * dataP = (uint8_t *)data ;
   String ack;
   uint8_t dataLen = readReg(REG_READ_AT_LEN);
   uint8_t len = dataLen;

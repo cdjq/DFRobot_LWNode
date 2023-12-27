@@ -26,7 +26,7 @@ DFRobot_LWNode_UART node(_APPEUI,_APPKEY);
 void setup(void){
 
    Serial.begin(115200);
-   Serial1.begin(115200);
+   Serial1.begin(9600);
    node.begin(/*通信com*/Serial1,/*调试dbg com*/Serial);
    node.setRxCB(uartRxCB);
 

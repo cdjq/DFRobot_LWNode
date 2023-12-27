@@ -80,13 +80,13 @@ public:
    * @param appEui 应用 EUI
    * @param appKey 应用密钥
    * @param classType 设备类别（默认：CLASS_C）
-   * @param dataRate 数据速率（默认：DR6）
+   * @param dataRate 数据速率（默认：DR5）
    * @param txPower 发射功率（默认：TX_POWER_4）
    * @param adr 自适应数据速率（默认：true）
    * @param subBand 用于 CN470 和 US915 的子频段（默认：11）
    */
   LWNode(const uint8_t *appEui = nullptr, const uint8_t *appKey = nullptr,
-         eDeviceClass_t classType = CLASS_C, eDataRate_t dataRate = DR6,
+         eDeviceClass_t classType = CLASS_C, eDataRate_t dataRate = DR5,
          etxPower_t txPower = TX_POWER_4, bool adr = true, uint8_t subBand = 11);
 
   /**
@@ -95,13 +95,13 @@ public:
    * @param nwkSKey 网络会话密钥
    * @param appSKey 应用会话密钥
    * @param classType 设备类别（默认：CLASS_C）
-   * @param dataRate 数据速率（默认：0）
+   * @param dataRate 数据速率（默认：DR5）
    * @param txPower 发射功率（默认：TX_POWER_4）
    * @param adr 自适应数据速率（默认：true）
    * @param subBand 用于 CN470 和 US915 的子频段（默认：11）
    */
   LWNode(const uint32_t devAddr, const uint8_t *nwkSKey, const uint8_t *appSKey,
-         eDeviceClass_t classType = CLASS_C, eDataRate_t dataRate = 0,
+         eDeviceClass_t classType = CLASS_C, eDataRate_t dataRate = DR5,
          etxPower_t txPower = TX_POWER_4, bool adr = true, uint8_t subBand = 11);
 
   /**
@@ -317,13 +317,13 @@ public:
    * @param appEui 应用 EUI
    * @param appKey 应用密钥
    * @param classType 设备类别（默认：CLASS_C）
-   * @param dataRate 数据速率（默认：DR7）
+   * @param dataRate 数据速率（默认：DR5）
    * @param txPower 发射功率（默认：TX_POWER_4）
    * @param adr 自适应数据速率（默认：true）
    * @param subBand 用于 CN470 和 US915 的子频段（默认：11）
    */
   DFRobot_LWNode_UART(const uint8_t *appEui = nullptr, const uint8_t *appKey = nullptr,
-                      eDeviceClass_t classType = CLASS_C, eDataRate_t dataRate = DR7,
+                      eDeviceClass_t classType = CLASS_C, eDataRate_t dataRate = DR5,
                       etxPower_t txPower = TX_POWER_4, bool adr = true, uint8_t subBand = 11);
 
   /**
@@ -332,13 +332,13 @@ public:
    * @param nwkSKey 网络会话密钥
    * @param appSKey 应用会话密钥
    * @param classType 设备类别（默认：CLASS_C）
-   * @param dataRate 数据速率（默认：0）
+   * @param dataRate 数据速率（默认：DR5）
    * @param txPower 发射功率（默认：TX_POWER_4）
    * @param adr 自适应数据速率（默认：true）
    * @param subBand 用于 CN470 和 US915 的子频段（默认：11）
    */
   DFRobot_LWNode_UART(const uint32_t devAddr, const uint8_t *nwkSKey, const uint8_t *appSKey,
-                      eDeviceClass_t classType = CLASS_C, eDataRate_t dataRate = 0,
+                      eDeviceClass_t classType = CLASS_C, eDataRate_t dataRate = DR5,
                       etxPower_t txPower = TX_POWER_4, bool adr = true, uint8_t subBand = 11);
 
   /**
@@ -347,7 +347,7 @@ public:
    * @param dbgs 用于调试的串口对象（默认：Serial）
    * @return true 初始化成功，false 初始化失败
    */
-  bool begin(Stream &s_ = Serial1, Stream &dbgs_ = Serial);
+  bool begin(Stream &s_, Stream &dbgs_ = Serial);
 
   /**
    * @brief 发送数据。
@@ -378,13 +378,13 @@ public:
    * @param appEui 应用 EUI
    * @param appKey 应用密钥
    * @param classType 设备类别（默认：CLASS_C）
-   * @param dataRate 数据速率（默认：DR7）
+   * @param dataRate 数据速率（默认：DR5）
    * @param txPower 发射功率（默认：TX_POWER_4）
    * @param adr 自适应数据速率（默认：true）
    * @param subBand 用于 CN470 和 US915 的子频段（默认：11）
    */
   DFRobot_LWNode_IIC(const uint8_t *appEui = nullptr, const uint8_t *appKey = nullptr,
-                     eDeviceClass_t classType = CLASS_C, eDataRate_t dataRate = DR7,
+                     eDeviceClass_t classType = CLASS_C, eDataRate_t dataRate =DR5,
                      etxPower_t txPower = TX_POWER_4, bool adr = true, uint8_t subBand = 11);
 
   /**
@@ -393,13 +393,13 @@ public:
    * @param nwkSKey 网络会话密钥
    * @param appSKey 应用会话密钥
    * @param classType 设备类别（默认：CLASS_C）
-   * @param dataRate 数据速率（默认：0）
+   * @param dataRate 数据速率（默认：DR5）
    * @param txPower 发射功率（默认：TX_POWER_4）
    * @param adr 自适应数据速率（默认：true）
    * @param subBand 用于 CN470 和 US915 的子频段（默认：11）
    */
   DFRobot_LWNode_IIC(const uint32_t devAddr, const uint8_t *nwkSKey, const uint8_t *appSKey,
-                     eDeviceClass_t classType = CLASS_C, eDataRate_t dataRate = 0,
+                     eDeviceClass_t classType = CLASS_C, eDataRate_t dataRate = DR5,
                      etxPower_t txPower = TX_POWER_4, bool adr = true, uint8_t subBand = 11);
 
   /**
