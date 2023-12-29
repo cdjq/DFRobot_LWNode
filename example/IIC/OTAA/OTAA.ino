@@ -21,8 +21,7 @@ DFRobot_LWNode_IIC node(_APPEUI,_APPKEY);
 void setup(void){
    Serial.begin(115200);
 
-   node.begin(/*communication com*/&Wire,/*debug uart*/Serial);
-   //node.begin(/*communication com*/&Wire,NULL);//Uno
+   node.begin(/*communication IIC*/&Wire,/*debug UART*/Serial);
 
    while(!node.setRegion(EU868)){
       delay(2000);
