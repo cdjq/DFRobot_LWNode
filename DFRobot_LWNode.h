@@ -49,9 +49,21 @@ typedef enum {
  * @brief 发射功率的枚举。
  */
 typedef enum {
-  TX_POWER_0, TX_POWER_1, TX_POWER_2, TX_POWER_3, TX_POWER_4, TX_POWER_5,
-  TX_POWER_6, TX_POWER_7, TX_POWER_8, TX_POWER_9, TX_POWER_10, TX_POWER_11,
-  TX_POWER_12, TX_POWER_13, TX_POWER_14
+  DBM1 =0, 
+  DBM2 = 2,  
+  DBM3 = 4, 
+  DBM4 = 6, 
+  DBM5 = 8, 
+  DBM6 = 10,
+  DBM7 = 12, 
+  DBM8 = 14, 
+  DBM9 = 16, 
+  DBM10 = 18, 
+  DBM11 = 20,  
+  DBM12 = 22, 
+  DBM13 = 24, 
+  DBM14 = 26, 
+  DBM15 = 28, 
 } etxPower_t;
 
 /**
@@ -81,13 +93,13 @@ public:
    * @param appKey 应用密钥
    * @param classType 设备类别（默认：CLASS_C）
    * @param dataRate 数据速率（默认：DR5）
-   * @param txPower 发射功率（默认：TX_POWER_4）
+   * @param txPower 发射功率（默认：DBM9）
    * @param adr 自适应数据速率（默认：true）
    * @param subBand 用于 CN470 和 US915 的子频段（默认：11）
    */
   LWNode(const uint8_t *appEui = nullptr, const uint8_t *appKey = nullptr,
          eDeviceClass_t classType = CLASS_C, eDataRate_t dataRate = DR5,
-         etxPower_t txPower = TX_POWER_4, bool adr = true, uint8_t subBand = 11);
+         etxPower_t txPower = DBM9, bool adr = true, uint8_t subBand = 11);
 
   /**
    * @brief 用于 ABP 设备的构造函数。
@@ -96,13 +108,13 @@ public:
    * @param appSKey 应用会话密钥
    * @param classType 设备类别（默认：CLASS_C）
    * @param dataRate 数据速率（默认：DR5）
-   * @param txPower 发射功率（默认：TX_POWER_4）
+   * @param txPower 发射功率（默认：DBM9）
    * @param adr 自适应数据速率（默认：true）
    * @param subBand 用于 CN470 和 US915 的子频段（默认：11）
    */
   LWNode(const uint32_t devAddr, const uint8_t *nwkSKey, const uint8_t *appSKey,
          eDeviceClass_t classType = CLASS_C, eDataRate_t dataRate = DR5,
-         etxPower_t txPower = TX_POWER_4, bool adr = true, uint8_t subBand = 11);
+         etxPower_t txPower = DBM9, bool adr = true, uint8_t subBand = 11);
 
   /**
    * @brief 设置 LoRaWAN 区域。
@@ -146,10 +158,10 @@ public:
   
   /**
    * @brief 设置发射功率。
-   * @param txPower 发射功率值
+   * @param EIRP 发射功率值
    * @return 设置成功返回 true，否则返回 false
    */
-  bool setTXPower(uint8_t txPower);
+  bool setEIRP(uint8_t EIRP);
   
   /**
    * @brief 设置子频段。
@@ -318,13 +330,13 @@ public:
    * @param appKey 应用密钥
    * @param classType 设备类别（默认：CLASS_C）
    * @param dataRate 数据速率（默认：DR5）
-   * @param txPower 发射功率（默认：TX_POWER_4）
+   * @param txPower 发射功率（默认：DBM9）
    * @param adr 自适应数据速率（默认：true）
    * @param subBand 用于 CN470 和 US915 的子频段（默认：11）
    */
   DFRobot_LWNode_UART(const uint8_t *appEui = nullptr, const uint8_t *appKey = nullptr,
                       eDeviceClass_t classType = CLASS_C, eDataRate_t dataRate = DR5,
-                      etxPower_t txPower = TX_POWER_4, bool adr = true, uint8_t subBand = 11);
+                      etxPower_t txPower = DBM9, bool adr = true, uint8_t subBand = 11);
 
   /**
    * @brief 构造函数，用于 ABP 设备。
@@ -333,13 +345,13 @@ public:
    * @param appSKey 应用会话密钥
    * @param classType 设备类别（默认：CLASS_C）
    * @param dataRate 数据速率（默认：DR5）
-   * @param txPower 发射功率（默认：TX_POWER_4）
+   * @param txPower 发射功率（默认：DBM9）
    * @param adr 自适应数据速率（默认：true）
    * @param subBand 用于 CN470 和 US915 的子频段（默认：11）
    */
   DFRobot_LWNode_UART(const uint32_t devAddr, const uint8_t *nwkSKey, const uint8_t *appSKey,
                       eDeviceClass_t classType = CLASS_C, eDataRate_t dataRate = DR5,
-                      etxPower_t txPower = TX_POWER_4, bool adr = true, uint8_t subBand = 11);
+                      etxPower_t txPower = DBM9, bool adr = true, uint8_t subBand = 11);
 
   /**
    * @brief 初始化 LoRaWAN 节点。
@@ -379,13 +391,13 @@ public:
    * @param appKey 应用密钥
    * @param classType 设备类别（默认：CLASS_C）
    * @param dataRate 数据速率（默认：DR5）
-   * @param txPower 发射功率（默认：TX_POWER_4）
+   * @param txPower 发射功率（默认：DBM9）
    * @param adr 自适应数据速率（默认：true）
    * @param subBand 用于 CN470 和 US915 的子频段（默认：11）
    */
   DFRobot_LWNode_IIC(const uint8_t *appEui = nullptr, const uint8_t *appKey = nullptr,
                      eDeviceClass_t classType = CLASS_C, eDataRate_t dataRate =DR5,
-                     etxPower_t txPower = TX_POWER_4, bool adr = true, uint8_t subBand = 11);
+                     etxPower_t txPower = DBM9, bool adr = true, uint8_t subBand = 11);
 
   /**
    * @brief 构造函数，用于 ABP 设备。
@@ -394,13 +406,13 @@ public:
    * @param appSKey 应用会话密钥
    * @param classType 设备类别（默认：CLASS_C）
    * @param dataRate 数据速率（默认：DR5）
-   * @param txPower 发射功率（默认：TX_POWER_4）
+   * @param txPower 发射功率（默认：DBM9）
    * @param adr 自适应数据速率（默认：true）
    * @param subBand 用于 CN470 和 US915 的子频段（默认：11）
    */
   DFRobot_LWNode_IIC(const uint32_t devAddr, const uint8_t *nwkSKey, const uint8_t *appSKey,
                      eDeviceClass_t classType = CLASS_C, eDataRate_t dataRate = DR5,
-                     etxPower_t txPower = TX_POWER_4, bool adr = true, uint8_t subBand = 11);
+                     etxPower_t txPower = DBM9, bool adr = true, uint8_t subBand = 11);
 
   /**
    * @brief 初始化 LoRaWAN 节点。
@@ -428,7 +440,7 @@ public:
    * @return 作为字符串的数据消息
    */
   String readData();
-
+  size_t readData(uint8_t *buf);
   /**
    * @brief 读取寄存器。
    * @param reg 寄存器地址
@@ -452,7 +464,7 @@ public:
    * @return 读取的寄存器值
    */
   uint8_t readReg(uint8_t reg);
-
+  
 private:
   TwoWire *_pWire; ///< IIC 通信对象
   uint8_t _deviceAddr; ///< IIC 设备地址

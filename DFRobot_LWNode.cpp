@@ -181,8 +181,8 @@ bool LWNode::setDataRate(eDataRate_t dataRate){
    return false;
   }
 }
-bool LWNode::setTXPower(uint8_t txPower){
-  String AT = "AT+EIRP="+String(txPower);
+bool LWNode::setEIRP(uint8_t EIRP){
+  String AT = "AT+EIRP="+String(EIRP);
   String ack;
   ack = sendATCmd(AT);
   if(ack == "+EIRP=OK\r\n"){
@@ -292,8 +292,17 @@ bool LWNode::sendPacket(void *buffer, uint8_t size){
   String AT = "AT+SEND=";
   String ack;
   uint8_t *data = (uint8_t *)buffer;
-  for(uint8_t i = 0;i<size;i++){
-      AT+=data[i];
+  char *output = (char*)malloc(size*2+2);
+  int i, len;
+
+  for (i = 0; i < size; i++) {
+      //Serial.println(data[i],HEX);
+      sprintf(output + i * 2, "%02X", data[i]);
+  }
+     
+  for(uint8_t i = 0;i<size*2;i++){
+      AT+=output[i];
+      
 
   }
   ack = sendATCmd(AT);
@@ -305,9 +314,22 @@ bool LWNode::sendPacket(void *buffer, uint8_t size){
 }
 bool LWNode::sendPacket(String data){
   
-
-  String AT = "AT+SEND="+data;
+  String AT = "AT+SEND=";
   String ack;
+
+  char *output = (char*)malloc(data.length()*2+2);
+  int i, len;
+
+  for (i = 0; i < data.length(); i++) {
+      sprintf(output + i * 2, "%02X", data[i]);
+  }
+     
+  for(uint8_t i = 0;i<data.length()*2;i++){
+      
+      AT+=output[i];
+
+  }
+
   ack = sendATCmd(AT);
   //sendData((uint8_t *)data.c_str(),data.length());
   if(ack == "AT+SEND=OK\r\n"){
@@ -432,7 +454,7 @@ bool DFRobot_LWNode_UART::begin(Stream &s_, Stream &dbgs_){
          timeout--;
          if(timeout == 0) return false;
     }
-    
+    sendATCmd("AT+RECV=1");
     if(isOtaa == false){
         ack = sendATCmd("AT+JOINTYPE=ABP");
         if(ack == "+JOINTYPE=OK\r\n"){
@@ -520,14 +542,14 @@ bool DFRobot_LWNode_IIC::begin(TwoWire *pWire,Stream &dbgs_){
     uint8_t timeout = 100;
     dbgs = &dbgs_;
     _pWire->begin();
-
+    delay(100);
     sendATCmd("AT+REBOOT\r\n");
 
     while(!atTest()){
          timeout--;
          if(timeout == 0) return false;
     }
-    
+    sendATCmd("AT+RECV=1");
     if(isOtaa == false){
         ack = sendATCmd("AT+JOINTYPE=ABP");
         if(ack == "+JOINTYPE=OK\r\n"){
@@ -574,7 +596,7 @@ String DFRobot_LWNode_IIC::readACK(){
   //Serial.print("dataLen:");
   //Serial.println(dataLen);
   if(len == 0){
-   return "NULL";
+   return " ";
   }
   while(dataLen > 30){
      readReg(REG_READ_AT,dataP,30);
@@ -600,6 +622,32 @@ String DFRobot_LWNode_IIC::readData(){
   
 }
 
+int findNthOccurrence(String str, char character, int n) {
+    int index = -1;
+    for(int i = 0; i < n; ++i) {
+        index = str.indexOf(character, index + 1);
+        if (index == -1) {
+            break;
+        }
+    }
+    return index+1;
+}
+
+
+
+size_t DFRobot_LWNode_IIC::readData(uint8_t *buf){
+    String str  = readACK();
+    if(str == " ") return 0;
+    int  len ,index,j;
+    len = str.length();
+    index = findNthOccurrence(str,':',6);
+    for (int i = index; i < len; i+=2) {
+       String byteString = str.substring(i, i+2);
+       buf[(i-index)/2] = (uint8_t) strtol(byteString.c_str(), NULL, 16);
+     }
+    
+    return (len-index)/2;
+}
 void DFRobot_LWNode_IIC::writeReg(uint8_t reg ,uint8_t * data,uint8_t len){
   _pWire->beginTransmission(_deviceAddr);
   _pWire->write(reg);

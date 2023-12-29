@@ -40,9 +40,7 @@ void setup(void){
    if(!node.setDataRate(DR5)){
       Serial.println("DataRate set fail");
    }
-   if(!node.setTXPower(TX_POWER_6)){
-      Serial.println("TXPower set fail");
-   }
+
    //if(!node.setSubBand(11)){
    //   Serial.println("SubBand set fail");
    //}

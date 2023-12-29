@@ -15,7 +15,7 @@ uint8_t APPSKEY[16]={0x89,0x88,0x88,0x88,0x88,0x88,0x88,0x88,0x88,0x88,0x88,0x88
 
 uint32_t devAddr = 0xDF000011;
 uint8_t _DEVEUI[16]={0x0};
-
+uint8_t buf[256];
 DFRobot_LWNode_IIC node(devAddr,NWKSKEY,APPSKEY);
 
 void setup(void){
@@ -31,10 +31,17 @@ void setup(void){
 
 void loop(){
     //读取缓冲区是否接到数据
-    String data = node.readData();
-    if(data != "NULL"){
-     Serial.println(data);
+    //String data = node.readData();
+    uint8_t len = node.readData(buf);
+
+    if(len > 0){
+    for(uint8_t i = 0;i<len;i++){
+       Serial.println(buf[i],HEX);  
+     }
     }
+    //if(data != " "){
+    // Serial.println(data);
+   // }
 
     delay(600);
 }

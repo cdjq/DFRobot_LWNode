@@ -13,7 +13,7 @@
 uint8_t _APPEUI[8]={0xDF,0xDF,0xDF,0xDF,0x00,0x00,0x00,0x00} ;
 uint8_t _APPKEY[16]={0x55,0x55,0x55,0x55,0x55,0x55,0x55,0x55,0x55,0x55,0x55,0x55,0x55,0x55,0x55,0x55};
 uint8_t _DEVEUI[16]={0x0};
-
+uint8_t buf[256]={0x0};
 
 DFRobot_LWNode_IIC node(_APPEUI,_APPKEY);
 
@@ -40,13 +40,18 @@ void setup(void){
 
 void loop(){
   
-    //avr的中断服务函数是在 main函数里面轮询，这里不能卡死 
-    delay(100);
     //读取缓冲区是否接到数据
-    String data = node.readData();
-    if(data != "NULL"){
-     Serial.println(data);
+    //String data = node.readData();
+    uint8_t len = node.readData(buf);
+
+    if(len > 0){
+    for(uint8_t i = 0;i<len;i++){
+       Serial.println(buf[i],HEX);  
+     }
     }
+    //if(data != " "){
+    // Serial.println(data);
+   // }
 
     delay(600);
   
