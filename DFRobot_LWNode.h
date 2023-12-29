@@ -277,7 +277,7 @@ public:
    * @brief 获取当前的发射功率。
    * @return 设备当前的发射功率
    */
-  uint8_t getTxPower();
+  uint8_t getEIRP();
   
   /**
    * @brief 执行 AT 测试命令。

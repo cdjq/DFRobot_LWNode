@@ -16,11 +16,11 @@ uint8_t APPSKEY[16]={0x89,0x88,0x88,0x88,0x88,0x88,0x88,0x88,0x88,0x88,0x88,0x88
 uint32_t devAddr = 0xDF000011;
 uint8_t _DEVEUI[16]={0x0};
 void uartRxCB(void *buffer, uint16_t size){
-    char *data = (char*)buffer;
-    //for(uint8_t i=0;i<size;i++){
-      
-        Serial.print(data);
-    //  }
+   char *data = (char*)buffer;
+   //for(uint8_t i=0;i<size;i++){
+     
+       Serial.print(data);
+   //  }
 }
 DFRobot_LWNode_UART node(devAddr,NWKSKEY,APPSKEY);
 

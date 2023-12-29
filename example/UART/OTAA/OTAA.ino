@@ -37,10 +37,14 @@ void setup(void){
    if(!node.setDevType(CLASS_C)){
       Serial.println("DevType set fail");
    }
-   if(!node.setDataRate(DR5)){
-      Serial.println("DataRate set fail");
+   //DR0  - DR5
+   if (!node.setDataRate(DR5)) {
+    Serial.println("DataRate set fail");
    }
-
+   //DBM0  - DBM9
+   if (!node.setEIRP(DBM6)) {
+    Serial.println("EIRP set fail");
+   }
    //if(!node.setSubBand(11)){
    //   Serial.println("SubBand set fail");
    //}
@@ -57,9 +61,8 @@ void setup(void){
    
    Serial.print("DATARATE: ");
    Serial.println(node.getDataRate());
-   
-   Serial.print("TxPower: ");
-   Serial.println(node.getTxPower());
+   Serial.print("EIRP: ");
+   Serial.println(node.getEIRP());
    
    //join
    if(node.join()){

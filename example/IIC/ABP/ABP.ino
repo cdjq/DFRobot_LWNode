@@ -33,12 +33,13 @@ void setup(void) {
   if (!node.setDevAddr(devAddr)) {
     Serial.println("devAddr set fail");
   }
-
+   //DR0  - DR5
   if (!node.setDataRate(DR5)) {
     Serial.println("DataRate set fail");
   }
+   //DBM0  - DBM9
   if (!node.setEIRP(DBM6)) {
-    Serial.println("TXPower set fail");
+    Serial.println("EIRP set fail");
   }
 
   if (!node.enableADR(false)) {
@@ -55,8 +56,8 @@ void setup(void) {
   Serial.print("DATARATE: ");
   Serial.println(node.getDataRate());
 
-  Serial.print("TxPower: ");
-  Serial.println(node.getTxPower());
+  Serial.print("EIRP: ");
+  Serial.println(node.getEIRP());
 }
 
 void loop() {

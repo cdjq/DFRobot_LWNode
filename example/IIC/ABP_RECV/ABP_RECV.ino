@@ -20,28 +20,28 @@ DFRobot_LWNode_IIC node(devAddr,NWKSKEY,APPSKEY);
 
 void setup(void){
 
-   Serial.begin(115200);
-   node.begin(/*communication IIC*/&Wire,/*debug UART*/Serial);
-   Serial.println("join success");
-   //这个包会成功发送
-   node.sendPacket("hello");
+  Serial.begin(115200);
+  node.begin(/*communication IIC*/&Wire,/*debug UART*/Serial);
+  Serial.println("join success");
+  //这个包会成功发送
+  node.sendPacket("hello");
 
 }
 
 
 void loop(){
-    //读取缓冲区是否接到数据
-    //String data = node.readData();
-    uint8_t len = node.readData(buf);
+  //读取缓冲区是否接到数据
 
-    if(len > 0){
+  uint8_t len = node.readData(buf);
+
+  if(len > 0){
     for(uint8_t i = 0;i<len;i++){
        Serial.println(buf[i],HEX);  
-     }
-    }
-    //if(data != " "){
-    // Serial.println(data);
-   // }
-
-    delay(600);
+   }
+  }
+  //String data = node.readData();
+  //if(data != ""){
+  // Serial.println(data);
+  // }
+  delay(600);
 }

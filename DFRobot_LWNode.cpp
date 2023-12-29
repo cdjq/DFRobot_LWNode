@@ -390,7 +390,7 @@ uint8_t LWNode::getDataRate(){
   dataRate = ack.toInt();
   return dataRate;
 }
-uint8_t LWNode::getTxPower(){
+uint8_t LWNode::getEIRP(){
 
   String AT = "AT+EIRP?";
   String ack;
@@ -596,7 +596,7 @@ String DFRobot_LWNode_IIC::readACK(){
   //Serial.print("dataLen:");
   //Serial.println(dataLen);
   if(len == 0){
-   return " ";
+   return "";
   }
   while(dataLen > 30){
      readReg(REG_READ_AT,dataP,30);
