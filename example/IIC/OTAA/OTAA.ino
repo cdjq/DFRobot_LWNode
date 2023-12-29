@@ -36,17 +36,29 @@ void setup(void){
    if(!node.setDevType(CLASS_C)){
       Serial.println("DevType set fail");
    }
-   //DR0  - DR5
-   if(!node.setDataRate(DR5)){
-      Serial.println("DataRate set fail");
+   //EU868 DR0  - DR5
+   //US915 DR5  - DR7
+   //CN470 DR0  - DR5
+   if (!node.setDataRate(DR5)) {
+     Serial.println("DataRate set fail");
    }
-  //DBM0  - DBM9
-  if (!node.setEIRP(DBM6)) {
-      Serial.println("EIRP set fail");
-  }
-   //if(!node.setSubBand(11)){
-   //   Serial.println("SubBand set fail");
-   //}
+
+   //EU868 DBM0  DBM2 DBM4 DBM6 DBM8 DBM10 DBM12 DBM14 DBM16
+   //US915 DBM0  DBM2 DBM4 DBM6 DBM8 DBM10 DBM12 DBM14 DBM16 DBM18 DBM20 DBM22 DBM24 DBM26 DBM28
+   //CN470 DBM0  DBM2 DBM4 DBM6 DBM8 DBM10 DBM12 DBM14 DBM16 DBM18 
+   if (!node.setEIRP(DBM6)) {
+     Serial.println("EIRP set fail");
+   }
+
+   //CN470
+   /*if(!node.setSubBand(11)){
+        Serial.println("SubBand set fail");
+   }*/
+
+   //US915
+   /*if(!node.setSubBand(2)){
+       Serial.println("SubBand set fail");
+   }*/
    if(!node.enableADR(false)){
       Serial.println("ADR set fail");
    }
