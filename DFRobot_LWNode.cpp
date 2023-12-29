@@ -615,13 +615,6 @@ String DFRobot_LWNode_IIC::readACK(){
 
   return ack;
 }
-
-String DFRobot_LWNode_IIC::readData(){
-
-    return readACK();
-  
-}
-
 int findNthOccurrence(String str, char character, int n) {
     int index = -1;
     for(int i = 0; i < n; ++i) {
@@ -632,12 +625,32 @@ int findNthOccurrence(String str, char character, int n) {
     }
     return index+1;
 }
+String DFRobot_LWNode_IIC::readData(){
+
+
+    String str  = readACK();
+    if(str == "") return "";
+    int  len ,index,j;
+    len = str.length();
+    index = findNthOccurrence(str,':',6);
+    String msg ;
+    for (int i = index; i < len; i+=2) {
+       String byteString = str.substring(i, i+2);
+       //buf[(i-index)/2] = (uint8_t) 
+       msg += (char)strtol(byteString.c_str(), NULL, 16);
+     }
+    
+   
+    return msg;
+}
+
+
 
 
 
 size_t DFRobot_LWNode_IIC::readData(uint8_t *buf){
     String str  = readACK();
-    if(str == " ") return 0;
+    if(str == "") return 0;
     int  len ,index,j;
     len = str.length();
     index = findNthOccurrence(str,':',6);
