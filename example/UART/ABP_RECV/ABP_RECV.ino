@@ -28,21 +28,17 @@ void setup(void){
 
    Serial.begin(115200);
    Serial1.begin(9600);
-   node.begin(/*通信com*/Serial1,/*调试dbg com*/Serial);
+   node.begin(/*communication uart*/Serial1,/*debug uart*/Serial);
    node.setRxCB(uartRxCB);
 
 
    Serial.println("join success");
-   //这个包会成功发送
+
    node.sendPacket("hello");
 
 }
 
 
 void loop(){
-  
-    //avr的中断服务函数是在 main函数里面轮询，这里不能卡死 
     delay(100);
-   
-  
 }

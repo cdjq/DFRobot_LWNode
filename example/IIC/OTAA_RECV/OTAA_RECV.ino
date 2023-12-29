@@ -21,7 +21,8 @@ void setup(void){
 
    Serial.begin(115200);
 
-   node.begin(/*通信com*/&Wire,/*调试dbg com*/Serial);
+   node.begin(/*communication com*/&Wire,/*debug uart*/Serial);
+   //node.begin(/*communication com*/&Wire,NULL);//Uno
    
    //入网
    if(node.join()){

@@ -22,7 +22,8 @@ void setup(void){
 
    Serial.begin(115200);
    Serial1.begin(115200);
-   node.begin(/*通信com*/&Wire,/*调试dbg com*/Serial);
+   node.begin(/*communication com*/&Wire,/*debug uart*/Serial);
+   //node.begin(/*communication com*/&Wire,NULL);//Uno
    Serial.println("join success");
    //这个包会成功发送
    node.sendPacket("hello");
