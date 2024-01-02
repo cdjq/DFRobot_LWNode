@@ -22,7 +22,7 @@ DFRobot_LWNode_UART node(_APPEUI,_APPKEY);
 void setup(void){
     Serial.begin(115200);
     Serial1.begin(9600);
-    node.begin(/*communication UART*/Serial1,/*debug UART*/Serial);
+    node.begin(/*communication UART*/&Serial1,/*debug UART*/&Serial);
     
     while(!node.setRegion(EU868)){
         delay(2000);

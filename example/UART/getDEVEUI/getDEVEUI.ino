@@ -22,7 +22,7 @@ DFRobot_LWNode_UART node(_APPEUI,_APPKEY);
 void setup(void){
    Serial.begin(115200);
    Serial1.begin(9600);
-    node.begin(/*communication uart*/Serial1,/*debug uart*/Serial);
+    node.begin(/*communication uart*/&Serial1,/*debug uart*/&Serial);
    
    if(node.getDevEUI(_DEVEUI)){
      Serial.print("deveui:");

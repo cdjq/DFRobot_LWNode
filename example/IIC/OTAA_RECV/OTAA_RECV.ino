@@ -21,7 +21,7 @@ void setup(void){
 
   Serial.begin(115200);
 
-  node.begin(/*communication IIC*/&Wire,/*debug UART*/Serial);
+  node.begin(/*communication IIC*/&Wire,/*debug UART*/&Serial);
   
   //入网
   if(node.join()){

@@ -21,7 +21,7 @@ DFRobot_LWNode_IIC node(_APPEUI,_APPKEY);
 void setup(void){
    Serial.begin(115200);
 
-   node.begin(/*communication IIC*/&Wire,/*debug UART*/Serial);
+   node.begin(/*communication IIC*/&Wire,/*debug UART*/&Serial);
 
    while(!node.setRegion(EU868)){
       delay(2000);
@@ -90,7 +90,7 @@ void setup(void){
 
    Serial.print("DEVADDR: 0x");
    Serial.println(node.getDevAddr(),HEX);
-   //node.enTrans();//高级
+
 
 }
 

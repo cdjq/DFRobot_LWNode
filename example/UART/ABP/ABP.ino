@@ -22,7 +22,7 @@ void setup(void){
 
    Serial.begin(115200);
    Serial1.begin(9600);
-   node.begin(/*communication uart*/Serial1,/*debug uart*/Serial);
+   node.begin(/*communication uart*/&Serial1,/*debug uart*/&Serial);
    //node.begin(/*communication uart*/Serial,NULL);//Uno
    if(!node.setAppSKey(APPSKEY)){
       Serial.println("APPSKEY set fail");

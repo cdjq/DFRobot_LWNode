@@ -21,7 +21,7 @@ DFRobot_LWNode_IIC node(devAddr,NWKSKEY,APPSKEY);
 void setup(void){
 
   Serial.begin(115200);
-  node.begin(/*communication IIC*/&Wire,/*debug UART*/Serial);
+  node.begin(/*communication IIC*/&Wire,/*debug UART*/&Serial);
   Serial.println("join success");
   //这个包会成功发送
   node.sendPacket("hello");

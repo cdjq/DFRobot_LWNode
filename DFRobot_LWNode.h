@@ -359,8 +359,14 @@ public:
    * @param dbgs 用于调试的串口对象（默认：Serial）
    * @return true 初始化成功，false 初始化失败
    */
-  bool begin(Stream &s_, Stream &dbgs_ = Serial);
-
+  bool begin(Stream *s_, Stream *dbgs_ = &Serial);
+  
+  /**
+   * @brief 读取数据。
+   * @return 作为字符串的数据消息
+   */
+  String readData();
+  size_t readData(uint8_t *buf);
   /**
    * @brief 发送数据。
    * @param data 指向要发送的数据的指针
@@ -420,7 +426,7 @@ public:
    * @param dbgs 用于调试的串口对象（默认：Serial）
    * @return true 初始化成功，false 初始化失败
    */
-  bool begin(TwoWire *pWire = &Wire, Stream &dbgs_ = Serial);
+  bool begin(TwoWire *pWire = &Wire, Stream *dbgs_ = &Serial);
 
   /**
    * @brief 发送数据。

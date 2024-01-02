@@ -22,7 +22,7 @@ DFRobot_LWNode_IIC node(devAddr, NWKSKEY, APPSKEY);
 void setup(void) {
   Serial.begin(115200);
 
-  node.begin(/*communication IIC*/&Wire,/*debug UART*/Serial);
+  node.begin(/*communication IIC*/&Wire,/*debug UART*/&Serial);
 
   if (!node.setAppSKey(APPSKEY)) {
     Serial.println("APPSKEY set fail");

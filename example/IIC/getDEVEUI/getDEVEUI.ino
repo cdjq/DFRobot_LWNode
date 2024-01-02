@@ -21,7 +21,7 @@ DFRobot_LWNode_IIC node(_APPEUI,_APPKEY);
 void setup(void){
    Serial.begin(115200);
 
-   node.begin(/*communication iic*/&Wire,/*debug uart*/Serial);
+   node.begin(/*communication iic*/&Wire,/*debug uart*/&Serial);
    
    if(node.getDevEUI(_DEVEUI)){
      Serial.print("deveui:");

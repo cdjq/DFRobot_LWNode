@@ -3,12 +3,22 @@
 
 static rxCB *_rxCB =NULL;
 uint8_t IntEnable = true;
+
 LWNode::LWNode(const uint8_t *appEui,const uint8_t *appKey, eDeviceClass_t classType, eDataRate_t dataRate, etxPower_t txPower,bool adr, uint8_t subBand){
 
 
 }
 
-
+int findNthOccurrence(String str, char character, int n) {
+    int index = -1;
+    for(int i = 0; i < n; ++i) {
+        index = str.indexOf(character, index + 1);
+        if (index == -1) {
+            break;
+        }
+    }
+    return index+1;
+}
 String uint8ArrayToHexString(const uint8_t arr[], int length) {
     String str = "";
     for(int i = 0; i < length; i++) {
@@ -306,6 +316,7 @@ bool LWNode::sendPacket(void *buffer, uint8_t size){
 
   }
   ack = sendATCmd(AT);
+  free(output);
   if(ack == "AT+SEND=OK\r\n"){
     return true;
   }else{
@@ -332,6 +343,7 @@ bool LWNode::sendPacket(String data){
 
   ack = sendATCmd(AT);
   //sendData((uint8_t *)data.c_str(),data.length());
+  free(output);
   if(ack == "AT+SEND=OK\r\n"){
     return true;
   }else{
@@ -440,12 +452,12 @@ DFRobot_LWNode_UART::DFRobot_LWNode_UART(const uint32_t devAddr ,const uint8_t *
   _subBand = subBand;
 }
 
-bool DFRobot_LWNode_UART::begin(Stream &s_, Stream &dbgs_){
+bool DFRobot_LWNode_UART::begin(Stream *s_, Stream *dbgs_){
     String ack;
     uint8_t timeout = 100;
-    s = &s_;
-    dbgs = &dbgs_;
-    uarts = &s_;
+    s = s_;
+    dbgs = dbgs_;
+    uarts = s_;
     //sendATCmd("+++");
     //delay(500);
     sendATCmd("AT+REBOOT\r\n");
@@ -482,7 +494,42 @@ void DFRobot_LWNode_UART::sendData(uint8_t *data ,uint8_t len ){
         dbgs->write(data,len);
     }
 }
+String DFRobot_LWNode_UART::readData(){
 
+
+    String str  = readACK();
+    if(str == "") return "";
+    int  len ,index,j;
+    len = str.length();
+    index = findNthOccurrence(str,':',6);
+    String msg ;
+    for (int i = index; i < len; i+=2) {
+       String byteString = str.substring(i, i+2);
+       //buf[(i-index)/2] = (uint8_t) 
+       msg += (char)strtol(byteString.c_str(), NULL, 16);
+     }
+    
+   
+    return msg;
+}
+
+
+
+
+
+size_t DFRobot_LWNode_UART::readData(uint8_t *buf){
+    String str  = readACK();
+    if(str == "") return 0;
+    int  len ,index,j;
+    len = str.length();
+    index = findNthOccurrence(str,':',6);
+    for (int i = index; i < len; i+=2) {
+       String byteString = str.substring(i, i+2);
+       buf[(i-index)/2] = (uint8_t) strtol(byteString.c_str(), NULL, 16);
+     }
+    
+    return (len-index)/2;
+}
 String DFRobot_LWNode_UART::readACK(){
    uint16_t timeout = 100;
    uint16_t i = 0;
@@ -536,11 +583,11 @@ DFRobot_LWNode_IIC::DFRobot_LWNode_IIC(const uint32_t devAddr ,const uint8_t *nw
 
   _deviceAddr = 0x20;
 }
-bool DFRobot_LWNode_IIC::begin(TwoWire *pWire,Stream &dbgs_){
+bool DFRobot_LWNode_IIC::begin(TwoWire *pWire,Stream *dbgs_){
   _pWire  = pWire;
     String ack;
     uint8_t timeout = 100;
-    dbgs = &dbgs_;
+    dbgs = dbgs_;
     _pWire->begin();
     delay(100);
     sendATCmd("AT+REBOOT\r\n");
@@ -615,16 +662,7 @@ String DFRobot_LWNode_IIC::readACK(){
 
   return ack;
 }
-int findNthOccurrence(String str, char character, int n) {
-    int index = -1;
-    for(int i = 0; i < n; ++i) {
-        index = str.indexOf(character, index + 1);
-        if (index == -1) {
-            break;
-        }
-    }
-    return index+1;
-}
+
 String DFRobot_LWNode_IIC::readData(){
 
 
