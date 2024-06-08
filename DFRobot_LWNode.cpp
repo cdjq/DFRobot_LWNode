@@ -1,12 +1,17 @@
 #include "DFRobot_LWNode.h"
 
-
 static rxCB *_rxCB =NULL;
+static rxCB3 *_rxCB3 =NULL;
 uint8_t IntEnable = true;
+LWNode *loranode = NULL;
 
 LWNode::LWNode(const uint8_t *appEui,const uint8_t *appKey, eDeviceClass_t classType, eDataRate_t dataRate, etxPower_t txPower,bool adr, uint8_t subBand){
 
 
+}
+
+LWNode::LWNode(const uint8_t devAddr){
+    this->_from = devAddr;
 }
 
 int findNthOccurrence(String str, char character, int n) {
@@ -19,6 +24,7 @@ int findNthOccurrence(String str, char character, int n) {
     }
     return index+1;
 }
+
 String uint8ArrayToHexString(const uint8_t arr[], int length) {
     String str = "";
     for(int i = 0; i < length; i++) {
@@ -30,9 +36,11 @@ String uint8ArrayToHexString(const uint8_t arr[], int length) {
     str.toUpperCase();
     return str;
 }
+
 bool LWNode::atTest(){
   String ack;
-  ack = sendATCmd("AT");
+  String cmd = "AT";
+  ack = sendATCmd( cmd );
 
   if(ack == "OK\r\n"){
     return true;
@@ -40,35 +48,78 @@ bool LWNode::atTest(){
     return false;
   }
 }
-bool LWNode::setRegion(eRegion_t region){
-   String ack;
-   switch (region){
 
-     case EU868 :
-        ack = sendATCmd("AT+REGION=EU868");
-      break;
-     case US915 :
-        ack = sendATCmd("AT+REGION=US915");
-      break;
-     case CN470 :
-        ack = sendATCmd("AT+REGION=CN470");
-      break;
-     default : 
+bool LWNode::setRegion(eRegion_t region){
+  String ack;
+  switch (region){
+    case EU868 :
+      ack = sendATCmd("AT+REGION=EU868");
+    break;
+    case US915 :
+      ack = sendATCmd("AT+REGION=US915");
+    break;
+    case CN470 :
+      ack = sendATCmd("AT+REGION=CN470");
+    break;
+    default : 
       LDBG("unsupported region");
    }
+
    LDBG(ack);
   if(ack == "+REGION=OK\r\n"){
-   return true;
-  }else{
-   return false;
+    return true;
+  } else {
+    return false;
   }
 }
 
+bool LWNode::setFreq(uint32_t freq){
+    String ack;
+    String cmd("AT+FREQS=");
+    cmd += String(freq);
+    ack = sendATCmd(cmd);
+    LDBG(ack);
+
+    if(ack == "+FREQS=OK\r\n"){
+        return true;
+    } else {
+        return false;
+    }
+}
+
+bool LWNode::setBW(uint32_t bw){
+    String ack;
+    String cmd("AT+BW=");
+    cmd += String(bw);
+    ack = sendATCmd(cmd);
+    LDBG(ack);
+
+    if(ack == "+BW=OK\r\n"){
+        return true;
+    } else {
+        return false;
+    }
+}
+
+bool LWNode::setSF(uint8_t sf){
+    String ack;
+    String cmd("AT+SF=");
+    cmd += String(sf);
+    ack = sendATCmd(cmd);
+    LDBG(ack);
+
+    if(ack == "+SF=OK\r\n"){
+        return true;
+    } else {
+        return false;
+    }
+}
+
 Stream *uarts;
+static uint8_t data[128];
 #if defined(HAVE_HWSERIAL0)
 void serialEvent(){
   if(uarts == &Serial){
-  uint8_t data[256];
   uint8_t i = 0;
   if(_rxCB && IntEnable){
      while(uarts->available()){
@@ -85,18 +136,28 @@ void serialEvent(){
 
 #if defined(HAVE_HWSERIAL1)
 void serialEvent1(){
+  // Serial.print("_rxCB=");Serial.println((uint16_t)_rxCB);
+  // Serial.print("_rxCB3=");Serial.println((uint16_t)_rxCB3);
+  // Serial.print("IntEnable=");Serial.println((uint16_t)IntEnable);
+  // Serial.print("uarts=");Serial.println((uint16_t)uarts);
   if(uarts == &Serial1){
-  uint8_t data[256];
-  uint8_t i = 0;
-  if(_rxCB && IntEnable){
-     while(uarts->available()){
+    uint8_t i = 0;
+    if((_rxCB || _rxCB3) && IntEnable){
+      while(uarts->available()){
         data[i] = uarts->read();
         i++;
-     }
-     data[i] =0;
-
-     _rxCB(data,i);
-  }
+        if(!uarts->available()) delay(5);
+      }
+      data[i] = 0;
+      if(_rxCB)
+        _rxCB(data,i);
+      else if(_rxCB3){
+        if(i<=2) return;
+        if((data[0] == 0xff) || (data[0] == loranode->_from)){
+          _rxCB3(data[1], &data[2],i-2);
+        }
+      }
+    }
   }
 }
 #endif
@@ -104,7 +165,6 @@ void serialEvent1(){
 #if defined(HAVE_HWSERIAL2)
 void serialEvent2(){
   if(uarts == &Serial2){
-  uint8_t data[256];
   uint8_t i = 0;
   if(_rxCB && IntEnable){
      while(uarts->available()){
@@ -121,7 +181,6 @@ void serialEvent2(){
 #if defined(HAVE_HWSERIAL3)
 void serialEvent3(){
   if(uarts == &Serial3){
-  uint8_t data[256];
   uint8_t i = 0;
   if(_rxCB && IntEnable){
      while(uarts->available()){
@@ -129,20 +188,20 @@ void serialEvent3(){
         i++;
      }
      data[i] =0;
-
      _rxCB(data,i);
   }
   }
 }
 #endif
 void LWNode::setRxCB(rxCB *callback){
-
   _rxCB = callback;
-  
+}
+
+void LWNode::setRxCB(rxCB3 *callback){
+  _rxCB3 = callback;
 }
 
 bool LWNode::setAppEUI(const uint8_t *appeui){
-
   String AT = "AT+JOINEUI="+uint8ArrayToHexString(appeui,8);
   String ack;
   ack = sendATCmd(AT);
@@ -158,16 +217,14 @@ bool LWNode::setAppKEY(const uint8_t *appkey){
   String ack;
   ack = sendATCmd(AT);
   if (ack == "+APPKEY=OK\r\n"){
-   return true;
-   
+    return true;
   }else{
-   return false;
+    return false;
   }
 }
 
 
 bool LWNode::setDevType(eDeviceClass_t classType){
-
   String ack;
   if(classType == CLASS_A){
     ack = sendATCmd("AT+CLASS=CLASS_A");
@@ -175,9 +232,9 @@ bool LWNode::setDevType(eDeviceClass_t classType){
     ack = sendATCmd("AT+CLASS=CLASS_C");
   }
   if(ack == "+CLASS=OK\r\n"){
-   return true;
+    return true;
   }else{
-   return false;
+    return false;
   }
 }
 
@@ -186,9 +243,9 @@ bool LWNode::setDataRate(eDataRate_t dataRate){
   String ack;
   ack = sendATCmd(AT);
   if(ack == "+DATARATE=OK\r\n"){
-   return true;
+    return true;
   }else{
-   return false;
+    return false;
   }
 }
 bool LWNode::setEIRP(uint8_t EIRP){
@@ -203,8 +260,6 @@ bool LWNode::setEIRP(uint8_t EIRP){
 }
 
 bool LWNode::setSubBand(uint8_t subBand){
-
-
   String AT = "AT+SUBBAND="+String(subBand);
   String ack;
   if(_region == EU868) return false;
@@ -229,7 +284,6 @@ bool LWNode::enableADR(bool adr){
 }
 
 bool LWNode::setDevAddr(const uint32_t devAddr){
-
   String AT = "AT+DEVADDR="+String(devAddr,HEX);
   String ack;
   ack = sendATCmd(AT);
@@ -263,8 +317,6 @@ bool LWNode::setNwkSKey(const uint8_t * nwkSKey){
 }
 
 bool LWNode::setPacketType(ePacketType_t type){
-
-
   String ack;
   if(type == UNCONFIRMED_PACKET){
     ack = sendATCmd("AT+UPLINKTYPE=UNCONFIRMED");
@@ -298,6 +350,25 @@ bool LWNode::isJoined(){
    return false;
   }
 }
+
+bool LWNode::sendPacket(double v){
+	char buf[20]={0};
+	sprintf(buf, "%.3lf", v);
+	return sendPacket(buf, strlen(buf));
+}
+
+bool LWNode::sendPacket(int32_t v){
+	char buf[20]={0};
+	itoa(v,buf,10);
+	return sendPacket(buf, strlen(buf));
+}
+
+bool LWNode::sendPacket(uint32_t v){
+	char buf[20]={0};
+	itoa(v,buf,10);
+	return sendPacket(buf, strlen(buf));
+}
+
 bool LWNode::sendPacket(void *buffer, uint8_t size){
   String AT = "AT+SEND=";
   String ack;
@@ -310,21 +381,19 @@ bool LWNode::sendPacket(void *buffer, uint8_t size){
       sprintf(output + i * 2, "%02X", data[i]);
   }
      
-  for(uint8_t i = 0;i<size*2;i++){
-      AT+=output[i];
-      
-
+  for(uint8_t i = 0; i<size*2; i++) {
+      AT += output[i];
   }
   ack = sendATCmd(AT);
   free(output);
-  if(ack == "AT+SEND=OK\r\n"){
+  if(ack == "AT+SEND=OK\r\n") {
     return true;
-  }else{
+  } else {
     return false;
   }
 }
+
 bool LWNode::sendPacket(String data){
-  
   String AT = "AT+SEND=";
   String ack;
 
@@ -332,13 +401,11 @@ bool LWNode::sendPacket(String data){
   int i, len;
 
   for (i = 0; i < data.length(); i++) {
-      sprintf(output + i * 2, "%02X", data[i]);
+    sprintf(output + i * 2, "%02X", data[i]);
   }
-     
-  for(uint8_t i = 0;i<data.length()*2;i++){
-      
-      AT+=output[i];
 
+  for(uint8_t i = 0;i<data.length()*2;i++){
+    AT+=output[i];
   }
 
   ack = sendATCmd(AT);
@@ -351,8 +418,62 @@ bool LWNode::sendPacket(String data){
   }
 }
 
-bool LWNode::getDevEUI(uint8_t *eui){
+bool LWNode::sendPacket(uint8_t to, void *buffer, uint8_t size){
+    String AT = "AT+SEND=";
+    String ack;
+    uint8_t *data = (uint8_t *)buffer;
+    char *output = (char*)malloc(size*2 + 2 + 4);
+    int i, len;
+    
+    sprintf(output, "%02X", to);
+    sprintf(output + 2, "%02X", _from);
+  
+    for (i = 0; i < size; i++) {
+        //Serial.println(data[i],HEX);
+        sprintf(output + 4 + i * 2, "%02X", data[i]);
+    }
+       
+    for(uint8_t i = 0;i<size*2 + 4;i++){
+        AT+=output[i];
+    }
+    ack = sendATCmd(AT);
+    free(output);
+    if(ack == "AT+SEND=OK\r\n"){
+        return true;
+    }else{
+        return false;
+    }
+}
 
+bool LWNode::sendPacket(uint8_t to, String data){
+    String AT = "AT+SEND=";
+    String ack;
+
+    char *output = (char*)malloc(data.length()*2 + 2 + 4);
+    int i, len;
+
+    sprintf(output, "%02X", to);
+    sprintf(output + 2, "%02X", _from);
+
+    for (i = 0; i < data.length(); i++) {
+        sprintf(output + 4 + i * 2, "%02X", data[i]);
+    }
+
+    for(uint8_t i = 0; i<data.length()*2+4; i++){
+        AT+=output[i];
+    }
+
+    ack = sendATCmd(AT);
+    //sendData((uint8_t *)data.c_str(),data.length());
+    free(output);
+    if(ack == "AT+SEND=OK\r\n"){
+        return true;
+    }else{
+        return false;
+    }
+}
+
+bool LWNode::getDevEUI(uint8_t *eui){
   String AT = "AT+DEVEUI?";
   String ack;
   ack = sendATCmd(AT).substring(8, 27);;
@@ -417,14 +538,22 @@ uint8_t LWNode::getEIRP(){
 String LWNode::sendATCmd(String cmd){
    String ack;
    cmd = cmd + "\r\n";
-   delay(300);
    IntEnable = false;
    sendData((uint8_t*) cmd.c_str(),cmd.length());
-   delay(600);
+   delay(800);
    ack = readACK();
-   
+
    IntEnable = true;
    return ack;
+}
+
+String LWNode::sendATCmdTest(char* cmd){
+   char ack[20]={0} ;
+   strcat(cmd,"\r\n");
+   Serial.print(cmd);
+   Serial.print("OK\r\n");
+   delay(100);
+   return "OK\r\n";
 }
 
 DFRobot_LWNode_UART::DFRobot_LWNode_UART(const uint8_t *appEui,const uint8_t *appKey, eDeviceClass_t classType, eDataRate_t dataRate, etxPower_t txPower,bool adr, uint8_t subBand)
@@ -444,12 +573,23 @@ DFRobot_LWNode_UART::DFRobot_LWNode_UART(const uint32_t devAddr ,const uint8_t *
   memcpy(_appeSKey,appSKey,16);
   memcpy(_nwkSKey,nwkSKey,16);
   _devAddr = devAddr;
-  isOtaa = false;
+  joinType = 0;
   _dataRate = dataRate;
   _classType = classType;
   _txPower = txPower;
   _adr = adr;
   _subBand = subBand;
+}
+
+DFRobot_LWNode_UART::DFRobot_LWNode_UART( const uint8_t from ):LWNode(from){
+  joinType = 2;
+}
+
+void DFRobot_LWNode_UART::Sleep(uint32_t ms){
+    while(ms--){
+      delay(1);
+      if (serialEventRun) serialEventRun();
+    }
 }
 
 bool DFRobot_LWNode_UART::begin(Stream *s_, Stream *dbgs_){
@@ -458,6 +598,7 @@ bool DFRobot_LWNode_UART::begin(Stream *s_, Stream *dbgs_){
     s = s_;
     dbgs = dbgs_;
     uarts = s_;
+    loranode = this;
     //sendATCmd("+++");
     //delay(500);
     sendATCmd("AT+REBOOT\r\n");
@@ -466,8 +607,9 @@ bool DFRobot_LWNode_UART::begin(Stream *s_, Stream *dbgs_){
          timeout--;
          if(timeout == 0) return false;
     }
-    sendATCmd("AT+RECV=1");
-    if(isOtaa == false){
+    //sendATCmd("AT+RECV=1");
+    if(joinType == 0){ //ABP
+        sendATCmd("AT+LORAMODE=LORAWAN");
         ack = sendATCmd("AT+JOINTYPE=ABP");
         if(ack == "+JOINTYPE=OK\r\n"){
           setAppSKey(_appeSKey);
@@ -478,89 +620,91 @@ bool DFRobot_LWNode_UART::begin(Stream *s_, Stream *dbgs_){
         }else{
           return false;
         }
-    }else{
+    }else if(joinType == 1){   //OTAA
+        sendATCmd("AT+LORAMODE=LORAWAN");
         ack = sendATCmd("AT+JOINTYPE=OTAA");
         if(_appKey !=NULL)
         setAppKEY(_appKey);
+    }else{
+        sendATCmd("AT+LORAMODE=LORA\r\n");
     }
     return true;
 }
 
 void DFRobot_LWNode_UART::sendData(uint8_t *data ,uint8_t len ){
-    s->flush();
     s->write(data,len);
+    s->flush();
+    delay(100);
     if(dbgs){
+        dbgs->write(data, len);
         dbgs->flush();
-        dbgs->write(data,len);
+        delay(100);
     }
 }
+
 String DFRobot_LWNode_UART::readData(){
-
-
     String str  = readACK();
     if(str == "") return "";
-    int  len ,index,j;
-    len = str.length();
-    index = findNthOccurrence(str,':',6);
-    String msg ;
-    for (int i = index; i < len; i+=2) {
-       String byteString = str.substring(i, i+2);
+    return str;
+    //int  len ,index,j;
+    //len = str.length();
+    //index = findNthOccurrence(str,':',6);
+    //String msg ;
+    //for (int i = index; i < len; i += 2) {
+    //   String byteString = str.substring(i, i+2);
        //buf[(i-index)/2] = (uint8_t) 
-       msg += (char)strtol(byteString.c_str(), NULL, 16);
-     }
-    
-   
-    return msg;
+    //   msg += (char)strtol(byteString.c_str(), NULL, 16);
+    // }
+    //return msg;
 }
-
-
-
-
 
 size_t DFRobot_LWNode_UART::readData(uint8_t *buf){
-    String str  = readACK();
-    if(str == "") return 0;
-    int  len ,index,j;
-    len = str.length();
-    index = findNthOccurrence(str,':',6);
-    for (int i = index; i < len; i+=2) {
-       String byteString = str.substring(i, i+2);
-       buf[(i-index)/2] = (uint8_t) strtol(byteString.c_str(), NULL, 16);
-     }
-    
-    return (len-index)/2;
-}
-String DFRobot_LWNode_UART::readACK(){
-   uint16_t timeout = 100;
-   uint16_t i = 0;
-   String ack;
-   while(timeout--){
-     delay(1);
-     while (s->available()) {
-    // 读取并处理新的串行数据
-       //Serial.print((char)s->read());
-       ack += (char)s->read();
-       timeout = 250;
-       delay(1);
-     }
-     if(timeout == 250) break;
-   }
-   if(timeout == 0 ) ack =  "NULL";
-   delay(150);
-    if(dbgs){
-     //   dbgs->flush();
-        dbgs->write(ack.c_str(),ack.length());
-    }
-   
-   return ack;
+  String str  = readACK();
+  if(str == "") return 0;
+  int  len ,index,j;
+  len = str.length();
+  index = findNthOccurrence(str,':',6);
+  for (int i = index; i < len; i+=2) {
+    String byteString = str.substring(i, i+2);
+    buf[(i-index)/2] = (uint8_t) strtol(byteString.c_str(), NULL, 16);
+  }
+  return (len-index)/2;
 }
 
-DFRobot_LWNode_IIC::DFRobot_LWNode_IIC(const uint8_t *appEui,const uint8_t *appKey, eDeviceClass_t classType, eDataRate_t dataRate, etxPower_t txPower,bool adr, uint8_t subBand)
-{
+String DFRobot_LWNode_UART::readACK(){
+  uint16_t timeout = 100;
+  uint16_t i = 0;
+  String ack;
+  while(timeout--){
+    delay(1);
+    while (s->available()) {
+      // 读取并处理新的串行数据
+      //Serial.print((char)s->read());
+      ack += (char)s->read();
+      timeout = 250;
+      delay(1);
+    }
+    if(timeout == 250) break;
+  }
+  if(timeout == 0 ) ack =  "NULL";
+  //delay(150);
+  if(dbgs){
+    dbgs->flush();
+    dbgs->write(ack.c_str(),ack.length());
+    delay(100);
+  }
+  return ack;
+}
+
+DFRobot_LWNode_IIC::DFRobot_LWNode_IIC( const uint8_t from ):LWNode(from) {
+  joinType = 2;
+}
+
+DFRobot_LWNode_IIC::DFRobot_LWNode_IIC(const uint8_t *appEui,const uint8_t *appKey, eDeviceClass_t classType, eDataRate_t dataRate, etxPower_t txPower,bool adr, uint8_t subBand) {
   memcpy(_appeui,appEui,8);
   memcpy(_appKey,appKey,16);
   _dataRate = dataRate;
-  
+
   _classType = classType;
   _txPower = txPower;
   _adr = adr;
@@ -569,12 +713,11 @@ DFRobot_LWNode_IIC::DFRobot_LWNode_IIC(const uint8_t *appEui,const uint8_t *appK
   _deviceAddr = 0x20;
 }
 
-DFRobot_LWNode_IIC::DFRobot_LWNode_IIC(const uint32_t devAddr ,const uint8_t *nwkSKey,const uint8_t *appSKey, eDeviceClass_t classType, eDataRate_t dataRate,etxPower_t txPower,bool adr , uint8_t subBand){
-  
+DFRobot_LWNode_IIC::DFRobot_LWNode_IIC(const uint32_t devAddr ,const uint8_t *nwkSKey,const uint8_t *appSKey, eDeviceClass_t classType, eDataRate_t dataRate,etxPower_t txPower,bool adr , uint8_t subBand) {
   memcpy(_appeSKey,appSKey,16);
   memcpy(_nwkSKey,nwkSKey,16);
   _devAddr = devAddr;
-  isOtaa = false;
+  joinType = 0;
   _dataRate = dataRate;
   _classType = classType;
   _txPower = txPower;
@@ -583,40 +726,58 @@ DFRobot_LWNode_IIC::DFRobot_LWNode_IIC(const uint32_t devAddr ,const uint8_t *nw
 
   _deviceAddr = 0x20;
 }
+
+void DFRobot_LWNode_IIC::Sleep(uint32_t ms){
+  unsigned long tick = millis();
+  while(millis() - tick < ms){
+    if((!_rxCB)  && (!_rxCB3)) {
+      delay(ms);
+      continue;
+    }
+    String str  = readACK();
+    uint16_t len = str.length();
+    if(len == 0 ) continue;
+
+    if(_rxCB != NULL){
+      _rxCB((void *)str.c_str(), (unsigned int)str.length());
+    }
+  }
+}
+
 bool DFRobot_LWNode_IIC::begin(TwoWire *pWire,Stream *dbgs_){
   _pWire  = pWire;
-    String ack;
-    uint8_t timeout = 100;
-    dbgs = dbgs_;
-    _pWire->begin();
-    delay(100);
-    sendATCmd("AT+REBOOT\r\n");
+  String ack;
+  uint8_t timeout = 100;
+  dbgs = dbgs_;
+  _pWire->begin();
+  delay(100);
+  sendATCmd("AT+REBOOT\r\n");
 
-    while(!atTest()){
-         timeout--;
-         if(timeout == 0) return false;
-    }
-    sendATCmd("AT+RECV=1");
-    if(isOtaa == false){
-        ack = sendATCmd("AT+JOINTYPE=ABP");
-        if(ack == "+JOINTYPE=OK\r\n"){
-          setAppSKey(_appeSKey);
-          setNwkSKey(_nwkSKey);
-          setDevAddr(_devAddr);
-          join();
-          return true;
-        }else{
-          return false;
-        }
-    }else{
-        ack = sendATCmd("AT+JOINTYPE=OTAA");
-        if(_appKey !=NULL)
-        setAppKEY(_appKey);
-    }
+  while(!atTest()){
+       timeout--;
+       if(timeout == 0) return false;
+  }
+  sendATCmd("AT+RECV=1");
+  sendATCmd("AT+LORAMODE=LORAWAN");
+  if(joinType == 0){
+      ack = sendATCmd("AT+JOINTYPE=ABP");
+      if(ack == "+JOINTYPE=OK\r\n"){
+        setAppSKey(_appeSKey);
+        setNwkSKey(_nwkSKey);
+        setDevAddr(_devAddr);
+        join();
+        return true;
+      }else{
+        return false;
+      }
+  }else{
+      ack = sendATCmd("AT+JOINTYPE=OTAA");
+      if(_appKey !=NULL)
+      setAppKEY(_appKey);
+  }
 }
 
 void DFRobot_LWNode_IIC::sendData(uint8_t *data ,uint8_t len ){
-
    uint8_t dataLen = len;
    uint8_t * dataP = data ;
 
@@ -628,11 +789,7 @@ void DFRobot_LWNode_IIC::sendData(uint8_t *data ,uint8_t len ){
      delay(100);
    }
    writeReg(REG_WRITE_AT,data,dataLen);
-
 }
-
-
-
 
 String DFRobot_LWNode_IIC::readACK(){
   char data[256];
@@ -643,63 +800,59 @@ String DFRobot_LWNode_IIC::readACK(){
   //Serial.print("dataLen:");
   //Serial.println(dataLen);
   if(len == 0){
-   return "";
+    return "";
   }
   while(dataLen > 30){
-     readReg(REG_READ_AT,dataP,30);
-     dataP+=30;
-     dataLen = dataLen-30;
+    readReg(REG_READ_AT,dataP,30);
+    dataP+=30;
+    dataLen = dataLen-30;
   }
   readReg(REG_READ_AT,dataP,dataLen);
   
   for(uint8_t i =0;i<len;i++){
-   ack += data[i];
+    ack += data[i];
   }
-    if(dbgs){
-        dbgs->flush();
-        dbgs->write(ack.c_str(),ack.length());
-    }
+  if(dbgs){
+    dbgs->write(ack.c_str(),ack.length());
+    dbgs->flush();
+  }
 
   return ack;
 }
 
 String DFRobot_LWNode_IIC::readData(){
-
-
     String str  = readACK();
-    if(str == "") return "";
-    int  len ,index,j;
-    len = str.length();
-    index = findNthOccurrence(str,':',6);
-    String msg ;
-    for (int i = index; i < len; i+=2) {
-       String byteString = str.substring(i, i+2);
-       //buf[(i-index)/2] = (uint8_t) 
-       msg += (char)strtol(byteString.c_str(), NULL, 16);
-     }
-    
-   
-    return msg;
+    return str;
+    //if(str == "") return "";
+    //int  len ,index,j;
+    //len = str.length();
+    //index = findNthOccurrence(str,':',6);
+    //String msg ;
+    //for (int i = index; i < len; i+=2) {
+    //   String byteString = str.substring(i, i+2);
+    //   //buf[(i-index)/2] = (uint8_t) 
+    //   msg += (char)strtol(byteString.c_str(), NULL, 16);
+    // }
+    //return msg;
 }
 
-
-
-
-
-size_t DFRobot_LWNode_IIC::readData(uint8_t *buf){
+size_t DFRobot_LWNode_IIC::readData(uint8_t *buf) {
     String str  = readACK();
-    if(str == "") return 0;
-    int  len ,index,j;
-    len = str.length();
-    index = findNthOccurrence(str,':',6);
-    for (int i = index; i < len; i+=2) {
-       String byteString = str.substring(i, i+2);
-       buf[(i-index)/2] = (uint8_t) strtol(byteString.c_str(), NULL, 16);
-     }
-    
-    return (len-index)/2;
+    //if(str == "") return 0;
+    strcpy(buf, str.c_str());
+    return str.length();
+    //int  len ,index,j;
+    //len = str.length();
+    //index = findNthOccurrence(str,':',6);
+    //for (int i = index; i < len; i+=2) {
+    //   String byteString = str.substring(i, i+2);
+    //   buf[(i-index)/2] = (uint8_t) strtol(byteString.c_str(), NULL, 16);
+    // }
+    //
+    //return (len-index)/2;
 }
-void DFRobot_LWNode_IIC::writeReg(uint8_t reg ,uint8_t * data,uint8_t len){
+
+void DFRobot_LWNode_IIC::writeReg(uint8_t reg ,uint8_t * data,uint8_t len) {
   _pWire->beginTransmission(_deviceAddr);
   _pWire->write(reg);
   for(uint8_t i = 0 ; i < len ; i++){
@@ -713,13 +866,14 @@ void DFRobot_LWNode_IIC::writeReg(uint8_t reg ,uint8_t * data,uint8_t len){
   _pWire->endTransmission();
 
 }
+
 uint8_t DFRobot_LWNode_IIC::readReg(uint8_t reg){
   uint8_t value;
   _pWire->beginTransmission(_deviceAddr);
   _pWire->write(reg);
   _pWire->endTransmission();
   
-  _pWire->requestFrom(_deviceAddr,1);
+  _pWire->requestFrom(_deviceAddr,(uint8_t)1);
   value = _pWire->read();
   return value;
 }

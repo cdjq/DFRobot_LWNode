@@ -1,7 +1,3 @@
-
-
-
-
 #ifndef _DFROBOT_LORANWANNODE_H
 #define _DFROBOT_LORANWANNODE_H
 
@@ -21,6 +17,7 @@
 
 typedef void joinCallback(bool isOk, int16_t rssi, int8_t snr);
 typedef void rxCB(void *buffer, uint16_t size);
+typedef void rxCB3(uint8_t from, void *buffer, uint16_t size);
 typedef void buttonCallback(void);
 typedef void sendCallback(void);
 #define REG_WRITE_AT_LONG       0x39
@@ -49,21 +46,21 @@ typedef enum {
  * @brief 发射功率的枚举。
  */
 typedef enum {
-  DBM0 =0, 
-  DBM2 = 2,  
-  DBM4 = 4, 
-  DBM6 = 6, 
-  DBM8 = 8, 
+  DBM0 =0,
+  DBM2 = 2,
+  DBM4 = 4,
+  DBM6 = 6,
+  DBM8 = 8,
   DBM10 = 10,
-  DBM12 = 12, 
-  DBM14 = 14, 
-  DBM16 = 16, 
-  DBM18 = 18, 
-  DBM20 = 20,  
-  DBM22 = 22, 
-  DBM24 = 24, 
-  DBM26 = 26, 
-  DBM28 = 28, 
+  DBM12 = 12,
+  DBM14 = 14,
+  DBM16 = 16,
+  DBM18 = 18,
+  DBM20 = 20,
+  DBM22 = 22,
+  DBM24 = 24,
+  DBM26 = 26,
+  DBM28 = 28,
 } etxPower_t;
 
 /**
@@ -116,6 +113,9 @@ public:
          eDeviceClass_t classType = CLASS_C, eDataRate_t dataRate = DR5,
          etxPower_t txPower = DBM8, bool adr = true, uint8_t subBand = 11);
 
+
+  LWNode(const uint8_t devAddr);
+
   /**
    * @brief 设置 LoRaWAN 区域。
    * @param region 区域枚举值
@@ -123,12 +123,15 @@ public:
    */
   bool setRegion(eRegion_t region);
 
+  bool setFreq(uint32_t freq);
+  bool setBW(uint32_t bw);
+  bool setSF(uint8_t  sf);
   /**
    * @brief 设置接收回调函数。网关主动给节点发送数据时，此回调函数将被调用。
    * @param callback 回调函数指针
    */
   void setRxCB(rxCB *callback);
-
+  void setRxCB(rxCB3 *callback);
   /**
    * @brief 设置应用 EUI。
    * @param appeui 应用 EUI
@@ -218,8 +221,18 @@ public:
    * @param size 要发送的数据长度
    * @return true 发送成功，false 发送失败
    */
+  //LoRaWAN
+  bool sendPacket(double v);
+  bool sendPacket(int32_t v);
+  bool sendPacket(uint32_t v);
   bool sendPacket(void *buffer, uint8_t size);
-  
+
+  //LoRa
+  bool sendPacket(uint8_t addr, double v);
+  bool sendPacket(uint8_t addr, int32_t v);
+  bool sendPacket(uint8_t addr, uint32_t v);
+  bool sendPacket(uint8_t addr, void *buffer, uint8_t size);
+
   /**
    * @brief 发送字符串数据包。
    * @param data 要发送的数据字符串
@@ -227,13 +240,16 @@ public:
    */
   bool sendPacket(String data);
   
+  bool sendPacket(uint8_t addr, String data);
+
   /**
    * @brief 发送通用 AT 指令。
    * @param cmd 已经封装的 AT 指令，不带\r\n
    * @return AT 指令的返回值
    */
   String sendATCmd(String cmd);
-  
+  String sendATCmdTest(char *cmd);
+  //void readACKTest(char * buf);
   /**
    * @brief 设置 LoRaWAN 子频段。
    * @param subBand 子频段值
@@ -309,9 +325,9 @@ public:
     uint8_t _subBand = 0;
     uint8_t _region = EU868;
     uint32_t _devAddr;
-    bool isOtaa =true;
-  private:
-  
+    uint8_t joinType = 1; //0 ABP 1 OTAA 2 NONE
+  public:
+   uint8_t _from;
   protected:
 };
 
@@ -353,6 +369,7 @@ public:
                       eDeviceClass_t classType = CLASS_C, eDataRate_t dataRate = DR5,
                       etxPower_t txPower = DBM8, bool adr = true, uint8_t subBand = 11);
 
+  DFRobot_LWNode_UART(const uint8_t from);
   /**
    * @brief 初始化 LoRaWAN 节点。
    * @param s_ 用于通信的 UART 对象
@@ -361,6 +378,7 @@ public:
    */
   bool begin(Stream *s_, Stream *dbgs_ = &Serial);
   
+  void Sleep(uint32_t ms);
   /**
    * @brief 读取数据。
    * @return 作为字符串的数据消息
@@ -420,6 +438,7 @@ public:
                      eDeviceClass_t classType = CLASS_C, eDataRate_t dataRate = DR5,
                      etxPower_t txPower = DBM8, bool adr = true, uint8_t subBand = 11);
 
+  DFRobot_LWNode_IIC( const uint8_t from );
   /**
    * @brief 初始化 LoRaWAN 节点。
    * @param pWire 用于通信的 IIC 对象（默认：Wire）
@@ -427,7 +446,7 @@ public:
    * @return true 初始化成功，false 初始化失败
    */
   bool begin(TwoWire *pWire = &Wire, Stream *dbgs_ = &Serial);
-
+  void Sleep(uint32_t ms);
   /**
    * @brief 发送数据。
    * @param data 指向要发送的数据的指针
