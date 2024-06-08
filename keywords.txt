@@ -6,34 +6,47 @@
 # Datatypes (KEYWORD1)
 #######################################
 
-DFRobot_GM60	KEYWORD1
-DFRobot_GM60_IIC	KEYWORD1
-DFRobot_GM60_UART	KEYWORD1
+DFRobot_LWNode_IIC	KEYWORD1
+DFRobot_LWNode_UART	KEYWORD1
 #######################################
 # Methods and Functions (KEYWORD2)
 #######################################
 
 begin	KEYWORD2
-encode	KEYWORD2
-setupCode	KEYWORD2
-setHeadData	KEYWORD2
-setIdentify	KEYWORD2
-reset	KEYWORD2
-detection	KEYWORD2
-
-
+setRxCB	KEYWORD2
+setRegion	KEYWORD2
+setAppEUI	KEYWORD2
+setAppKEY	KEYWORD2
+setDevType	KEYWORD2
+setDataRate	KEYWORD2
+setEIRP	KEYWORD2
+enableADR	KEYWORD2
+getDevEUI	KEYWORD2
+getDataRate	KEYWORD2
+setSubBand	KEYWORD2
+sendPacket	KEYWORD2
+Sleep	KEYWORD2
+isJoined	KEYWORD2
+readData	KEYWORD2
+getEIRP	KEYWORD2
+getNetID	KEYWORD2
+getDevAddr	KEYWORD2
 
 #######################################
-# Instances (KEYWORD2)
+# Instances (LITERAL1)
 #######################################
 
-e3 = 0	LITERAL1
-e4 = 1	LITERAL1
-eNone = 3	LITERAL1
+EU868	LITERAL1
+CN470	LITERAL1
+US915	LITERAL1
 
-eGBK	LITERAL1
-eUTF8	LITERAL1
+DR0	LITERAL1
+DR1	LITERAL1
+DR2	LITERAL1
+DR3	LITERAL1
+DR4	LITERAL1
+DR5	LITERAL1
 
-eForbidAllBarcode	LITERAL1
-eEnableAllBarcode	LITERAL1
-eEnableDefaultcode	LITERAL1
+CLASS_A	LITERAL1
+CLASS_B	LITERAL1
+CLASS_C	LITERAL1
