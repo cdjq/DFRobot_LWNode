@@ -1,6 +1,6 @@
 /*!
  *@file ABP_RECV.ino
- *@brief LoRaWan节点 ABP入网后,从网关接受数据
+ *@brief LoRaWan节点 ABP入网后,通过回调函数方式从网关接受数据
  *@details  
  *@copyright   Copyright (c) 2010 DFRobot Co.Ltd (http://www.dfrobot.com)
  *@license     The MIT license (MIT)

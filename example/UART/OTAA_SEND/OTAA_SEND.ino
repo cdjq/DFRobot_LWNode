@@ -1,7 +1,7 @@
 
 /*!
- *@file OTAA.ino
- *@brief LoRaWan节点 OTAA入网流程
+ *@file OTAA_SEND.ino
+ *@brief LoRaWan节点 OTAA入网并发送数据到网关
  *@details  
  *@copyright   Copyright (c) 2010 DFRobot Co.Ltd (http://www.dfrobot.com)
  *@license     The MIT license (MIT)
@@ -16,9 +16,8 @@ uint8_t _APPEUI[8]={0xDF,0xDF,0xDF,0xDF,0x00,0x00,0x00,0x00} ;
 uint8_t _APPKEY[16]={0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08,0x09,0x0A,0x0B,0x0C,0x0D,0x0E,0x0F,0x10};
 uint8_t _DEVEUI[16]={0x0};
 
-
-
 DFRobot_LWNode_UART node(_APPEUI,_APPKEY);
+
 void setup(void){
     Serial.begin(115200);
     Serial1.begin(9600);
@@ -72,7 +71,7 @@ void setup(void){
         Serial.println("ADR set fail");
     }
     while(!node.setPacketType(UNCONFIRMED_PACKET)){
-       Serial.println("Packet type set fail");
+        Serial.println("Packet type set fail");
     }
     if(node.getDevEUI(_DEVEUI)){
         Serial.print("deveui:");
@@ -89,18 +88,20 @@ void setup(void){
     
     //join
     if(node.join()){
-       Serial.println("JOIN......");
+        Serial.println("JOIN......");
     }
     
     while(!node.isJoined()){
-      delay(5000);
-    }   
+        delay(5000);
+    }
     
     Serial.print("netid: 0x");
     Serial.println(node.getNetID(),HEX);
     
     Serial.print("DEVADDR: 0x");
     Serial.println(node.getDevAddr(),HEX);
+
+    delay(2000);
 }
 
 

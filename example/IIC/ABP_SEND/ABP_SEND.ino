@@ -1,6 +1,6 @@
 /*!
- *@file ABP.ino
- *@brief LoRaWan节点 ABP入网流程
+ *@file ABP_SEND.ino
+ *@brief LoRaWan节点 ABP入网, 向网关发送数据
  *@details  
  *@copyright   Copyright (c) 2010 DFRobot Co.Ltd (http://www.dfrobot.com)
  *@license     The MIT license (MIT)

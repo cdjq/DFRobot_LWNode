@@ -1,6 +1,6 @@
 /*!
  *@file OTAA_RECV.ino
- *@brief LoRaWan节点 OTAA 入网后从网关接收数据
+ *@brief LoRaWan节点 OTAA 入网后通过轮询方式从网关接收数据
  *@details  
  *@copyright   Copyright (c) 2010 DFRobot Co.Ltd (http://www.dfrobot.com)
  *@license     The MIT license (MIT)

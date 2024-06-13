@@ -1,3 +1,14 @@
+/*!
+ *@file LoRa.ino
+ *@brief LoRa节点 设置节点地址为3，向地址为4的节点发射数据
+ *@details  
+ *@copyright   Copyright (c) 2010 DFRobot Co.Ltd (http://www.dfrobot.com)
+ *@license     The MIT license (MIT)
+ *@author [fengli](li.feng@dfrobot.com)
+ *@version  V1.0
+ *@date  2023-12-26
+ *@https://github.com/DFRobot/DFRobot_LWNode
+*/
 #include <DFRobot_LWNode.h>
 
 DFRobot_LWNode_IIC node(3);
