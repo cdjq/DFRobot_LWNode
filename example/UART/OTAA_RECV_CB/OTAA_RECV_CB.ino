@@ -61,7 +61,9 @@ void setup(void){
     if (!node.setEIRP(DBM6)) {
       Serial.println("EIRP set fail");
     }
-    
+    if (!node.setPacketType(UNCONFIRMED_PACKET)) {
+      Serial.println("Packet type set fail");
+    }
     if(node.getDevEUI(_DEVEUI)){
         Serial.print("deveui:");
         for(uint8_t i=0;i<8;i++){

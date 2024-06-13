@@ -323,7 +323,7 @@ bool LWNode::setPacketType(ePacketType_t type){
   }else{
     ack = sendATCmd("AT+UPLINKTYPE=CONFIRMED");
   }
-  if(ack == "++UPLINKTYPE=OK\r\n"){
+  if(ack == "+UPLINKTYPE=OK\r\n"){
    return true;
   }else{
    return false;

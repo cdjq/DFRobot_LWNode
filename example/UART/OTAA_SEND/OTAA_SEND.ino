@@ -66,6 +66,9 @@ void setup(void){
     if(!node.enableADR(false)){
        Serial.println("ADR set fail");
     }
+    if(!node.setPacketType(UNCONFIRMED_PACKET)){
+       Serial.println("Packet type set fail");
+    }
     if(node.getDevEUI(_DEVEUI)){
       Serial.print("deveui:");
       for(uint8_t i=0;i<8;i++){
