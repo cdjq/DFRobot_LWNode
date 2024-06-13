@@ -37,21 +37,21 @@ void setup(void){
 
 
 void loop(){
-  //读取缓冲区是否接到数据
-  uint8_t len = node.readData(buf);
-  
-  if(len > 0){
-    Serial.print("\nreceive ");Serial.print(len,HEX);Serial.println(" bytes  \nHEX:");  
-    for(uint8_t i = 0; i < len; i++){
-      Serial.print(buf[i],HEX);  
+    //读取缓冲区是否接到数据
+    uint8_t len = node.readData(buf);
+    
+    if(len > 0){
+        Serial.print("\nreceive ");Serial.print(len,HEX);Serial.println(" bytes  \nHEX:");  
+        for(uint8_t i = 0; i < len; i++){
+          Serial.print(buf[i],HEX);  
+        }
+        Serial.println();
+        Serial.println("Text:");  
+        Serial.println((char *)buf);
     }
-    Serial.println();
-    Serial.println("Text:");  
-    Serial.println((char *)buf);
-  }
-  //String data = node.readData();
-  //if(data != ""){
-  // Serial.println(data);
-  // }
-  delay(500);
+    //String data = node.readData();
+    //if(data != ""){
+    //    Serial.println(data);
+    //}
+    delay(500);
 }

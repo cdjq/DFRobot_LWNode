@@ -35,7 +35,7 @@ void loop(){
   if(len > 0){
     Serial.print("\nreceive ");Serial.print(len,HEX);Serial.println(" bytes  \nHEX:");  
     for(uint8_t i = 0; i < len; i++){
-      Serial.print(buf[i],HEX);  
+        Serial.print(buf[i],HEX);  
     }
     Serial.println();
     Serial.println("Text:");  
@@ -43,7 +43,7 @@ void loop(){
   }
   //String data = node.readData();
   //if(data != ""){
-  // Serial.println(data);
-  // }
+  //    Serial.println(data);
+  //}
   delay(500);
 }

@@ -29,28 +29,32 @@ void setup(void){
         delay(2000);
         Serial.println("REGION set fail");
     }
-    if(!node.setAppEUI(_APPEUI)){
+    while(!node.setAppEUI(_APPEUI)){
+        delay(2000);
         Serial.println("AppEUI set fail");
     }
-    if(!node.setAppKEY(_APPKEY)){
+    while(!node.setAppKEY(_APPKEY)){
+        delay(2000);
         Serial.println("AppKEY set fail");
     }
-    if(!node.setDevType(CLASS_C)){
+    while(!node.setDevType(CLASS_C)){
+        delay(2000);
         Serial.println("DevType set fail");
     }
 
     //EU868 DR0  - DR5
     //US915 DR5  - DR7
     //CN470 DR0  - DR5
-    if (!node.setDataRate(DR5)) {
-      Serial.println("DataRate set fail");
+    while (!node.setDataRate(DR5)) {
+        delay(2000);
+        Serial.println("DataRate set fail");
     }
 
     //EU868 DBM0  DBM2 DBM4 DBM6 DBM8 DBM10 DBM12 DBM14 DBM16
     //US915 DBM0  DBM2 DBM4 DBM6 DBM8 DBM10 DBM12 DBM14 DBM16 DBM18 DBM20 DBM22 DBM24 DBM26 DBM28
     //CN470 DBM0  DBM2 DBM4 DBM6 DBM8 DBM10 DBM12 DBM14 DBM16 DBM18 
-    if (!node.setEIRP(DBM6)) {
-      Serial.println("EIRP set fail");
+    if (!node.setEIRP(DBM16)) {
+        Serial.println("EIRP set fail");
     }
 
     //CN470
@@ -63,18 +67,19 @@ void setup(void){
         Serial.println("SubBand set fail");
     }*/
 
-    if(!node.enableADR(false)){
-       Serial.println("ADR set fail");
+    while(!node.enableADR(false)){
+        delay(2000);
+        Serial.println("ADR set fail");
     }
-    if(!node.setPacketType(UNCONFIRMED_PACKET)){
+    while(!node.setPacketType(UNCONFIRMED_PACKET)){
        Serial.println("Packet type set fail");
     }
     if(node.getDevEUI(_DEVEUI)){
-      Serial.print("deveui:");
-      for(uint8_t i=0;i<8;i++){
-        Serial.print(_DEVEUI[i],HEX);
-      }
-      Serial.println();
+        Serial.print("deveui:");
+        for(uint8_t i=0;i<8;i++){
+          Serial.print(_DEVEUI[i],HEX);
+        }
+        Serial.println();
     }
     
     Serial.print("DATARATE: ");

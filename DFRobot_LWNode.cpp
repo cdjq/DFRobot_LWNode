@@ -309,10 +309,9 @@ bool LWNode::setNwkSKey(const uint8_t * nwkSKey){
   String ack;
   ack = sendATCmd(AT);
   if (ack == "+NWKSKEY=OK\r\n"){
-   return true;
-   
+    return true;
   }else{
-   return false;
+    return false;
   }
 }
 
@@ -324,9 +323,9 @@ bool LWNode::setPacketType(ePacketType_t type){
     ack = sendATCmd("AT+UPLINKTYPE=CONFIRMED");
   }
   if(ack == "+UPLINKTYPE=OK\r\n"){
-   return true;
+    return true;
   }else{
-   return false;
+    return false;
   }
 }
 
@@ -335,9 +334,9 @@ bool LWNode::join(){
   String ack;
   ack = sendATCmd(AT);
   if(ack == "+JOIN=OK\r\n"){
-   return true;
+    return true;
   }else{
-   return false;
+    return false;
   }
 }
 bool LWNode::isJoined(){
@@ -345,9 +344,9 @@ bool LWNode::isJoined(){
   String ack;
   ack = sendATCmd(AT);
   if(ack == "+JOIN=1\r\n"){
-   return true;
+    return true;
   }else{
-   return false;
+    return false;
   }
 }
 
@@ -561,7 +560,7 @@ DFRobot_LWNode_UART::DFRobot_LWNode_UART(const uint8_t *appEui,const uint8_t *ap
   memcpy(_appeui,appEui,8);
   memcpy(_appKey,appKey,16);
   _dataRate = dataRate;
-  
+  joinType = 1;
   _classType = classType;
   _txPower = txPower;
   _adr = adr;
@@ -698,13 +697,14 @@ String DFRobot_LWNode_UART::readACK(){
 
 DFRobot_LWNode_IIC::DFRobot_LWNode_IIC( const uint8_t from ):LWNode(from) {
   joinType = 2;
+  _deviceAddr = 0x20;
 }
 
 DFRobot_LWNode_IIC::DFRobot_LWNode_IIC(const uint8_t *appEui,const uint8_t *appKey, eDeviceClass_t classType, eDataRate_t dataRate, etxPower_t txPower,bool adr, uint8_t subBand) {
   memcpy(_appeui,appEui,8);
   memcpy(_appKey,appKey,16);
   _dataRate = dataRate;
-
+  joinType = 1;
   _classType = classType;
   _txPower = txPower;
   _adr = adr;
@@ -741,6 +741,10 @@ void DFRobot_LWNode_IIC::Sleep(uint32_t ms){
     if(_rxCB != NULL){
       _rxCB((void *)str.c_str(), (unsigned int)str.length());
     }
+    if(_rxCB3 != NULL){
+      if((str.c_str()[0] == _from) || (str.c_str()[0] == 0xFF))
+      _rxCB3(str.c_str()[1], &str.c_str()[2], (unsigned int)str.length()-2);
+    }
   }
 }
 
@@ -754,12 +758,13 @@ bool DFRobot_LWNode_IIC::begin(TwoWire *pWire,Stream *dbgs_){
   sendATCmd("AT+REBOOT\r\n");
 
   while(!atTest()){
-       timeout--;
-       if(timeout == 0) return false;
+    timeout--;
+    if(timeout == 0) return false;
   }
   sendATCmd("AT+RECV=1");
-  sendATCmd("AT+LORAMODE=LORAWAN");
+  
   if(joinType == 0){
+      sendATCmd("AT+LORAMODE=LORAWAN");
       ack = sendATCmd("AT+JOINTYPE=ABP");
       if(ack == "+JOINTYPE=OK\r\n"){
         setAppSKey(_appeSKey);
@@ -770,10 +775,13 @@ bool DFRobot_LWNode_IIC::begin(TwoWire *pWire,Stream *dbgs_){
       }else{
         return false;
       }
-  }else{
+  }else if(joinType == 1){
+      sendATCmd("AT+LORAMODE=LORAWAN");
       ack = sendATCmd("AT+JOINTYPE=OTAA");
       if(_appKey !=NULL)
       setAppKEY(_appKey);
+  }else{
+      sendATCmd("AT+LORAMODE=LORA\r\n");
   }
 }
 
@@ -797,7 +805,7 @@ String DFRobot_LWNode_IIC::readACK(){
   String ack;
   uint8_t dataLen = readReg(REG_READ_AT_LEN);
   uint8_t len = dataLen;
-  //Serial.print("dataLen:");
+  //Serial.print("ack dataLen:");
   //Serial.println(dataLen);
   if(len == 0){
     return "";
@@ -812,10 +820,10 @@ String DFRobot_LWNode_IIC::readACK(){
   for(uint8_t i =0;i<len;i++){
     ack += data[i];
   }
-  if(dbgs){
-    dbgs->write(ack.c_str(),ack.length());
-    dbgs->flush();
-  }
+  //if(dbgs){
+  //  dbgs->write(ack.c_str(),ack.length());
+  //  dbgs->flush();
+  //}
 
   return ack;
 }
@@ -855,9 +863,9 @@ size_t DFRobot_LWNode_IIC::readData(uint8_t *buf) {
 void DFRobot_LWNode_IIC::writeReg(uint8_t reg ,uint8_t * data,uint8_t len) {
   _pWire->beginTransmission(_deviceAddr);
   _pWire->write(reg);
+
   for(uint8_t i = 0 ; i < len ; i++){
     _pWire->write(data[i]);
-
   }
    if(dbgs){
       dbgs->flush();
@@ -881,14 +889,12 @@ uint8_t DFRobot_LWNode_IIC::readReg(uint16_t reg,uint8_t data[],uint8_t length)
 {
 
   _pWire->beginTransmission(_deviceAddr);
-    _pWire->write(reg);
+  _pWire->write(reg);
   _pWire->endTransmission();
-  
   _pWire->requestFrom(_deviceAddr,length);
-  for(uint8_t i = 0 ; i < length ;i++){
-     
-     data[i] = _pWire->read();
 
+  for(uint8_t i = 0 ; i < length ;i++){
+    data[i] = _pWire->read();
   }
 
   return 0;
