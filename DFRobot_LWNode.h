@@ -293,7 +293,9 @@ public:
    * @brief 获取当前的发射功率。
    * @return 设备当前的发射功率
    */
-  uint8_t getEIRP();
+  uint8_t getEIRP( void );
+  int16_t getRSSI( void );
+  int8_t getSNR( void );
   
   /**
    * @brief 执行 AT 测试命令。

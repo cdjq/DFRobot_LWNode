@@ -22,6 +22,11 @@ void rxCBFunc(uint8_t from, void *buffer, uint16_t size){
         Serial.print(p[i], HEX);
     }
     Serial.println();
+
+    int16_t rssi = node.getRSSI();
+    int8_t snr = node.getSNR();
+    Serial.print("rssi=");Serial.println(rssi);
+    Serial.print("snr=");Serial.println(snr);
 }
 
 void setup( void ){

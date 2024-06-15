@@ -36,6 +36,8 @@ setFreq	KEYWORD2
 setBW	KEYWORD2
 setSF	KEYWORD2
 join	KEYWORD2
+getRSSI	KEYWORD2
+getSNR	KEYWORD2
 
 #######################################
 # Instances (LITERAL1)

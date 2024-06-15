@@ -522,17 +522,38 @@ uint8_t LWNode::getDataRate(){
   dataRate = ack.toInt();
   return dataRate;
 }
-uint8_t LWNode::getEIRP(){
 
+uint8_t LWNode::getEIRP(){
   String AT = "AT+EIRP?";
   String ack;
   uint8_t eirp = 0;
   ack = sendATCmd(AT).substring(6, 7);
-  
 
   eirp = ack.toInt();
   return eirp;
 }
+
+int16_t LWNode::getRSSI(){
+  String AT = "AT+RSSI?";
+  String ack;
+  int16_t rssi = 0;
+  ack = sendATCmd(AT);
+  ack = ack.substring(6, ack.length()-2);
+
+  rssi = ack.toInt();
+  return rssi;
+}
+
+int8_t LWNode::getSNR(){
+  String AT = "AT+SNR?";
+  String ack;
+  int8_t snr = 0;
+  ack = sendATCmd(AT);
+  ack = ack.substring(5, ack.length()-2);
+  snr = ack.toInt();
+  return snr;
+}
+
 
 String LWNode::sendATCmd(String cmd){
    String ack;
