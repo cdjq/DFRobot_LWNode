@@ -680,15 +680,8 @@ String DFRobot_LWNode_UART::readData(){
 
 size_t DFRobot_LWNode_UART::readData(uint8_t *buf){
   String str  = readACK();
-  if(str == "") return 0;
-  int  len ,index,j;
-  len = str.length();
-  index = findNthOccurrence(str,':',6);
-  for (int i = index; i < len; i+=2) {
-    String byteString = str.substring(i, i+2);
-    buf[(i-index)/2] = (uint8_t) strtol(byteString.c_str(), NULL, 16);
-  }
-  return (len-index)/2;
+  memcpy(buf, str.c_str(), str.length());
+  return str.length();
 }
 
 String DFRobot_LWNode_UART::readACK(){
