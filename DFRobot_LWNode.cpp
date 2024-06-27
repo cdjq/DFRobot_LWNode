@@ -201,8 +201,9 @@ void LWNode::setRxCB(rxCB3 *callback){
   _rxCB3 = callback;
 }
 
-bool LWNode::setAppEUI(const uint8_t *appeui){
-  String AT = "AT+JOINEUI="+uint8ArrayToHexString(appeui,8);
+bool LWNode::setAppEUI(const char *appeui){
+  String AT = String("AT+JOINEUI=") + appeui;
+  AT.toUpperCase();
   String ack;
   ack = sendATCmd(AT);
   if(ack == "+JOINEUI=OK\r\n"){
@@ -211,10 +212,11 @@ bool LWNode::setAppEUI(const uint8_t *appeui){
    return false;
   }
 }
-bool LWNode::setAppKEY(const uint8_t *appkey){
+bool LWNode::setAppKEY(const char *appkey){
 
-  String AT = "AT+APPKEY="+uint8ArrayToHexString(appkey,16);
+  String AT = String("AT+APPKEY=") + appkey;
   String ack;
+  AT.toUpperCase();
   ack = sendATCmd(AT);
   if (ack == "+APPKEY=OK\r\n"){
     return true;
@@ -284,7 +286,7 @@ bool LWNode::enableADR(bool adr){
 }
 
 bool LWNode::setDevAddr(const uint32_t devAddr){
-  String AT = "AT+DEVADDR="+String(devAddr,HEX);
+  String AT = String("AT+DEVADDR=")+String(devAddr,HEX);
   String ack;
   ack = sendATCmd(AT);
   if(ack == "+DEVADDR=OK\r\n"){
@@ -293,8 +295,10 @@ bool LWNode::setDevAddr(const uint32_t devAddr){
    return false;
   }
 }
-bool LWNode::setAppSKey(const uint8_t * appSKey){
-  String AT = "AT+APPSKEY="+uint8ArrayToHexString(appSKey,16);
+
+bool LWNode::setAppSKey(const char * appSKey){
+  String AT = String("AT+APPSKEY=")+ appSKey;
+  AT.toUpperCase();
   String ack;
   ack = sendATCmd(AT);
   if (ack == "+APPSKEY=OK\r\n"){
@@ -304,8 +308,10 @@ bool LWNode::setAppSKey(const uint8_t * appSKey){
    return false;
   }
 }
-bool LWNode::setNwkSKey(const uint8_t * nwkSKey){
-  String AT = "AT+NWKSKEY="+uint8ArrayToHexString(nwkSKey,16);
+
+bool LWNode::setNwkSKey(const char * nwkSKey){
+  String AT = String("AT+NWKSKEY=")+ nwkSKey;
+  AT.toUpperCase();
   String ack;
   ack = sendATCmd(AT);
   if (ack == "+NWKSKEY=OK\r\n"){
@@ -576,10 +582,12 @@ String LWNode::sendATCmdTest(char* cmd){
    return "OK\r\n";
 }
 
-DFRobot_LWNode_UART::DFRobot_LWNode_UART(const uint8_t *appEui,const uint8_t *appKey, eDeviceClass_t classType, eDataRate_t dataRate, etxPower_t txPower,bool adr, uint8_t subBand)
+DFRobot_LWNode_UART::DFRobot_LWNode_UART(const char *appEui,const char *appKey, eDeviceClass_t classType, eDataRate_t dataRate, etxPower_t txPower,bool adr, uint8_t subBand)
 {
-  memcpy(_appeui,appEui,8);
-  memcpy(_appKey,appKey,16);
+  memcpy(_appeui, appEui, 16);
+  memcpy(_appKey, appKey, 32);
+  _appeui[16] = 0;
+  _appKey[32] = 0;
   _dataRate = dataRate;
   joinType = 1;
   _classType = classType;
@@ -588,10 +596,12 @@ DFRobot_LWNode_UART::DFRobot_LWNode_UART(const uint8_t *appEui,const uint8_t *ap
   _subBand = subBand;
 }
 
-DFRobot_LWNode_UART::DFRobot_LWNode_UART(const uint32_t devAddr ,const uint8_t *nwkSKey,const uint8_t *appSKey, eDeviceClass_t classType, eDataRate_t dataRate,etxPower_t txPower,bool adr , uint8_t subBand){
-  
-  memcpy(_appeSKey,appSKey,16);
-  memcpy(_nwkSKey,nwkSKey,16);
+DFRobot_LWNode_UART::DFRobot_LWNode_UART(const uint32_t devAddr ,const char *nwkSKey,const char *appSKey, eDeviceClass_t classType, eDataRate_t dataRate,etxPower_t txPower,bool adr , uint8_t subBand){
+  memcpy(_appeSKey,appSKey,32);
+  memcpy(_nwkSKey,nwkSKey,32);
+  _appeSKey[32] = 0;
+  _nwkSKey[32] = 0;
+
   _devAddr = devAddr;
   joinType = 0;
   _dataRate = dataRate;
@@ -714,9 +724,11 @@ DFRobot_LWNode_IIC::DFRobot_LWNode_IIC( const uint8_t from ):LWNode(from) {
   _deviceAddr = 0x20;
 }
 
-DFRobot_LWNode_IIC::DFRobot_LWNode_IIC(const uint8_t *appEui,const uint8_t *appKey, eDeviceClass_t classType, eDataRate_t dataRate, etxPower_t txPower,bool adr, uint8_t subBand) {
-  memcpy(_appeui,appEui,8);
-  memcpy(_appKey,appKey,16);
+DFRobot_LWNode_IIC::DFRobot_LWNode_IIC(const char *appEui,const char *appKey, eDeviceClass_t classType, eDataRate_t dataRate, etxPower_t txPower,bool adr, uint8_t subBand) {
+  memcpy(_appeui,appEui,16);
+  memcpy(_appKey,appKey,32);
+  _appeui[16] = 0;
+  _appKey[32] = 0;
   _dataRate = dataRate;
   joinType = 1;
   _classType = classType;
@@ -727,9 +739,11 @@ DFRobot_LWNode_IIC::DFRobot_LWNode_IIC(const uint8_t *appEui,const uint8_t *appK
   _deviceAddr = 0x20;
 }
 
-DFRobot_LWNode_IIC::DFRobot_LWNode_IIC(const uint32_t devAddr ,const uint8_t *nwkSKey,const uint8_t *appSKey, eDeviceClass_t classType, eDataRate_t dataRate,etxPower_t txPower,bool adr , uint8_t subBand) {
-  memcpy(_appeSKey,appSKey,16);
-  memcpy(_nwkSKey,nwkSKey,16);
+DFRobot_LWNode_IIC::DFRobot_LWNode_IIC(const uint32_t devAddr ,const char *nwkSKey,const char *appSKey, eDeviceClass_t classType, eDataRate_t dataRate,etxPower_t txPower,bool adr , uint8_t subBand) {
+  memcpy(_appeSKey,appSKey,32);
+  memcpy(_nwkSKey,nwkSKey,32);
+  _appeSKey[32] = 0;
+  _nwkSKey[32] = 0;
   _devAddr = devAddr;
   joinType = 0;
   _dataRate = dataRate;

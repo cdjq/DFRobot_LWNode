@@ -137,13 +137,13 @@ public:
    * @param appeui 应用 EUI
    * @return 设置成功返回 true，否则返回 false
    */
-  bool setAppEUI(const uint8_t *appeui);
+  bool setAppEUI(const char *appeui);
   /**
    * @brief 设置应用密钥。
    * @param appkey 应用密钥
    * @return 设置成功返回 true，否则返回 false
    */
-  bool setAppKEY(const uint8_t *appkey);
+  bool setAppKEY(const char *appkey);
   
   /**
    * @brief 设置设备类型。
@@ -192,14 +192,14 @@ public:
    * @param appSKey 应用会话密钥
    * @return 设置成功返回 true，否则返回 false
    */
-  bool setAppSKey(const uint8_t *appSKey);
+  bool setAppSKey(const char *appSKey);
   
   /**
    * @brief 设置网络会话密钥。
    * @param nwkSKey 网络会话密钥
    * @return 设置成功返回 true，否则返回 false
    */
-  bool setNwkSKey(const uint8_t *nwkSKey);
+  bool setNwkSKey(const char *nwkSKey);
 
 
 
@@ -315,8 +315,8 @@ public:
    * @return 作为字符串的确认消息
    */
   virtual String readACK() = 0;
-    uint8_t _appeui[8],_appKey[16];
-    uint8_t _appeSKey[16],_nwkSKey[16];
+    char _appeui[17],_appKey[33];
+    char _appeSKey[33],_nwkSKey[33];
     bool _isOtaa = true;
     eDeviceClass_t _deviceClass;
     eDataRate_t _dataRate = DR4;
@@ -352,7 +352,7 @@ public:
    * @param adr 自适应数据速率（默认：true）
    * @param subBand 用于 CN470 和 US915 的子频段（默认：11）
    */
-  DFRobot_LWNode_UART(const uint8_t *appEui = nullptr, const uint8_t *appKey = nullptr,
+  DFRobot_LWNode_UART(const char *appEui = nullptr, const char *appKey = nullptr,
                       eDeviceClass_t classType = CLASS_C, eDataRate_t dataRate = DR5,
                       etxPower_t txPower = DBM8, bool adr = true, uint8_t subBand = 11);
 
@@ -367,7 +367,7 @@ public:
    * @param adr 自适应数据速率（默认：true）
    * @param subBand 用于 CN470 和 US915 的子频段（默认：11）
    */
-  DFRobot_LWNode_UART(const uint32_t devAddr, const uint8_t *nwkSKey, const uint8_t *appSKey,
+  DFRobot_LWNode_UART(const uint32_t devAddr, const char *nwkSKey, const char *appSKey,
                       eDeviceClass_t classType = CLASS_C, eDataRate_t dataRate = DR5,
                       etxPower_t txPower = DBM8, bool adr = true, uint8_t subBand = 11);
 
@@ -421,7 +421,7 @@ public:
    * @param adr 自适应数据速率（默认：true）
    * @param subBand 用于 CN470 和 US915 的子频段（默认：11）
    */
-  DFRobot_LWNode_IIC(const uint8_t *appEui = nullptr, const uint8_t *appKey = nullptr,
+  DFRobot_LWNode_IIC(const char *appEui = nullptr, const char *appKey = nullptr,
                      eDeviceClass_t classType = CLASS_C, eDataRate_t dataRate =DR5,
                      etxPower_t txPower = DBM8, bool adr = true, uint8_t subBand = 11);
 
@@ -436,7 +436,7 @@ public:
    * @param adr 自适应数据速率（默认：true）
    * @param subBand 用于 CN470 和 US915 的子频段（默认：11）
    */
-  DFRobot_LWNode_IIC(const uint32_t devAddr, const uint8_t *nwkSKey, const uint8_t *appSKey,
+  DFRobot_LWNode_IIC(const uint32_t devAddr, const char *nwkSKey, const char *appSKey,
                      eDeviceClass_t classType = CLASS_C, eDataRate_t dataRate = DR5,
                      etxPower_t txPower = DBM8, bool adr = true, uint8_t subBand = 11);
 
