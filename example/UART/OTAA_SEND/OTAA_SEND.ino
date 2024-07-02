@@ -12,6 +12,24 @@
 */
 
 #include "DFRobot_LWNode.h"
+
+#define REGION_EU868
+//#define REGION_US915
+//#define REGION_CN470
+
+#ifdef REGION_EU868
+	#define DATARATE  5
+	#define REGION EU868
+#elif defined(REGION_US915)
+	#define REGION    US915
+	#define DATARATE  3
+	#define SUBBAND   2
+#elif defined(REGION_CN470)
+	#define REGION    CN470
+	#define DATARATE  5
+	#define SUBBAND   11
+#endif
+
 const char _APPEUI[]={"DFDFDFDF00000000"} ;
 const char _APPKEY[]={"0102030405060708090A0B0C0D0E0F10"};
 uint8_t _DEVEUI[8]={0x0};
@@ -23,8 +41,8 @@ void setup(void){
     Serial1.begin(9600);
     delay(5000);
     node.begin(/*communication UART*/&Serial1,/*debug UART*/&Serial);
-    
-    while(!node.setRegion(EU868)){
+
+    while(!node.setRegion(REGION)){
         delay(2000);
         Serial.println("REGION set fail");
     }
@@ -42,9 +60,9 @@ void setup(void){
     }
 
     //EU868 DR0  - DR5
-    //US915 DR5  - DR7
+    //US915 DR0  - DR3
     //CN470 DR0  - DR5
-    while (!node.setDataRate(DR5)) {
+    while (!node.setDataRate(DATARATE)) {
         delay(2000);
         Serial.println("DataRate set fail");
     }
@@ -52,30 +70,31 @@ void setup(void){
     //EU868 DBM0  DBM2 DBM4 DBM6 DBM8 DBM10 DBM12 DBM14 DBM16
     //US915 DBM0  DBM2 DBM4 DBM6 DBM8 DBM10 DBM12 DBM14 DBM16 DBM18 DBM20 DBM22 DBM24 DBM26 DBM28
     //CN470 DBM0  DBM2 DBM4 DBM6 DBM8 DBM10 DBM12 DBM14 DBM16 DBM18 
-    if (!node.setEIRP(DBM16)) {
+    while (!node.setEIRP(DBM16)) {
+        delay(2000);
         Serial.println("EIRP set fail");
     }
 
-    //CN470
-    /*if(!node.setSubBand(11)){
-         Serial.println("SubBand set fail");
-    }*/
-
-    //US915
-    /*if(!node.setSubBand(2)){
+    #ifdef SUBBAND
+    while(!node.setSubBand(SUBBAND)){
+        delay(2000);
         Serial.println("SubBand set fail");
-    }*/
+    }
+    #endif
 
     while(!node.enableADR(false)){
         delay(2000);
         Serial.println("ADR set fail");
     }
+
     while(!node.setPacketType(UNCONFIRMED_PACKET)){
+        delay(2000);
         Serial.println("Packet type set fail");
     }
+
     if(node.getDevEUI(_DEVEUI)){
         Serial.print("deveui:");
-        for(uint8_t i=0;i<8;i++){
+        for(uint8_t i = 0;i < 8;i++){
           Serial.print(_DEVEUI[i],HEX);
         }
         Serial.println();
@@ -103,7 +122,6 @@ void setup(void){
 
     delay(2000);
 }
-
 
 void loop(){
     node.sendPacket("hello");

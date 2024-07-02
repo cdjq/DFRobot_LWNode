@@ -250,12 +250,7 @@ public:
   String sendATCmd(String cmd);
   String sendATCmdTest(char *cmd);
   //void readACKTest(char * buf);
-  /**
-   * @brief 设置 LoRaWAN 子频段。
-   * @param subBand 子频段值
-   * @return true 设置成功，false 设置失败
-   */
-  // bool setSubBand(uint8_t subBand = 11);
+
   
   /**
    * @brief 设置数据包类型。

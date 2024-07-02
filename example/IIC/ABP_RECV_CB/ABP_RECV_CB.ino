@@ -19,28 +19,40 @@ uint8_t buf[256];
 DFRobot_LWNode_IIC node(devAddr,NWKSKEY,APPSKEY);
 
 void LWRxCB(void *buf, uint16_t size){
-  uint8_t *data = (uint8_t *)buf;
-  Serial.print("\nsize = ");Serial.println(size);
-  for(uint8_t i=0;i<size;i++){
-    Serial.print(data[i],HEX);
-  }
-  Serial.println();
-  Serial.println("Text:");  
-  Serial.println((char *)buf);
+    uint8_t *data = (uint8_t *)buf;
+    Serial.print("\nsize = ");Serial.println(size);
+    for(uint8_t i=0;i<size;i++){
+        Serial.print(data[i],HEX);
+    }
+    Serial.println();
+    Serial.println("Text:");  
+    Serial.println((char *)buf);
 }
 
 void setup(void){
-  Serial.begin(115200);
-  delay(5000);
-  node.begin(/*communication IIC*/&Wire,/*debug UART*/&Serial);
-  Serial.println("join success");
-  node.setRxCB(LWRxCB);
-  //这个包会成功发送
-  node.sendPacket("hello");
+    Serial.begin(115200);
+    delay(5000);
+    node.begin(/*communication IIC*/&Wire,/*debug UART*/&Serial);
+    while(!node.setRegion(REGION)){
+        delay(2000);
+        Serial.println("REGION set fail");
+    }
+    while(!node.setDevType(CLASS_C)){
+        delay(2000);
+        Serial.println("DevType set fail");
+    }
+    #ifdef SUBBAND
+    while(!node.setSubBand(SUBBAND)){
+        delay(2000);
+        Serial.println("SubBand set fail");
+    }
+    #endif
+    //入网
+    Serial.println("join success");
+    node.setRxCB(LWRxCB);
 }
 
-
 void loop(){
-  //读取缓冲区是否接到数据
-  node.Sleep(5000);
+    //读取缓冲区是否接到数据
+    node.Sleep(5000);
 }

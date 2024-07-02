@@ -19,12 +19,24 @@ uint8_t buf[256];
 DFRobot_LWNode_UART node(devAddr,NWKSKEY,APPSKEY);
 
 void setup(void){
-  Serial.begin(115200);
-  Serial1.begin(9600);
-  node.begin(/*communication uart*/&Serial1,/*debug uart*/&Serial);
-
-  Serial.println("join success");
-  node.sendPacket("hello");
+    Serial.begin(115200);
+    Serial1.begin(9600);
+    node.begin(/*communication uart*/&Serial1,/*debug uart*/&Serial);
+    while(!node.setRegion(REGION)){
+        delay(2000);
+        Serial.println("REGION set fail");
+    }
+    while(!node.setDevType(CLASS_C)){
+        delay(2000);
+        Serial.println("DevType set fail");
+    }
+    #ifdef SUBBAND
+    while(!node.setSubBand(SUBBAND)){
+         Serial.println("SubBand set fail");
+    }
+    #endif
+    Serial.println("join success");
+    node.sendPacket("hello");
 }
 
 

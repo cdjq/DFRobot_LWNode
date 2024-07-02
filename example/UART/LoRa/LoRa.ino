@@ -12,6 +12,18 @@
 
 #include <DFRobot_LWNode.h>
 
+#define REGION_EU868
+//#define REGION_US915
+//#define REGION_CN470
+
+#ifdef REGION_EU868
+	#define FREQ  868100000
+#elif defined(REGION_US915)
+	#define REGION    914900000
+#elif defined(REGION_CN470)
+	#define REGION    470300000
+#endif
+
 DFRobot_LWNode_UART node(3);
 
 void rxCBFunc(uint8_t from, void *buffer, uint16_t size){
@@ -38,7 +50,7 @@ void setup( void ){
     delay(5000);
     node.begin(/*communication UART*/&Serial1,/*debug UART*/&Serial);
 
-    while(!node.setFreq(868100000)){
+    while(!node.setFreq(FREQ)){
         delay(2000);
         Serial.println("Failed to set Freq ");
     }

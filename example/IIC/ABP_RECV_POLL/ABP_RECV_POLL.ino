@@ -19,31 +19,45 @@ uint8_t buf[256];
 DFRobot_LWNode_IIC node(devAddr,NWKSKEY,APPSKEY);
 
 void setup(void){
-  Serial.begin(115200);
-  delay(5000);
-  node.begin(/*communication IIC*/&Wire,/*debug UART*/&Serial);
-  Serial.println("join success");
-  //这个包会成功发送
-  node.sendPacket("hello");
+    Serial.begin(115200);
+    delay(5000);
+    node.begin(/*communication IIC*/&Wire,/*debug UART*/&Serial);
+    while(!node.setRegion(REGION)){
+        delay(2000);
+        Serial.println("REGION set fail");
+    }
+    while(!node.setDevType(CLASS_C)){
+        delay(2000);
+        Serial.println("DevType set fail");
+    }
+    #ifdef SUBBAND
+    while(!node.setSubBand(SUBBAND)){
+        delay(2000);
+        Serial.println("SubBand set fail");
+    }
+    #endif
+    Serial.println("join success");
+    //这个包会成功发送
+    node.sendPacket("hello");
 }
 
 
 void loop(){
-  //读取缓冲区是否接到数据
-  uint8_t len = node.readData(buf);
-  
-  if(len > 0){
-    Serial.print("\nreceive ");Serial.print(len);Serial.println(" bytes  \nHEX:");  
-    for(uint8_t i = 0; i < len; i++){
-        Serial.print(buf[i],HEX);  
+    //读取缓冲区是否接到数据
+    uint8_t len = node.readData(buf);
+    
+    if(len > 0){
+        Serial.print("\nreceive ");Serial.print(len);Serial.println(" bytes  \nHEX:");  
+        for(uint8_t i = 0; i < len; i++){
+            Serial.print(buf[i],HEX);  
+        }
+        Serial.println();
+        Serial.println("Text:");
+        Serial.println((char *)buf);
     }
-    Serial.println();
-    Serial.println("Text:");  
-    Serial.println((char *)buf);
-  }
-  //String data = node.readData();
-  //if(data != ""){
-  //    Serial.println(data);
-  //}
-  delay(500);
+    //String data = node.readData();
+    //if(data != ""){
+    //    Serial.println(data);
+    //}
+    delay(500);
 }

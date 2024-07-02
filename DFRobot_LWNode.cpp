@@ -54,12 +54,15 @@ bool LWNode::setRegion(eRegion_t region){
   switch (region){
     case EU868 :
       ack = sendATCmd("AT+REGION=EU868");
+      _region = EU868;
     break;
     case US915 :
       ack = sendATCmd("AT+REGION=US915");
+      _region = US915;
     break;
     case CN470 :
       ack = sendATCmd("AT+REGION=CN470");
+      _region = CN470;
     break;
     default : 
       LDBG("unsupported region");
