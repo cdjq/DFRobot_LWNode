@@ -19,9 +19,9 @@
 #ifdef REGION_EU868
 	#define FREQ  868100000
 #elif defined(REGION_US915)
-	#define REGION    914900000
+	#define FREQ    914900000
 #elif defined(REGION_CN470)
-	#define REGION    470300000
+	#define FREQ    470300000
 #endif
 
 DFRobot_LWNode_UART node(3);
