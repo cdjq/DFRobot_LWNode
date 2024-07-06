@@ -24,7 +24,7 @@
 	#define FREQ    470300000
 #endif
 
-DFRobot_LWNode_UART node(3);
+DFRobot_LWNode_UART node(4);
 
 void rxCBFunc(uint8_t from, void *buffer, uint16_t size){
     uint8_t *p = (uint8_t *)buffer;
@@ -79,10 +79,5 @@ void setup( void ){
 }
 
 void loop( void ){
-    node.sendPacket(4, "hello");
-    node.Sleep(5000);
-    
-    uint8_t buf[3]={1,2,3};
-    node.sendPacket(4, buf, 3);
     node.Sleep(5000);
 }
