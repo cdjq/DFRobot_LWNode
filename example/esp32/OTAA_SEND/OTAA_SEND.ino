@@ -38,7 +38,7 @@ DFRobot_LWNode_UART node(_APPEUI,_APPKEY);
 
 void setup(void){
     Serial.begin(115200);
-    Serial1.begin(9600);
+    Serial1.begin(9600, SERIAL_8N1, /*rx =*/D2, /*tx =*/D3);
     delay(5000);
     node.begin(/*communication UART*/&Serial1,/*debug UART*/&Serial);
 

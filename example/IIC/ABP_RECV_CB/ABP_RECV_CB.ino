@@ -21,15 +21,15 @@ uint8_t buf[256];
 //#define REGION_CN470
 
 #ifdef REGION_EU868
-	#define DATARATE  5
+	#define DATARATE  DR5
 	#define REGION EU868
 #elif defined(REGION_US915)
 	#define REGION    US915
-	#define DATARATE  3
+	#define DATARATE  DR3
 	#define SUBBAND   2
 #elif defined(REGION_CN470)
 	#define REGION    CN470
-	#define DATARATE  5
+	#define DATARATE  DR5
 	#define SUBBAND   11
 #endif
 DFRobot_LWNode_IIC node(devAddr,NWKSKEY,APPSKEY);

@@ -13,6 +13,8 @@
 
 #include "DFRobot_LWNode.h"
 
+#include <SoftwareSerial.h>
+
 #define REGION_EU868
 //#define REGION_US915
 //#define REGION_CN470
@@ -30,6 +32,7 @@
 	#define SUBBAND   11
 #endif
 
+SoftwareSerial mySerial(2, 3); // RX, TX
 const char _APPEUI[]={"DFDFDFDF00000000"} ;
 const char _APPKEY[]={"0102030405060708090A0B0C0D0E0F10"};
 uint8_t _DEVEUI[8]={0x0};
@@ -38,9 +41,10 @@ DFRobot_LWNode_UART node(_APPEUI,_APPKEY);
 
 void setup(void){
     Serial.begin(115200);
-    Serial1.begin(9600);
+    //Serial1.begin(9600);
+    mySerial.begin(9600);
     delay(5000);
-    node.begin(/*communication UART*/&Serial1,/*debug UART*/&Serial);
+    node.begin(/*communication UART*/&mySerial,/*debug UART*/&Serial);
 
     while(!node.setRegion(REGION)){
         delay(2000);

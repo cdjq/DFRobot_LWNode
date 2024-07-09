@@ -193,10 +193,10 @@ To use this library, first download the library file, paste it into the \Arduino
 MCU                | Work Well    | Work Wrong   | Untested    | Remarks
 ------------------ | :----------: | :----------: | :---------: | -----
 Arduino Leonardo|      √       |              |             | 
-
-
-
-
+Arduino uno|      √       |              |             | 
+Arduino MEGA2560|      √       |              |             | 
+FireBeetle-ESP32|      √       |              |             | 
+Microbit|      √       |              |             | 
 ## History
 
 - 2020/07/02 - Version 1.0.0 released.

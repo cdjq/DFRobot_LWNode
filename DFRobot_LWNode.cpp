@@ -774,7 +774,7 @@ void DFRobot_LWNode_IIC::Sleep(uint32_t ms){
     }
     if(_rxCB3 != NULL){
       if((str.c_str()[0] == _from) || (str.c_str()[0] == 0xFF))
-      _rxCB3(str.c_str()[1], &str.c_str()[2], (unsigned int)str.length()-2);
+      _rxCB3(str.c_str()[1], (void *)&str.c_str()[2], (unsigned int)str.length()-2);
     }
   }
 }
@@ -814,6 +814,9 @@ bool DFRobot_LWNode_IIC::begin(TwoWire *pWire,Stream *dbgs_){
   }else{
       sendATCmd("AT+LORAMODE=LORA\r\n");
   }
+
+
+  return true;
 }
 
 void DFRobot_LWNode_IIC::sendData(uint8_t *data ,uint8_t len ){
@@ -878,7 +881,7 @@ String DFRobot_LWNode_IIC::readData(){
 size_t DFRobot_LWNode_IIC::readData(uint8_t *buf) {
     String str  = readACK();
     //if(str == "") return 0;
-    strcpy(buf, str.c_str());
+    strcpy((char*)buf, str.c_str());
     return str.length();
     //int  len ,index,j;
     //len = str.length();
