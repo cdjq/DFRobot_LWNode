@@ -348,6 +348,18 @@ bool LWNode::join(){
     return false;
   }
 }
+
+bool LWNode::start(){
+  String AT = "AT+JOIN=1";
+  String ack;
+  ack = sendATCmd(AT);
+  if(ack == "+JOIN=OK\r\n"){
+    return true;
+  }else{
+    return false;
+  }
+}
+
 bool LWNode::isJoined(){
   String AT = "AT+JOIN?";
   String ack;
@@ -359,16 +371,27 @@ bool LWNode::isJoined(){
   }
 }
 
+bool LWNode::setLoRaAddr(uint8_t addr){
+  String AT = "AT+LORAADDR=" + String(addr);
+  String ack;
+  ack = sendATCmd(AT);
+  if(ack == "+LORAADDR=OK\r\n"){
+    return true;
+  }else{
+    return false;
+  }
+}
+
 bool LWNode::sendPacket(double v){
-	char buf[20]={0};
-	sprintf(buf, "%.3lf", v);
-	return sendPacket(buf, strlen(buf));
+  char buf[20]={0};
+  sprintf(buf, "%.3lf", v);
+  return sendPacket(buf, strlen(buf));
 }
 
 bool LWNode::sendPacket(int32_t v){
-	char buf[20]={0};
-	itoa(v,buf,10);
-	return sendPacket(buf, strlen(buf));
+  char buf[20]={0};
+  itoa(v,buf,10);
+  return sendPacket(buf, strlen(buf));
 }
 
 bool LWNode::sendPacket(uint32_t v){
@@ -660,6 +683,7 @@ bool DFRobot_LWNode_UART::begin(Stream *s_, Stream *dbgs_){
         setAppKEY(_appKey);
     }else{
         sendATCmd("AT+LORAMODE=LORA\r\n");
+        setLoRaAddr(_from);
     }
     return true;
 }
@@ -782,16 +806,12 @@ void DFRobot_LWNode_IIC::Sleep(uint32_t ms){
 bool DFRobot_LWNode_IIC::begin(TwoWire *pWire,Stream *dbgs_){
   _pWire  = pWire;
   String ack;
-  uint8_t timeout = 100;
   dbgs = dbgs_;
   _pWire->begin();
   delay(100);
   sendATCmd("AT+REBOOT\r\n");
 
-  while(!atTest()){
-    timeout--;
-    if(timeout == 0) return false;
-  }
+  while(!atTest());
   sendATCmd("AT+RECV=1");
   
   if(joinType == 0){
@@ -813,9 +833,8 @@ bool DFRobot_LWNode_IIC::begin(TwoWire *pWire,Stream *dbgs_){
       setAppKEY(_appKey);
   }else{
       sendATCmd("AT+LORAMODE=LORA\r\n");
+      setLoRaAddr(_from);
   }
-
-
   return true;
 }
 

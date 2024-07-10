@@ -16,17 +16,18 @@
 //#define REGION_CN470
 
 #ifdef REGION_EU868
-	#define DATARATE  DR5
+	#define DATARATE  5
 	#define REGION EU868
 #elif defined(REGION_US915)
 	#define REGION    US915
-	#define DATARATE  DR3
+	#define DATARATE  3
 	#define SUBBAND   2
 #elif defined(REGION_CN470)
 	#define REGION    CN470
-	#define DATARATE  DR5
+	#define DATARATE  5
 	#define SUBBAND   11
 #endif
+
 const char _APPEUI[]={"DFDFDFDF00000000"} ;
 const char _APPKEY[]={"0102030405060708090A0B0C0D0E0F10"};
 uint8_t _DEVEUI[8]={0x0};

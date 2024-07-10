@@ -208,7 +208,8 @@ public:
    * @return true 已成功发起入网，false 未能成功发起入网
    */
   bool join();
-  
+  bool start();
+  bool setLoRaAddr(uint8_t addr);
   /**
    * @brief 查询设备是否已经入网。
    * @return true 已经入网，false 没有入网

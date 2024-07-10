@@ -1,6 +1,6 @@
 /*!
- *@file LoRa_UART.ino
- *@brief LoRa节点 设置节点地址为3，向地址为4的节点发射数据
+ *@file LoRa.ino
+ *@brief LoRa接收节点 设置节点地址为4
  *@details  
  *@copyright   Copyright (c) 2010 DFRobot Co.Ltd (http://www.dfrobot.com)
  *@license     The MIT license (MIT)
@@ -9,7 +9,6 @@
  *@date  2023-12-26
  *@https://github.com/DFRobot/DFRobot_LWNode
 */
-
 #include <DFRobot_LWNode.h>
 
 #define REGION_EU868
@@ -24,9 +23,9 @@
 	#define FREQ    470300000
 #endif
 
-DFRobot_LWNode_UART node(4);
+DFRobot_LWNode_IIC node(4);
 
-void rxCBFunc(uint8_t from, void *buffer, uint16_t size){
+void rxCBFunc(uint8_t from, void *buffer, uint16_t size) {
     uint8_t *p = (uint8_t *)buffer;
     Serial.print("recv from: ");
     Serial.println(from, HEX);
@@ -35,8 +34,6 @@ void rxCBFunc(uint8_t from, void *buffer, uint16_t size){
         Serial.print(p[i], HEX);
     }
     Serial.println();
-    Serial.println("Text:");
-    Serial.println((char *)buffer);
 
     int16_t rssi = node.getRSSI();
     int8_t snr = node.getSNR();
@@ -44,11 +41,10 @@ void rxCBFunc(uint8_t from, void *buffer, uint16_t size){
     Serial.print("snr=");Serial.println(snr);
 }
 
-void setup( void ){
+void setup( void ) {
     Serial.begin(115200);
-    Serial1.begin(9600);
     delay(5000);
-    node.begin(/*communication UART*/&Serial1,/*debug UART*/&Serial);
+    node.begin(/*communication IIC*/&Wire,/*debug UART*/&Serial);
 
     while(!node.setFreq(FREQ)){
         delay(2000);
@@ -56,25 +52,25 @@ void setup( void ){
     }
 
     while (!node.setEIRP(DBM16)) {
-      delay(2000);
-      Serial.println("Failed to set EIRP");
+        delay(2000);
+        Serial.println("Failed to set EIRP");
     }
 
     while (!node.setBW(125000)) {
-      delay(2000);
-      Serial.println("Failed to set BW");
+        delay(2000);
+        Serial.println("Failed to set BW");
     }
     
     while (!node.setSF(12)) {
-      delay(2000);
-      Serial.println("Failed to set SF");
+        delay(2000);
+        Serial.println("Failed to set SF");
     }
 
     node.setRxCB(rxCBFunc);
     
-    if (!node.join()) {
-      delay(2000);
-      Serial.println("Failed to Join");
+    if (!node.start()) {
+        delay(2000);
+        Serial.println("Failed to Start");
     }
 }
 
