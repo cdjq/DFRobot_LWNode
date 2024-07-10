@@ -1,6 +1,6 @@
 /*!
  *@file ABP_RECV_POLL.ino
- *@brief LoRaWan节点 ABP入网后,通过轮训方式从网关接收数据
+ *@brief LoRaWan节点 ABP入网后,通过轮询方式从网关接收数据
  *@details  
  *@copyright   Copyright (c) 2010 DFRobot Co.Ltd (http://www.dfrobot.com)
  *@license     The MIT license (MIT)
