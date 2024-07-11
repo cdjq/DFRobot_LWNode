@@ -63,8 +63,6 @@ void setup(void){
         Serial.println("SubBand set fail");
     }
     #endif
-    //入网
-    Serial.println("join success");
     node.setRxCB(LWRxCB);
 }
 

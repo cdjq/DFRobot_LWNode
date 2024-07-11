@@ -66,8 +66,6 @@ void setup(void){
     #endif
     node.setRxCB(uartRxCB);
 
-    Serial.println("join success");
-
     node.sendPacket("hello");
 }
 

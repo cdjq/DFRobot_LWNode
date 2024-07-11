@@ -35,6 +35,17 @@ uint8_t buf[256]={0x0};
 
 DFRobot_LWNode_IIC node(_APPEUI,_APPKEY);
 
+void LWRxCB(void *buf, uint16_t size){
+    uint8_t *data = (uint8_t *)buf;
+    Serial.print("\nsize = ");Serial.println(size);
+    for(uint8_t i=0;i<size;i++){
+        Serial.print(data[i],HEX);
+    }
+    Serial.println();
+    Serial.println("Text:");  
+    Serial.println((char *)buf);
+}
+
 void setup(void){
     Serial.begin(115200);
 
@@ -53,6 +64,8 @@ void setup(void){
         Serial.println("SubBand set fail");
     }
     #endif
+    node.setRxCB(LWRxCB);
+
     //入网
     if(node.join()){
        Serial.println("JOIN......");
