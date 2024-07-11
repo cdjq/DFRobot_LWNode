@@ -79,20 +79,5 @@ void setup(void){
 
 
 void loop(){
-  
-  //读取缓冲区是否接到数据
-  uint8_t len = node.readData(buf);
-
-  if(len > 0){
-    for(uint8_t i = 0;i<len;i++){
-      Serial.println(buf[i],HEX);  
-    }
-  }
-  //String data = node.readData();
-  //if(data != ""){
-  // Serial.println(data);
-  //}
-
-  delay(600);
-  
+  node.Sleep(10*1000);
 }
