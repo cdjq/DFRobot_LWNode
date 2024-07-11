@@ -7,34 +7,33 @@ LWNode *loranode = NULL;
 
 LWNode::LWNode(const uint8_t *appEui,const uint8_t *appKey, eDeviceClass_t classType, eDataRate_t dataRate, etxPower_t txPower,bool adr, uint8_t subBand){
 
-
 }
 
 LWNode::LWNode(const uint8_t devAddr){
-    this->_from = devAddr;
+  this->_from = devAddr;
 }
 
 int findNthOccurrence(String str, char character, int n) {
-    int index = -1;
-    for(int i = 0; i < n; ++i) {
-        index = str.indexOf(character, index + 1);
-        if (index == -1) {
-            break;
-        }
+  int index = -1;
+  for(int i = 0; i < n; ++i) {
+    index = str.indexOf(character, index + 1);
+    if (index == -1) {
+        break;
     }
-    return index+1;
+  }
+  return index+1;
 }
 
 String uint8ArrayToHexString(const uint8_t arr[], int length) {
-    String str = "";
-    for(int i = 0; i < length; i++) {
-        if (arr[i] < 16) {
-            str.concat("0");
-        }
-        str.concat(String(arr[i], HEX));
+  String str = "";
+  for(int i = 0; i < length; i++) {
+    if (arr[i] < 16) {
+      str.concat("0");
     }
-    str.toUpperCase();
-    return str;
+    str.concat(String(arr[i], HEX));
+  }
+  str.toUpperCase();
+  return str;
 }
 
 bool LWNode::atTest(){
@@ -66,7 +65,7 @@ bool LWNode::setRegion(eRegion_t region){
     break;
     default : 
       LDBG("unsupported region");
-   }
+  }
 
    LDBG(ack);
   if(ack == "+REGION=OK\r\n"){
@@ -77,45 +76,45 @@ bool LWNode::setRegion(eRegion_t region){
 }
 
 bool LWNode::setFreq(uint32_t freq){
-    String ack;
-    String cmd("AT+FREQS=");
-    cmd += String(freq);
-    ack = sendATCmd(cmd);
-    LDBG(ack);
-
-    if(ack == "+FREQS=OK\r\n"){
-        return true;
-    } else {
-        return false;
-    }
+  String ack;
+  String cmd("AT+FREQS=");
+  cmd += String(freq);
+  ack = sendATCmd(cmd);
+  LDBG(ack);
+  
+  if(ack == "+FREQS=OK\r\n"){
+    return true;
+  } else {
+    return false;
+  }
 }
 
 bool LWNode::setBW(uint32_t bw){
-    String ack;
-    String cmd("AT+BW=");
-    cmd += String(bw);
-    ack = sendATCmd(cmd);
-    LDBG(ack);
+  String ack;
+  String cmd("AT+BW=");
+  cmd += String(bw);
+  ack = sendATCmd(cmd);
+  LDBG(ack);
 
-    if(ack == "+BW=OK\r\n"){
-        return true;
-    } else {
-        return false;
-    }
+  if(ack == "+BW=OK\r\n"){
+    return true;
+  } else {
+    return false;
+  }
 }
 
 bool LWNode::setSF(uint8_t sf){
-    String ack;
-    String cmd("AT+SF=");
-    cmd += String(sf);
-    ack = sendATCmd(cmd);
-    LDBG(ack);
+  String ack;
+  String cmd("AT+SF=");
+  cmd += String(sf);
+  ack = sendATCmd(cmd);
+  LDBG(ack);
 
-    if(ack == "+SF=OK\r\n"){
-        return true;
-    } else {
-        return false;
-    }
+  if(ack == "+SF=OK\r\n"){
+    return true;
+  } else {
+    return false;
+  }
 }
 
 Stream *uarts;
@@ -232,9 +231,9 @@ bool LWNode::setAppEUI(const char *appeui){
   String ack;
   ack = sendATCmd(AT);
   if(ack == "+JOINEUI=OK\r\n"){
-   return true;
+    return true;
   }else{
-   return false;
+    return false;
   }
 }
 bool LWNode::setAppKEY(const char *appkey){
@@ -279,9 +278,9 @@ bool LWNode::setEIRP(uint8_t EIRP){
   String ack;
   ack = sendATCmd(AT);
   if(ack == "+EIRP=OK\r\n"){
-   return true;
+    return true;
   }else{
-   return false;
+    return false;
   }
 }
 
@@ -471,30 +470,30 @@ bool LWNode::sendPacket(String data){
 }
 
 bool LWNode::sendPacket(uint8_t to, void *buffer, uint8_t size){
-    String AT = "AT+SEND=";
-    String ack;
-    uint8_t *data = (uint8_t *)buffer;
-    char *output = (char*)malloc(size*2 + 2 + 4);
-    int i, len;
-    
-    sprintf(output, "%02X", to);
-    sprintf(output + 2, "%02X", _from);
+  String AT = "AT+SEND=";
+  String ack;
+  uint8_t *data = (uint8_t *)buffer;
+  char *output = (char*)malloc(size*2 + 2 + 4);
+  int i, len;
   
-    for (i = 0; i < size; i++) {
-        //Serial.println(data[i],HEX);
-        sprintf(output + 4 + i * 2, "%02X", data[i]);
-    }
-       
-    for(uint8_t i = 0;i<size*2 + 4;i++){
-        AT+=output[i];
-    }
-    ack = sendATCmd(AT);
-    free(output);
-    if(ack == "AT+SEND=OK\r\n"){
-        return true;
-    }else{
-        return false;
-    }
+  sprintf(output, "%02X", to);
+  sprintf(output + 2, "%02X", _from);
+
+  for (i = 0; i < size; i++) {
+    //Serial.println(data[i],HEX);
+    sprintf(output + 4 + i * 2, "%02X", data[i]);
+  }
+     
+  for(uint8_t i = 0;i<size*2 + 4;i++){
+    AT+=output[i];
+  }
+  ack = sendATCmd(AT);
+  free(output);
+  if(ack == "AT+SEND=OK\r\n"){
+    return true;
+  }else{
+    return false;
+  }
 }
 
 bool LWNode::sendPacket(uint8_t to, String data){
@@ -544,7 +543,6 @@ uint32_t LWNode::getNetID(){
   uint32_t netid = 0;
   
   ack = sendATCmd(AT).substring(7, 17);
-  
 
   netid = ack.toInt();
   return netid;
@@ -903,35 +901,35 @@ String DFRobot_LWNode_IIC::readACK(){
 }
 
 String DFRobot_LWNode_IIC::readData(){
-    String str  = readACK();
-    return str;
-    //if(str == "") return "";
-    //int  len ,index,j;
-    //len = str.length();
-    //index = findNthOccurrence(str,':',6);
-    //String msg ;
-    //for (int i = index; i < len; i+=2) {
-    //   String byteString = str.substring(i, i+2);
-    //   //buf[(i-index)/2] = (uint8_t) 
-    //   msg += (char)strtol(byteString.c_str(), NULL, 16);
-    // }
-    //return msg;
+  String str  = readACK();
+  return str;
+  //if(str == "") return "";
+  //int  len ,index,j;
+  //len = str.length();
+  //index = findNthOccurrence(str,':',6);
+  //String msg ;
+  //for (int i = index; i < len; i+=2) {
+  //  String byteString = str.substring(i, i+2);
+  //  //buf[(i-index)/2] = (uint8_t) 
+  //  msg += (char)strtol(byteString.c_str(), NULL, 16);
+  // }
+  //return msg;
 }
 
 size_t DFRobot_LWNode_IIC::readData(uint8_t *buf) {
-    String str  = readACK();
-    //if(str == "") return 0;
-    strcpy((char*)buf, str.c_str());
-    return str.length();
-    //int  len ,index,j;
-    //len = str.length();
-    //index = findNthOccurrence(str,':',6);
-    //for (int i = index; i < len; i+=2) {
-    //   String byteString = str.substring(i, i+2);
-    //   buf[(i-index)/2] = (uint8_t) strtol(byteString.c_str(), NULL, 16);
-    // }
-    //
-    //return (len-index)/2;
+  String str  = readACK();
+  //if(str == "") return 0;
+  strcpy((char*)buf, str.c_str());
+  return str.length();
+  //int  len ,index,j;
+  //len = str.length();
+  //index = findNthOccurrence(str,':',6);
+  //for (int i = index; i < len; i+=2) {
+  //   String byteString = str.substring(i, i+2);
+  //   buf[(i-index)/2] = (uint8_t) strtol(byteString.c_str(), NULL, 16);
+  // }
+  //
+  //return (len-index)/2;
 }
 
 void DFRobot_LWNode_IIC::writeReg(uint8_t reg ,uint8_t * data,uint8_t len) {
