@@ -238,7 +238,6 @@ bool LWNode::setAppEUI(const char *appeui){
   }
 }
 bool LWNode::setAppKEY(const char *appkey){
-
   String AT = String("AT+APPKEY=") + appkey;
   String ack;
   AT.toUpperCase();
@@ -849,33 +848,33 @@ bool DFRobot_LWNode_IIC::begin(TwoWire *pWire,Stream *dbgs_){
         return false;
       }
   }else if(joinType == 1){
-      sendATCmd("AT+LORAMODE=LORAWAN");
-      ack = sendATCmd("AT+JOINTYPE=OTAA");
-      if(_appKey !=NULL)
-      setAppKEY(_appKey);
+    sendATCmd("AT+LORAMODE=LORAWAN");
+    ack = sendATCmd("AT+JOINTYPE=OTAA");
+    if(_appKey !=NULL)
+    setAppKEY(_appKey);
   }else{
-      sendATCmd("AT+LORAMODE=LORA\r\n");
-      setLoRaAddr(_from);
+    sendATCmd("AT+LORAMODE=LORA\r\n");
+    setLoRaAddr(_from);
   }
   return true;
 }
 
 void DFRobot_LWNode_IIC::sendData(uint8_t *data ,uint8_t len ){
-   uint8_t dataLen = len;
-   uint8_t * dataP = data ;
+  uint8_t dataLen = len;
+  uint8_t * dataP = data ;
 
-   while(dataLen > 30){
-     writeReg(REG_WRITE_AT_LONG,data,30);
-     dataLen -=30;
-     data +=30;
+  while(dataLen > 30){
+    writeReg(REG_WRITE_AT_LONG,data,30);
+    dataLen -=30;
+    data +=30;
 
-     delay(100);
-   }
-   writeReg(REG_WRITE_AT,data,dataLen);
+    delay(100);
+  }
+  writeReg(REG_WRITE_AT,data,dataLen);
 }
 
 String DFRobot_LWNode_IIC::readACK(){
-  char data[256];
+  static char data[256];
   uint8_t * dataP = (uint8_t *)data ;
   String ack;
   uint8_t dataLen = readReg(REG_READ_AT_LEN);
