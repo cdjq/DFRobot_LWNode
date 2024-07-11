@@ -125,9 +125,9 @@ void setup(void){
 
 void loop(){
     node.sendPacket("hello");
-    delay(10*1000);
+    node.Sleep(10 * 1000);
 
     uint8_t buf[3]={1,2,3};
     node.sendPacket(buf,3);
-    delay(10*1000);
+    node.Sleep(10 * 1000);
 }
