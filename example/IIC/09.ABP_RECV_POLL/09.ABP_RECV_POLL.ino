@@ -53,9 +53,6 @@ void setup(void){
         Serial.println("SubBand set fail");
     }
     #endif
-    Serial.println("join success");
-    //这个包会成功发送
-    node.sendPacket("hello");
 }
 
 

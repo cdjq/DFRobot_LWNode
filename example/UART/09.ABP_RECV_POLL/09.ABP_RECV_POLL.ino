@@ -50,8 +50,6 @@ void setup(void){
          Serial.println("SubBand set fail");
     }
     #endif
-    Serial.println("join success");
-    node.sendPacket("hello");
 }
 
 

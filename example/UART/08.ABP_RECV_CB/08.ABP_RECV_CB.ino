@@ -65,8 +65,6 @@ void setup(void){
     }
     #endif
     node.setRxCB(uartRxCB);
-
-    node.sendPacket("hello");
 }
 
 

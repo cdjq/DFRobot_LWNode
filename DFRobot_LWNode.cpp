@@ -122,17 +122,24 @@ Stream *uarts;
 static uint8_t data[128];
 #if defined(HAVE_HWSERIAL0)
 void serialEvent(){
-  if(uarts == &Serial){
-  uint8_t i = 0;
-  if(_rxCB && IntEnable){
-     while(uarts->available()){
+  if(uarts == &Serial) {
+    uint8_t i = 0;
+    if((_rxCB || _rxCB3) && IntEnable){
+      while(uarts->available()){
         data[i] = uarts->read();
         i++;
-     }
-	 
-     data[i] =0;
-     _rxCB(data,i);
-  }
+        if(!uarts->available()) delay(5);
+      }
+      data[i] = 0;
+      if(_rxCB)
+        _rxCB(data,i);
+      else if(_rxCB3){
+        if(i<=2) return;
+        if((data[0] == 0xff) || (data[0] == loranode->_from)){
+          _rxCB3(data[1], &data[2],i-2);
+        }
+      }
+    }
   }
 }
 #endif
@@ -143,7 +150,7 @@ void serialEvent1(){
   // Serial.print("_rxCB3=");Serial.println((uint16_t)_rxCB3);
   // Serial.print("IntEnable=");Serial.println((uint16_t)IntEnable);
   // Serial.print("uarts=");Serial.println((uint16_t)uarts);
-  if(uarts == &Serial1){
+  if(uarts == &Serial1) {
     uint8_t i = 0;
     if((_rxCB || _rxCB3) && IntEnable){
       while(uarts->available()){
@@ -167,32 +174,47 @@ void serialEvent1(){
 
 #if defined(HAVE_HWSERIAL2)
 void serialEvent2(){
-  if(uarts == &Serial2){
-  uint8_t i = 0;
-  if(_rxCB && IntEnable){
-     while(uarts->available()){
+  if(uarts == &Serial2) {
+    uint8_t i = 0;
+    if((_rxCB || _rxCB3) && IntEnable){
+      while(uarts->available()){
         data[i] = uarts->read();
         i++;
-     }
-     data[i] =0;
-
-     _rxCB(data,i);
-  }
+        if(!uarts->available()) delay(5);
+      }
+      data[i] = 0;
+      if(_rxCB)
+        _rxCB(data,i);
+      else if(_rxCB3){
+        if(i<=2) return;
+        if((data[0] == 0xff) || (data[0] == loranode->_from)){
+          _rxCB3(data[1], &data[2],i-2);
+        }
+      }
+    }
   }
 }
 #endif
 #if defined(HAVE_HWSERIAL3)
 void serialEvent3(){
-  if(uarts == &Serial3){
-  uint8_t i = 0;
-  if(_rxCB && IntEnable){
-     while(uarts->available()){
+  if(uarts == &Serial3) {
+    uint8_t i = 0;
+    if((_rxCB || _rxCB3) && IntEnable){
+      while(uarts->available()){
         data[i] = uarts->read();
         i++;
-     }
-     data[i] =0;
-     _rxCB(data,i);
-  }
+        if(!uarts->available()) delay(5);
+      }
+      data[i] = 0;
+      if(_rxCB)
+        _rxCB(data,i);
+      else if(_rxCB3){
+        if(i<=2) return;
+        if((data[0] == 0xff) || (data[0] == loranode->_from)){
+          _rxCB3(data[1], &data[2],i-2);
+        }
+      }
+    }
   }
 }
 #endif
