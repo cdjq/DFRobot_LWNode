@@ -1,7 +1,6 @@
-
 /*!
  *@file OTAA_SEND.ino
- *@brief LoRaWan节点 OTAA入网并向网关发送数据
+ *@brief LoRaWan OTAA模式节点 入网并向网关发送数据
  *@details  
  *@copyright   Copyright (c) 2010 DFRobot Co.Ltd (http://www.dfrobot.com)
  *@license     The MIT license (MIT)

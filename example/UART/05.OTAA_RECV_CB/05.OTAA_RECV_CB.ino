@@ -1,6 +1,6 @@
 /*!
  *@file OTAA_RECV_CB.ino
- *@brief LoRaWan节点 OTAA 入网后以回调函数方式从网关接收数据
+ *@brief LoRaWan OTAA模式节点  入网后以回调函数方式从网关接收数据
  *@details  
  *@copyright   Copyright (c) 2010 DFRobot Co.Ltd (http://www.dfrobot.com)
  *@license     The MIT license (MIT)

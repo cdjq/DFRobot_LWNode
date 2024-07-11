@@ -1,7 +1,6 @@
-
 /*!
  *@file ABP_SEND.ino
- *@brief LoRaWan节点 ABP入网并向网关发送数据
+ *@brief LoRaWan ABP节点 向网关发送数据
  *@details  
  *@copyright   Copyright (c) 2010 DFRobot Co.Ltd (http://www.dfrobot.com)
  *@license     The MIT license (MIT)
@@ -98,12 +97,11 @@ void setup(void){
     Serial.println(node.getEIRP());
 }
 
-
 void loop(){
-  node.sendPacket("hello");
-  node.Sleep(10*1000);
+    node.sendPacket("hello");
+    node.Sleep(10*1000);
 
-  uint8_t buf[3]={1,2,3};
-  node.sendPacket(buf,3);
-  node.Sleep(10*1000);
+    uint8_t buf[3]={1,2,3};
+    node.sendPacket(buf,3);
+    node.Sleep(10*1000);
 }
