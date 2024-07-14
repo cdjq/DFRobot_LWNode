@@ -16,8 +16,8 @@
 #endif
 
 typedef void joinCallback(bool isOk, int16_t rssi, int8_t snr);
-typedef void rxCB(void *buffer, uint16_t size);
-typedef void rxCB3(uint8_t from, void *buffer, uint16_t size);
+typedef void rxCB(void *buffer, uint16_t size, int8_t rssi, int8_t snr);
+typedef void rxCB3(uint8_t from, void *buffer, uint16_t size, int8_t rssi, int8_t snr);
 typedef void buttonCallback(void);
 typedef void sendCallback(void);
 #define REG_WRITE_AT_LONG       0x39
@@ -376,7 +376,7 @@ public:
    */
   bool begin(Stream *s_, Stream *dbgs_ = &Serial);
   
-  void Sleep(uint32_t ms);
+  void sleep(uint32_t ms);
   /**
    * @brief 读取数据。
    * @return 作为字符串的数据消息
@@ -444,7 +444,7 @@ public:
    * @return true 初始化成功，false 初始化失败
    */
   bool begin(TwoWire *pWire = &Wire, Stream *dbgs_ = &Serial);
-  void Sleep(uint32_t ms);
+  void sleep(uint32_t ms);
   /**
    * @brief 发送数据。
    * @param data 指向要发送的数据的指针

@@ -36,5 +36,5 @@ void setup(void){
 
 
 void loop(){
-    delay(10*1000);
+    node.sleep(10*1000);
 }

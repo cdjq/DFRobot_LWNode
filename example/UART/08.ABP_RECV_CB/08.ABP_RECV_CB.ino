@@ -34,7 +34,7 @@ const char APPSKEY[]={"89888888888888888888888888888888"};
 uint32_t devAddr = 0xDF000011;
 uint8_t _DEVEUI[16]={0x0};
 
-void uartRxCB(void *buf, uint16_t size){
+void uartRxCB(void *buf, uint16_t size, int8_t rssi, int8_t snr){
   uint8_t *data = (uint8_t *)buf;
   Serial.print("\nsize = ");Serial.println(size);
   for(uint8_t i=0;i<size;i++){
@@ -43,6 +43,8 @@ void uartRxCB(void *buf, uint16_t size){
   Serial.println();
   Serial.println("Text:");  
   Serial.println((char *)buf);
+  Serial.print("rssi=");Serial.println(rssi);
+  Serial.print("snr=");Serial.println(snr);
 }
 
 DFRobot_LWNode_UART node(devAddr,NWKSKEY,APPSKEY);
@@ -70,5 +72,5 @@ void setup(void){
 
 void loop(){
   //读取缓冲区是否接到数据
-  node.Sleep(10 * 1000);
+  node.sleep(10 * 1000);
 }

@@ -73,5 +73,5 @@ void loop(){
     //if(data != ""){
     //    Serial.println(data);
     //}
-    delay(500);
+    node.sleep(500);
 }

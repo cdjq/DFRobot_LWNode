@@ -77,7 +77,6 @@ void setup(void){
     Serial.println("join success");
 }
 
-
 void loop(){
-  node.Sleep(10*1000);
+  node.sleep(10 * 1000);
 }

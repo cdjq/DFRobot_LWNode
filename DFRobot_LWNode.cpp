@@ -131,11 +131,11 @@ void serialEvent(){
       }
       data[i] = 0;
       if(_rxCB)
-        _rxCB(data,i);
+        _rxCB(data+2, i-2,  -((int8_t)data[0]), ((int8_t)data[1])-50);
       else if(_rxCB3){
         if(i<=2) return;
         if((data[0] == 0xff) || (data[0] == loranode->_from)){
-          _rxCB3(data[1], &data[2],i-2);
+          _rxCB3(data[1], &data[4], i-4, -((int8_t)data[2]), ((int8_t)data[3])-50);
         }
       }
     }
@@ -159,11 +159,11 @@ void serialEvent1(){
       }
       data[i] = 0;
       if(_rxCB)
-        _rxCB(data,i);
+        _rxCB(data+2, i-2,  -((int8_t)data[0]), ((int8_t)data[1])-50);
       else if(_rxCB3){
         if(i<=2) return;
         if((data[0] == 0xff) || (data[0] == loranode->_from)){
-          _rxCB3(data[1], &data[2],i-2);
+          _rxCB3(data[1], &data[4], i-4, -((int8_t)data[2]), ((int8_t)data[3])-50);
         }
       }
     }
@@ -183,11 +183,11 @@ void serialEvent2(){
       }
       data[i] = 0;
       if(_rxCB)
-        _rxCB(data,i);
+        _rxCB(data+2, i-2,  -((int8_t)data[0]), ((int8_t)data[1])-50);
       else if(_rxCB3){
         if(i<=2) return;
         if((data[0] == 0xff) || (data[0] == loranode->_from)){
-          _rxCB3(data[1], &data[2],i-2);
+          _rxCB3(data[1], &data[4], i-4, -((int8_t)data[2]), ((int8_t)data[3])-50);
         }
       }
     }
@@ -206,11 +206,11 @@ void serialEvent3(){
       }
       data[i] = 0;
       if(_rxCB)
-        _rxCB(data,i);
+        _rxCB(data+2, i-2,  -((int8_t)data[0]), ((int8_t)data[1])-50);
       else if(_rxCB3){
         if(i<=2) return;
         if((data[0] == 0xff) || (data[0] == loranode->_from)){
-          _rxCB3(data[1], &data[2],i-2);
+          _rxCB3(data[1], &data[4], i-4, -((int8_t)data[2]), ((int8_t)data[3])-50);
         }
       }
     }
@@ -660,7 +660,7 @@ DFRobot_LWNode_UART::DFRobot_LWNode_UART( const uint8_t from ):LWNode(from){
   joinType = 2;
 }
 
-void DFRobot_LWNode_UART::Sleep(uint32_t ms){
+void DFRobot_LWNode_UART::sleep(uint32_t ms){
     while(ms--){
       delay(1);
       if (serialEventRun) serialEventRun();
@@ -801,7 +801,7 @@ DFRobot_LWNode_IIC::DFRobot_LWNode_IIC(const uint32_t devAddr ,const char *nwkSK
   _deviceAddr = 0x20;
 }
 
-void DFRobot_LWNode_IIC::Sleep(uint32_t ms){
+void DFRobot_LWNode_IIC::sleep(uint32_t ms){
   unsigned long tick = millis();
   while(millis() - tick < ms){
     if((!_rxCB)  && (!_rxCB3)) {
@@ -813,11 +813,11 @@ void DFRobot_LWNode_IIC::Sleep(uint32_t ms){
     if(len == 0 ) continue;
 
     if(_rxCB != NULL){
-      _rxCB((void *)str.c_str(), (unsigned int)str.length());
+      _rxCB((void *)str.c_str()+2, (unsigned int)str.length()-2, -str.c_str()[0], str.c_str()[1]-50);
     }
     if(_rxCB3 != NULL){
       if((str.c_str()[0] == _from) || (str.c_str()[0] == 0xFF))
-      _rxCB3(str.c_str()[1], (void *)&str.c_str()[2], (unsigned int)str.length()-2);
+        _rxCB3(str.c_str()[1], (void *)&str.c_str()[4], (unsigned int)str.length()-4, -str.c_str()[2], str.c_str()[3]-50);
     }
   }
 }

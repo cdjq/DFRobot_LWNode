@@ -68,7 +68,7 @@ void setup(void){
     }
 
     //EU868 DBM0  DBM2 DBM4 DBM6 DBM8 DBM10 DBM12 DBM14 DBM16
-    //US915 DBM0  DBM2 DBM4 DBM6 DBM8 DBM10 DBM12 DBM14 DBM16 DBM18 DBM20 DBM22 DBM24 DBM26 DBM28
+    //US915 DBM0  DBM2 DBM4 DBM6 DBM8 DBM10 DBM12 DBM14 DBM16 DBM18 DBM20 DBM22
     //CN470 DBM0  DBM2 DBM4 DBM6 DBM8 DBM10 DBM12 DBM14 DBM16 DBM18 
     while (!node.setEIRP(DBM16)) {
         delay(2000);
@@ -125,9 +125,9 @@ void setup(void){
 
 void loop(){
     node.sendPacket("hello");
-    node.Sleep(10*1000);
+    node.sleep(10*1000);
 
     uint8_t buf[3]={1,2,3};
     node.sendPacket(buf,3);
-    node.Sleep(10*1000);
+    node.sleep(10*1000);
 }

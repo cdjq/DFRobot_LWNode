@@ -26,7 +26,7 @@
 
 DFRobot_LWNode_UART node(4);
 
-void rxCBFunc(uint8_t from, void *buffer, uint16_t size){
+void rxCBFunc(uint8_t from, void *buffer, uint16_t size, int8_t rssi, int8_t snr){
     uint8_t *p = (uint8_t *)buffer;
     Serial.print("recv from: ");
     Serial.println(from, HEX);
@@ -38,8 +38,6 @@ void rxCBFunc(uint8_t from, void *buffer, uint16_t size){
     Serial.println("Text:");
     Serial.println((char *)buffer);
 
-    int16_t rssi = node.getRSSI();
-    int8_t snr = node.getSNR();
     Serial.print("rssi=");Serial.println(rssi);
     Serial.print("snr=");Serial.println(snr);
 }
@@ -79,5 +77,5 @@ void setup( void ){
 }
 
 void loop( void ){
-    node.Sleep(5000);
+    node.sleep(5000);
 }

@@ -32,7 +32,7 @@ const char _APPEUI[]={"DFDFDFDF00000000"} ;
 const char _APPKEY[]={"0102030405060708090A0B0C0D0E0F10"};
 uint8_t _DEVEUI[8]={0x0};
 
-void uartRxCB(void *buffer, uint16_t size){
+void uartRxCB(void *buffer, uint16_t size, int8_t rssi, int8_t snr){
     uint8_t *data = (uint8_t *)buffer;
     Serial.print("\nsize = ");Serial.println(size);
     for(uint8_t i=0;i<size;i++){
@@ -41,6 +41,9 @@ void uartRxCB(void *buffer, uint16_t size){
     Serial.println();
     Serial.println("Text:");
     Serial.println((char *)buffer);
+
+    Serial.print("rssi=");Serial.println(rssi);
+    Serial.print("snr=");Serial.println(snr);
 }
 
 DFRobot_LWNode_UART node(_APPEUI,_APPKEY);
@@ -77,7 +80,7 @@ void setup(void){
     }
     
     //EU868 DBM0  DBM2 DBM4 DBM6 DBM8 DBM10 DBM12 DBM14 DBM16
-    //US915 DBM0  DBM2 DBM4 DBM6 DBM8 DBM10 DBM12 DBM14 DBM16 DBM18 DBM20 DBM22 DBM24 DBM26 DBM28
+    //US915 DBM0  DBM2 DBM4 DBM6 DBM8 DBM10 DBM12 DBM14 DBM16 DBM18 DBM20 DBM22
     //CN470 DBM0  DBM2 DBM4 DBM6 DBM8 DBM10 DBM12 DBM14 DBM16 DBM18 
     while (!node.setEIRP(DBM16)) {
         Serial.println("EIRP set fail");
@@ -118,5 +121,5 @@ void setup(void){
 
 
 void loop(){
-  node.Sleep(9000);
+  node.sleep(9000);
 }

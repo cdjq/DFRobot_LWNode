@@ -58,9 +58,9 @@ void setup( void ) {
 
 void loop( void ){
     node.sendPacket(4, "hello");
-    node.Sleep(5000);
+    node.sleep(5000);
     
     uint8_t buf[3]={1,2,3};
     node.sendPacket(4, buf, 3);
-    node.Sleep(5000);
+    node.sleep(5000);
 }

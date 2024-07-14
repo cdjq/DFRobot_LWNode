@@ -26,7 +26,7 @@ getDataRate	KEYWORD2
 setSubBand	KEYWORD2
 sendPacket	KEYWORD2
 setPacketType	KEYWORD2
-Sleep	KEYWORD2
+sleep	KEYWORD2
 isJoined	KEYWORD2
 readData	KEYWORD2
 getEIRP	KEYWORD2
