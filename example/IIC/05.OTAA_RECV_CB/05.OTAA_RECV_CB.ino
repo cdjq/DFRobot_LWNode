@@ -35,7 +35,7 @@ uint8_t buf[256]={0x0};
 
 DFRobot_LWNode_IIC node(_APPEUI,_APPKEY);
 
-void LWRxCB(void *buf, uint16_t size){
+void LWRxCB(void *buf, uint16_t size, int8_t rssi, int8_t snr){
     uint8_t *data = (uint8_t *)buf;
     Serial.print("\nsize = ");Serial.println(size);
     for(uint8_t i=0;i<size;i++){
@@ -44,6 +44,9 @@ void LWRxCB(void *buf, uint16_t size){
     Serial.println();
     Serial.println("Text:");  
     Serial.println((char *)buf);
+
+    Serial.print("rssi=");Serial.println(rssi);
+    Serial.print("snr=");Serial.println(snr);
 }
 
 void setup(void){
