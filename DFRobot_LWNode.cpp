@@ -130,10 +130,11 @@ void serialEvent(){
         if(!uarts->available()) delay(5);
       }
       data[i] = 0;
-      if(_rxCB)
+      if(_rxCB) {
+        if(i <= 2) return;
         _rxCB(data+2, i-2,  -((int8_t)data[0]), ((int8_t)data[1])-50);
-      else if(_rxCB3){
-        if(i<=2) return;
+      } else if (_rxCB3) {
+        if(i <= 4) return;
         if((data[0] == 0xff) || (data[0] == loranode->_from)){
           _rxCB3(data[1], &data[4], i-4, -((int8_t)data[2]), ((int8_t)data[3])-50);
         }
@@ -158,10 +159,11 @@ void serialEvent1(){
         if(!uarts->available()) delay(5);
       }
       data[i] = 0;
-      if(_rxCB)
+      if(_rxCB) {
+        if(i <= 2) return;
         _rxCB(data+2, i-2,  -((int8_t)data[0]), ((int8_t)data[1])-50);
-      else if(_rxCB3){
-        if(i<=2) return;
+      } else if (_rxCB3) {
+        if(i <= 4) return;
         if((data[0] == 0xff) || (data[0] == loranode->_from)){
           _rxCB3(data[1], &data[4], i-4, -((int8_t)data[2]), ((int8_t)data[3])-50);
         }
@@ -182,10 +184,11 @@ void serialEvent2(){
         if(!uarts->available()) delay(5);
       }
       data[i] = 0;
-      if(_rxCB)
+      if(_rxCB) {
+        if(i <= 2) return;
         _rxCB(data+2, i-2,  -((int8_t)data[0]), ((int8_t)data[1])-50);
-      else if(_rxCB3){
-        if(i<=2) return;
+      } else if(_rxCB3) {
+        if(i <= 4) return;
         if((data[0] == 0xff) || (data[0] == loranode->_from)){
           _rxCB3(data[1], &data[4], i-4, -((int8_t)data[2]), ((int8_t)data[3])-50);
         }
@@ -198,17 +201,18 @@ void serialEvent2(){
 void serialEvent3(){
   if(uarts == &Serial3) {
     uint8_t i = 0;
-    if((_rxCB || _rxCB3) && IntEnable){
+    if((_rxCB || _rxCB3) && IntEnable) {
       while(uarts->available()){
         data[i] = uarts->read();
         i++;
         if(!uarts->available()) delay(5);
       }
       data[i] = 0;
-      if(_rxCB)
+      if(_rxCB) {
+        if(i <= 2) return;
         _rxCB(data+2, i-2,  -((int8_t)data[0]), ((int8_t)data[1])-50);
-      else if(_rxCB3){
-        if(i<=2) return;
+      } else if(_rxCB3) {
+        if(i <= 4) return;
         if((data[0] == 0xff) || (data[0] == loranode->_from)){
           _rxCB3(data[1], &data[4], i-4, -((int8_t)data[2]), ((int8_t)data[3])-50);
         }
@@ -813,11 +817,13 @@ void DFRobot_LWNode_IIC::sleep(uint32_t ms){
     if(len == 0 ) continue;
 
     if(_rxCB != NULL){
-      _rxCB((void *)str.c_str()+2, (unsigned int)str.length()-2, -str.c_str()[0], str.c_str()[1]-50);
+      if(str.length() > 2)
+        _rxCB((void *)str.c_str()+2, (unsigned int)str.length()-2, -str.c_str()[0], str.c_str()[1]-50);
     }
     if(_rxCB3 != NULL){
-      if(((uint8_t)(str.c_str()[0]) == _from) || (((uint8_t)str.c_str()[0] == 0xFF)))
-        _rxCB3(str.c_str()[1], (void *)&str.c_str()[4], (unsigned int)str.length()-4, -str.c_str()[2], str.c_str()[3]-50);
+      if(str.length() > 4)
+        if(((uint8_t)(str.c_str()[0]) == _from) || (((uint8_t)str.c_str()[0] == 0xFF)))
+          _rxCB3(str.c_str()[1], (void *)&str.c_str()[4], (unsigned int)str.length()-4, -str.c_str()[2], str.c_str()[3]-50);
     }
   }
 }
