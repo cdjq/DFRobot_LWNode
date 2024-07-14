@@ -816,7 +816,7 @@ void DFRobot_LWNode_IIC::sleep(uint32_t ms){
       _rxCB((void *)str.c_str()+2, (unsigned int)str.length()-2, -str.c_str()[0], str.c_str()[1]-50);
     }
     if(_rxCB3 != NULL){
-      if((str.c_str()[0] == _from) || (str.c_str()[0] == 0xFF))
+      if(((uint8_t)(str.c_str()[0]) == _from) || (((uint8_t)str.c_str()[0] == 0xFF)))
         _rxCB3(str.c_str()[1], (void *)&str.c_str()[4], (unsigned int)str.length()-4, -str.c_str()[2], str.c_str()[3]-50);
     }
   }
