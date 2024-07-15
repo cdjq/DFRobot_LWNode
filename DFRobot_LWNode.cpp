@@ -725,7 +725,7 @@ void DFRobot_LWNode_UART::sendData(uint8_t *data ,uint8_t len ){
 String DFRobot_LWNode_UART::readData(){
     String str  = readACK();
     if(str == "") return "";
-    return str;
+    return str.substring(2,255);
     //int  len ,index,j;
     //len = str.length();
     //index = findNthOccurrence(str,':',6);
@@ -740,8 +740,8 @@ String DFRobot_LWNode_UART::readData(){
 
 size_t DFRobot_LWNode_UART::readData(uint8_t *buf){
   String str  = readACK();
-  memcpy(buf, str.c_str(), str.length());
-  return str.length();
+  memcpy(buf, str.c_str()+2, str.length()-2);
+  return str.length()-2;
 }
 
 String DFRobot_LWNode_UART::readACK(){
@@ -908,7 +908,7 @@ String DFRobot_LWNode_IIC::readACK(){
 
 String DFRobot_LWNode_IIC::readData(){
   String str  = readACK();
-  return str;
+  return str.substring(2,255);
   //if(str == "") return "";
   //int  len ,index,j;
   //len = str.length();
@@ -925,8 +925,8 @@ String DFRobot_LWNode_IIC::readData(){
 size_t DFRobot_LWNode_IIC::readData(uint8_t *buf) {
   String str  = readACK();
   //if(str == "") return 0;
-  strcpy((char*)buf, str.c_str());
-  return str.length();
+  strcpy((char*)buf+2, str.c_str()+2);
+  return str.length()-2;
   //int  len ,index,j;
   //len = str.length();
   //index = findNthOccurrence(str,':',6);
