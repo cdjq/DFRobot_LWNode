@@ -58,7 +58,7 @@ void loop(){
   uint8_t len = node.readData(buf);
   
   if(len > 0){
-    Serial.print("\nreceive ");Serial.print(len,HEX);Serial.println(" bytes  \nHEX:");  
+    Serial.print("\nreceive ");Serial.print(len);Serial.println(" bytes  \nHEX:");  
     for(uint8_t i = 0; i < len; i++){
       Serial.print(buf[i],HEX);
     }
