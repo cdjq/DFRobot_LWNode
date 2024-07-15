@@ -740,14 +740,15 @@ String DFRobot_LWNode_UART::readData(){
 
 size_t DFRobot_LWNode_UART::readData(uint8_t *buf){
   String str  = readACK();
-  memcpy(buf, str.c_str()+2, str.length()-2);
+  if((str == "") || (str.length()<=2)) return 0;
+  strcpy(buf, str.c_str()+2);
   return str.length()-2;
 }
 
 String DFRobot_LWNode_UART::readACK(){
   uint16_t timeout = 100;
   uint16_t i = 0;
-  String ack;
+  String ack("");
   while(timeout--){
     delay(1);
     while (s->available()) {
@@ -908,6 +909,7 @@ String DFRobot_LWNode_IIC::readACK(){
 
 String DFRobot_LWNode_IIC::readData(){
   String str  = readACK();
+  if((str == "") || (str.length()<=2)) return "";
   return str.substring(2,255);
   //if(str == "") return "";
   //int  len ,index,j;
@@ -924,7 +926,7 @@ String DFRobot_LWNode_IIC::readData(){
 
 size_t DFRobot_LWNode_IIC::readData(uint8_t *buf) {
   String str  = readACK();
-  //if(str == "") return 0;
+  if((str == "") || (str.length()<=2)) return 0;
   strcpy((char*)buf+2, str.c_str()+2);
   return str.length()-2;
   //int  len ,index,j;

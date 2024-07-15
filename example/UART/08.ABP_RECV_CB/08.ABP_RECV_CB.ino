@@ -37,6 +37,7 @@ uint8_t _DEVEUI[16]={0x0};
 void uartRxCB(void *buf, uint16_t size, int8_t rssi, int8_t snr){
   uint8_t *data = (uint8_t *)buf;
   Serial.print("\nsize = ");Serial.println(size);
+  Serial.println("HEX:");
   for(uint8_t i=0;i<size;i++){
     Serial.print(data[i],HEX);
   }

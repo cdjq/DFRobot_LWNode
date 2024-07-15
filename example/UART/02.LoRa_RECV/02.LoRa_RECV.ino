@@ -31,6 +31,7 @@ void rxCBFunc(uint8_t from, void *buffer, uint16_t size, int8_t rssi, int8_t snr
     Serial.print("recv from: ");
     Serial.println(from, HEX);
     Serial.print("recv data: ");
+    Serial.println("HEX:");
     for(uint8_t i = 0; i < size; i++){
         Serial.print(p[i], HEX);
     }
