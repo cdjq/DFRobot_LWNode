@@ -123,7 +123,7 @@ static uint8_t data[128];
 void serialEvent(){
   if(uarts == &Serial) {
     uint8_t i = 0;
-    if((_rxCB || _rxCB3) && IntEnable){
+    if((_rxCB || _rxCB3) && IntEnable){ 
       while(uarts->available()){
         data[i] = uarts->read();
         i++;
@@ -132,6 +132,11 @@ void serialEvent(){
       data[i] = 0;
       if(_rxCB) {
         if(i <= 2) return;
+        for(uint8_t j = 0 ;j<i;j++ ){
+
+         Serial.println(data[j]);
+        }
+        
         _rxCB(data+2, i-2,  -((int8_t)data[0]), ((int8_t)data[1])-50);
       } else if (_rxCB3) {
         if(i <= 4) return;
@@ -161,6 +166,8 @@ void serialEvent1(){
       data[i] = 0;
       if(_rxCB) {
         if(i <= 2) return;
+
+        
         _rxCB(data+2, i-2,  -((int8_t)data[0]), ((int8_t)data[1])-50);
       } else if (_rxCB3) {
         if(i <= 4) return;
@@ -741,7 +748,7 @@ String DFRobot_LWNode_UART::readData(){
 size_t DFRobot_LWNode_UART::readData(uint8_t *buf){
   String str  = readACK();
   if((str == "") || (str.length()<=2)) return 0;
-  strcpy(buf, str.c_str()+2);
+  strcpy((char*)buf, str.c_str()+2);
   return str.length()-2;
 }
 
@@ -927,7 +934,7 @@ String DFRobot_LWNode_IIC::readData(){
 size_t DFRobot_LWNode_IIC::readData(uint8_t *buf) {
   String str  = readACK();
   if((str == "") || (str.length()<=2)) return 0;
-  strcpy((char*)buf+2, str.c_str()+2);
+  strcpy((char*)buf, str.c_str()+2);
   return str.length()-2;
   //int  len ,index,j;
   //len = str.length();
