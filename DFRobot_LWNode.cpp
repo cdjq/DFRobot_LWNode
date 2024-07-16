@@ -699,13 +699,9 @@ void DFRobot_LWNode_UART::sleep(uint32_t ms){
         }
       }
     }
-    
 
 }
 
-      
-  
-    
 }
 
 bool DFRobot_LWNode_UART::begin(Stream *s_, Stream *dbgs_){
