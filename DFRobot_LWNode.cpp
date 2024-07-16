@@ -674,7 +674,36 @@ DFRobot_LWNode_UART::DFRobot_LWNode_UART( const uint8_t from ):LWNode(from){
 void DFRobot_LWNode_UART::sleep(uint32_t ms){
     while(ms--){
       delay(1);
-      if (serialEventRun) serialEventRun();
+      if (serialEventRun) {
+        serialEventRun();
+      }else{
+
+     
+     //没有定义serialEventRun都可以使用此逻辑，这里只测试了esp32
+    #if CONFIG_IDF_TARGET_ESP32 // ESP32/PICO-D4
+    uint8_t i = 0;
+    if((_rxCB || _rxCB3) && IntEnable) {
+      while(uarts->available()){
+        data[i] = uarts->read();
+        i++;
+        if(!uarts->available()) delay(5);
+      }
+      data[i] = 0;
+      if(_rxCB) {
+        if(i <= 2) return;
+        _rxCB(data+2, i-2,  -((int8_t)data[0]), ((int8_t)data[1])-50);
+      } else if(_rxCB3) {
+        if(i <= 4) return;
+        if((data[0] == 0xff) || (data[0] == loranode->_from)){
+          _rxCB3(data[1], &data[4], i-4, -((int8_t)data[2]), ((int8_t)data[3])-50);
+        }
+      }
+    }
+    #endif // ESP32/PICO-D4
+}
+
+      
+    
     }
 }
 
