@@ -20,8 +20,12 @@ uint8_t _DEVEUI[8]={0x0};
 
 DFRobot_LWNode_UART node(_APPEUI,_APPKEY);
 void setup(void){
-   Serial.begin(115200);
-   Serial1.begin(9600);
+    Serial.begin(115200);
+    #ifdef ESP32
+    Serial1.begin(9600, SERIAL_8N1, /*rx =*/D6, /*tx =*/D7);
+    #else
+    Serial1.begin(9600);
+    #endif
     node.begin(/*communication uart*/&Serial1,/*debug uart*/&Serial);
    
    if(node.getDevEUI(_DEVEUI)){

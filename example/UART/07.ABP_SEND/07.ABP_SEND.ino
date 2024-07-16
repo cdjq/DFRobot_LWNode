@@ -37,7 +37,11 @@ uint8_t _DEVEUI[16]={0x0};
 DFRobot_LWNode_UART node(devAddr,NWKSKEY,APPSKEY);
 void setup(void){
     Serial.begin(115200);
+    #ifdef ESP32
+    Serial1.begin(9600, SERIAL_8N1, /*rx =*/D6, /*tx =*/D7);
+    #else
     Serial1.begin(9600);
+    #endif
     node.begin(/*communication uart*/&Serial1,/*debug uart*/&Serial);
     //node.begin(/*communication uart*/Serial, NULL);//Uno
     while(!node.setRegion(REGION)){

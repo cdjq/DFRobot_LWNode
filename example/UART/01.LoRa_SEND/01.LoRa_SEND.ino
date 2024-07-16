@@ -28,7 +28,11 @@ DFRobot_LWNode_UART node(3);
 
 void setup( void ){
     Serial.begin(115200);
+    #ifdef ESP32
+    Serial1.begin(9600, SERIAL_8N1, /*rx =*/D6, /*tx =*/D7);
+    #else
     Serial1.begin(9600);
+    #endif
     delay(5000);
     node.begin(/*communication UART*/&Serial1,/*debug UART*/&Serial);
 
