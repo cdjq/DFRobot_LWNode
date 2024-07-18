@@ -118,7 +118,7 @@ bool LWNode::setSF(uint8_t sf){
 }
 
 Stream *uarts;
-static uint8_t data[128];
+static uint8_t data[256];
 #if defined(HAVE_HWSERIAL0)
 void serialEvent(){
   if(uarts == &Serial) {
@@ -672,36 +672,61 @@ DFRobot_LWNode_UART::DFRobot_LWNode_UART( const uint8_t from ):LWNode(from){
 }
 
 void DFRobot_LWNode_UART::sleep(uint32_t ms){
+  uint32_t stamp  = millis();
+  uint8_t *p = data;
+  uint8_t total, left;
+  while((millis()-stamp) < ms){
+    delay(1);
+    //没有定义serialEventRun都可以使用此逻辑，这里只测试了esp32
 
-
-
-    uint32_t stamp  = millis();
-    while((millis()-stamp) < ms){
-      delay(1);
-     //没有定义serialEventRun都可以使用此逻辑，这里只测试了esp32
-
-    uint8_t i = 0;
+    total = 0;
     if(uarts  == NULL) return;
     if((_rxCB || _rxCB3) && IntEnable) {
       while(uarts->available()){
-        data[i] = uarts->read();
-        i++;
+        data[total] = uarts->read();
+        total++;
         if(!uarts->available()) delay(5);
       }
-      data[i] = 0;
+      p = data;
+      data[total] = 0;
+      left = total;
       if(_rxCB) {
-        if(i <= 2) return;
-        _rxCB(data+2, i-2,  -((int8_t)data[0]), ((int8_t)data[1])-50);
+        while(left){
+          if(memcmp("+RECV=", p, 6) != 0) {total=left = 0; continue;};
+          p += 6;
+          left -= 6;
+          uint8_t len = p[2];
+          char *buf = malloc(len+1);
+          memcpy(buf,p+3,len);
+          buf[len]=0;
+          if(len)
+            _rxCB(buf, len,  -((int8_t)p[0]), ((int8_t)p[1])-50);
+          p += len+1+2;
+          left -= len+1+2;
+          free(buf);
+        }
       } else if(_rxCB3) {
-        if(i <= 4) return;
-        if((data[0] == 0xff) || (data[0] == loranode->_from)){
-          _rxCB3(data[1], &data[4], i-4, -((int8_t)data[2]), ((int8_t)data[3])-50);
+        while(left){
+          if(memcmp("+RECV=", p, 6) != 0) {total= left = 0; Serial.println("continue2"); continue;};
+          p += 6;
+          left -= 6;
+          uint8_t len = p[4];
+          Serial.print("len1 = ");Serial.println(len);
+          if(len){
+            if((p[0] == 0xff) || (p[0] == loranode->_from)){
+              char *buf = malloc(len+1);
+              memcpy(buf,p+5,len);
+              buf[len]=0;
+              _rxCB3(p[1], buf, len, -((int8_t)p[2]), ((int8_t)p[3])-50);
+              free(buf);
+            }
+          }
+          p += len+1+4;
+          left -= len+1+4;
         }
       }
     }
-
-}
-
+  }
 }
 
 bool DFRobot_LWNode_UART::begin(Stream *s_, Stream *dbgs_){
@@ -840,24 +865,56 @@ DFRobot_LWNode_IIC::DFRobot_LWNode_IIC(const uint32_t devAddr ,const char *nwkSK
 }
 
 void DFRobot_LWNode_IIC::sleep(uint32_t ms){
+  uint8_t *p;
+  uint16_t total, left;
   unsigned long tick = millis();
   while(millis() - tick < ms){
     if((!_rxCB)  && (!_rxCB3)) {
-      delay(ms);
+      delay(ms>100?100:ms);
       continue;
     }
     String str  = readACK();
-    uint16_t len = str.length();
-    if(len == 0 ) continue;
+    uint16_t total = str.length();
+    if(total == 0) continue;
+    p = str.c_str();
+    left = total;
 
     if(_rxCB != NULL){
-      if(str.length() > 2)
-        _rxCB((void *)str.c_str()+2, (unsigned int)str.length()-2, -str.c_str()[0], str.c_str()[1]-50);
+      while(left){
+        if(memcmp("+RECV=", p, 6) != 0) {total=left = 0; continue;};
+        p += 6;
+        left -= 6;
+        uint8_t len = p[2];
+        if(len){
+          char *buf = malloc(len+1);
+          memcpy(buf,p+3,len);
+          buf[len]=0;
+          _rxCB((void *)buf, len, -p[0], p[1]-50);
+          p += len+1+2;
+          left -= len+1+2;
+          free(buf);
+        }
+      }
     }
     if(_rxCB3 != NULL){
-      if(str.length() > 4)
-        if(((uint8_t)(str.c_str()[0]) == _from) || (((uint8_t)str.c_str()[0] == 0xFF)))
-          _rxCB3(str.c_str()[1], (void *)&str.c_str()[4], (unsigned int)str.length()-4, -str.c_str()[2], str.c_str()[3]-50);
+      while(left){
+        if(memcmp("+RECV=", p, 6) != 0) {total= left = 0; Serial.println("continue2"); continue;};
+        p += 6;
+        left -= 6;
+        uint8_t len = p[4];
+        Serial.print("len1 = ");Serial.println(len);
+        if(len){
+          if((p[0] == 0xff) || (p[0] == loranode->_from)){
+            char *buf = malloc(len+1);
+            memcpy(buf,p+5,len);
+            buf[len]=0;
+            _rxCB3(p[1], buf, len, -p[2], p[3]-50);
+            free(buf);
+          }
+        }
+        p += len+1+4;
+        left -= len+1+4;
+      }
     }
   }
 }
@@ -912,7 +969,7 @@ void DFRobot_LWNode_IIC::sendData(uint8_t *data ,uint8_t len ){
 }
 
 String DFRobot_LWNode_IIC::readACK(){
-  static char data[256];
+  //static char data[256];
   uint8_t * dataP = (uint8_t *)data ;
   String ack;
   uint8_t dataLen = readReg(REG_READ_AT_LEN);
