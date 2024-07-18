@@ -87,8 +87,9 @@ void setup(void){
         Serial.println("ADR set fail");
     }
 
+    String deveui = node.getDevEUI();
     Serial.print("DEVEUI: ");
-    Serial.println(node.getDevEUI());
+    Serial.println(deveui);
 
     Serial.print("DATARATE: ");
     Serial.println(node.getDataRate());

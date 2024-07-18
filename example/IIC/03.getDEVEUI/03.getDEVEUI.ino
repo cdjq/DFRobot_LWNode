@@ -27,6 +27,7 @@ void setup(void){
 
 void loop(){
   Serial.print("DEVEUI: ");
-  Serial.println(node.getDevEUI());
+  String deveui = node.getDevEUI();
+  Serial.println(deveui);
   node.sleep(10*1000);
 }

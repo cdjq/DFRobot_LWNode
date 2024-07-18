@@ -104,8 +104,9 @@ void setup(void){
         Serial.println("ADR set fail");
     }
 
+    String deveui = node.getDevEUI();
     Serial.print("DEVEUI: ");
-    Serial.println(node.getDevEUI());
+    Serial.println(deveui);
     
     node.setRxCB(uartRxCB);
     //join
