@@ -265,7 +265,7 @@ public:
    * @param eui 存放设备 EUI 的缓冲区，由应用层传入
    * @return true 成功获取，false 获取失败
    */
-  bool getDevEUI(uint8_t *eui);
+  String getDevEUI();
   
   /**
    * @brief 获取网络 ID。

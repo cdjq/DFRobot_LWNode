@@ -19,22 +19,14 @@ uint8_t _DEVEUI[8]={0x0};
 
 DFRobot_LWNode_IIC node(_APPEUI,_APPKEY);
 void setup(void){
-   Serial.begin(115200);
-
-   node.begin(/*communication iic*/&Wire,/*debug uart*/&Serial);
-   
-   if(node.getDevEUI(_DEVEUI)){
-     Serial.print("deveui:");
-     for(uint8_t i=0;i<8;i++){
-       Serial.print(_DEVEUI[i],HEX);
-     }
-     Serial.println();
-   }
-   
-
+  Serial.begin(115200);
+  node.begin(/*communication iic*/&Wire,/*debug uart*/&Serial);
+  delay(5000);
 }
 
 
 void loop(){
-    node.sleep(10*1000);
+  Serial.print("DEVEUI: ");
+  Serial.println(node.getDevEUI());
+  node.sleep(10*1000);
 }

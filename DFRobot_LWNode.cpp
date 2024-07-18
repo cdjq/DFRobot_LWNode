@@ -535,17 +535,11 @@ bool LWNode::sendPacket(uint8_t to, String data){
     }
 }
 
-bool LWNode::getDevEUI(uint8_t *eui){
+String LWNode::getDevEUI(){
   String AT = "AT+DEVEUI?";
   String ack;
   ack = sendATCmd(AT).substring(8, 27);;
-  
-  for (int i = 0; i < ack.length(); i+=2) {
-     String byteString = ack.substring(i, i+2);
-      eui[i/2] = (uint8_t) strtol(byteString.c_str(), NULL, 16);
-   }
-  return true;
-  
+  return ack; 
 }
 
 uint32_t LWNode::getNetID(){

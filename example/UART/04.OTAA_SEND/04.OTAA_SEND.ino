@@ -95,13 +95,8 @@ void setup(void){
         Serial.println("Packet type set fail");
     }
 
-    if(node.getDevEUI(_DEVEUI)){
-        Serial.print("deveui:");
-        for(uint8_t i = 0;i < 8;i++){
-          Serial.print(_DEVEUI[i],HEX);
-        }
-        Serial.println();
-    }
+    Serial.print("DEVEUI: ");
+    Serial.println(node.getDevEUI());
     
     Serial.print("DATARATE: ");
     Serial.println(node.getDataRate());

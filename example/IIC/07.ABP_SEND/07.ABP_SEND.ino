@@ -15,7 +15,7 @@ const char NWKSKEY[]={"87888888888888888888888888888888"};
 const char APPSKEY[]={"89888888888888888888888888888888"};
 
 uint32_t devAddr = 0xDF000011;
-uint8_t _DEVEUI[16]={0x0};
+
 #define REGION_EU868
 //#define REGION_US915
 //#define REGION_CN470
@@ -82,13 +82,9 @@ void setup(void) {
         delay(2000);
         Serial.println("Packet type set fail");
     }
-    if (node.getDevEUI(_DEVEUI)) {
-      Serial.print("deveui:");
-      for (uint8_t i = 0; i < 8; i++) {
-          Serial.print(_DEVEUI[i], HEX);
-      }
-      Serial.println();
-    }
+
+    Serial.print("DEVEUI: ");
+    Serial.println(node.getDevEUI());
 
     Serial.print("DATARATE: ");
     Serial.println(node.getDataRate());
