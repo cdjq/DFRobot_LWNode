@@ -705,7 +705,6 @@ void DFRobot_LWNode_UART::sleep(uint32_t ms){
           p += 6;
           left -= 6;
           uint8_t len = p[4];
-          Serial.print("len1 = ");Serial.println(len);
           if(len){
             if((p[0] == 0xff) || (p[0] == loranode->_from)){
               char *buf = malloc(len+1);
@@ -896,7 +895,6 @@ void DFRobot_LWNode_IIC::sleep(uint32_t ms){
         p += 6;
         left -= 6;
         uint8_t len = p[4];
-        Serial.print("len1 = ");Serial.println(len);
         if(len){
           if((p[0] == 0xff) || (p[0] == loranode->_from)){
             char *buf = malloc(len+1);
@@ -918,6 +916,7 @@ bool DFRobot_LWNode_IIC::begin(TwoWire *pWire,Stream *dbgs_){
   String ack;
   dbgs = dbgs_;
   _pWire->begin();
+  loranode = this;
   delay(100);
   sendATCmd("AT+REBOOT\r\n");
 
@@ -981,7 +980,7 @@ String DFRobot_LWNode_IIC::readACK(){
   readReg(REG_READ_AT,dataP,dataLen);
   
   for(uint8_t i =0;i<len;i++){
-    ack += data[i];
+    ack += (char)data[i];
   }
   //if(dbgs){
   //  dbgs->write(ack.c_str(),ack.length());
