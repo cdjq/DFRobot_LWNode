@@ -690,7 +690,7 @@ void DFRobot_LWNode_UART::sleep(uint32_t ms){
           p += 6;
           left -= 6;
           uint8_t len = p[2];
-          char *buf = malloc(len+1);
+          char *buf = (char*)malloc(len+1);
           memcpy(buf,p+3,len);
           buf[len]=0;
           if(len)
@@ -701,13 +701,13 @@ void DFRobot_LWNode_UART::sleep(uint32_t ms){
         }
       } else if(_rxCB3) {
         while(left){
-          if(memcmp("+RECV=", p, 6) != 0) {total= left = 0; Serial.println("continue2"); continue;};
+          if(memcmp("+RECV=", p, 6) != 0) {total= left = 0; continue;};
           p += 6;
           left -= 6;
           uint8_t len = p[4];
           if(len){
             if((p[0] == 0xff) || (p[0] == loranode->_from)){
-              char *buf = malloc(len+1);
+              char *buf = (char*)malloc(len+1);
               memcpy(buf,p+5,len);
               buf[len]=0;
               _rxCB3(p[1], buf, len, -((int8_t)p[2]), ((int8_t)p[3])-50);
@@ -774,26 +774,16 @@ void DFRobot_LWNode_UART::sendData(uint8_t *data ,uint8_t len ){
 }
 
 String DFRobot_LWNode_UART::readData(){
-    String str  = readACK();
-    if(str == "") return "";
-    return str.substring(2,255);
-    //int  len ,index,j;
-    //len = str.length();
-    //index = findNthOccurrence(str,':',6);
-    //String msg ;
-    //for (int i = index; i < len; i += 2) {
-    //   String byteString = str.substring(i, i+2);
-       //buf[(i-index)/2] = (uint8_t) 
-    //   msg += (char)strtol(byteString.c_str(), NULL, 16);
-    // }
-    //return msg;
+  String str  = readACK();
+  if((str == "") || (str.length()<=9)) return "";
+  return str.substring(9,255);
 }
 
 size_t DFRobot_LWNode_UART::readData(uint8_t *buf){
   String str  = readACK();
   if((str == "") || (str.length()<=2)) return 0;
-  strcpy((char*)buf, str.c_str()+2);
-  return str.length()-2;
+  strcpy((char*)buf, str.c_str()+9);
+  return str.length()-9;
 }
 
 String DFRobot_LWNode_UART::readACK(){
@@ -806,18 +796,12 @@ String DFRobot_LWNode_UART::readACK(){
       // 读取并处理新的串行数据
       //Serial.print((char)s->read());
       ack += (char)s->read();
+      if(!s->available()) delay(5);
       timeout = 250;
-      delay(1);
     }
     if(timeout == 250) break;
   }
   if(timeout == 0 ) ack =  "NULL";
-  //delay(150);
-  if(dbgs){
-    dbgs->flush();
-    dbgs->write(ack.c_str(),ack.length());
-    delay(100);
-  }
   return ack;
 }
 
@@ -869,7 +853,7 @@ void DFRobot_LWNode_IIC::sleep(uint32_t ms){
     String str  = readACK();
     uint16_t total = str.length();
     if(total == 0) continue;
-    p = str.c_str();
+    p = (uint8_t*)str.c_str();
     left = total;
 
     if(_rxCB != NULL){
@@ -879,7 +863,7 @@ void DFRobot_LWNode_IIC::sleep(uint32_t ms){
         left -= 6;
         uint8_t len = p[2];
         if(len){
-          char *buf = malloc(len+1);
+          char *buf = (char*)malloc(len+1);
           memcpy(buf,p+3,len);
           buf[len]=0;
           _rxCB((void *)buf, len, -p[0], p[1]-50);
@@ -891,13 +875,13 @@ void DFRobot_LWNode_IIC::sleep(uint32_t ms){
     }
     if(_rxCB3 != NULL){
       while(left){
-        if(memcmp("+RECV=", p, 6) != 0) {total= left = 0; Serial.println("continue2"); continue;};
+        if(memcmp("+RECV=", p, 6) != 0) {total= left = 0; continue;};
         p += 6;
         left -= 6;
         uint8_t len = p[4];
         if(len){
           if((p[0] == 0xff) || (p[0] == loranode->_from)){
-            char *buf = malloc(len+1);
+            char *buf = (char*)malloc(len+1);
             memcpy(buf,p+5,len);
             buf[len]=0;
             _rxCB3(p[1], buf, len, -p[2], p[3]-50);
@@ -967,8 +951,7 @@ String DFRobot_LWNode_IIC::readACK(){
   String ack;
   uint8_t dataLen = readReg(REG_READ_AT_LEN);
   uint8_t len = dataLen;
-  //Serial.print("ack dataLen:");
-  //Serial.println(dataLen);
+
   if(len == 0){
     return "";
   }
@@ -992,35 +975,15 @@ String DFRobot_LWNode_IIC::readACK(){
 
 String DFRobot_LWNode_IIC::readData(){
   String str  = readACK();
-  if((str == "") || (str.length()<=2)) return "";
-  return str.substring(2,255);
-  //if(str == "") return "";
-  //int  len ,index,j;
-  //len = str.length();
-  //index = findNthOccurrence(str,':',6);
-  //String msg ;
-  //for (int i = index; i < len; i+=2) {
-  //  String byteString = str.substring(i, i+2);
-  //  //buf[(i-index)/2] = (uint8_t) 
-  //  msg += (char)strtol(byteString.c_str(), NULL, 16);
-  // }
-  //return msg;
+  if((str == "") || (str.length()<=9)) return "";
+  return str.substring(9,255);
 }
 
 size_t DFRobot_LWNode_IIC::readData(uint8_t *buf) {
   String str  = readACK();
-  if((str == "") || (str.length()<=2)) return 0;
-  strcpy((char*)buf, str.c_str()+2);
-  return str.length()-2;
-  //int  len ,index,j;
-  //len = str.length();
-  //index = findNthOccurrence(str,':',6);
-  //for (int i = index; i < len; i+=2) {
-  //   String byteString = str.substring(i, i+2);
-  //   buf[(i-index)/2] = (uint8_t) strtol(byteString.c_str(), NULL, 16);
-  // }
-  //
-  //return (len-index)/2;
+  if((str == "") || (str.length()<=9)) return 0;
+  strcpy((char*)buf, str.c_str()+9);
+  return str.length()-9;
 }
 
 void DFRobot_LWNode_IIC::writeReg(uint8_t reg ,uint8_t * data,uint8_t len) {
