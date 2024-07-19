@@ -30,7 +30,7 @@
 
 const char _APPEUI[]={"DFDFDFDF00000000"} ;
 const char _APPKEY[]={"0102030405060708090A0B0C0D0E0F10"};
-uint8_t _DEVEUI[8]={0x0};
+
 
 void uartRxCB(void *buffer, uint16_t size, int8_t rssi, int8_t snr){
     uint8_t *data = (uint8_t *)buffer;

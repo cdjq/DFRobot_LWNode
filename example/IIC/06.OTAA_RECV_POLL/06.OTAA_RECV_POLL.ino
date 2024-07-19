@@ -54,6 +54,11 @@ void setup(void){
         Serial.println("SubBand set fail");
     }
     #endif
+
+    String deveui = node.getDevEUI();
+    Serial.print("DEVEUI: ");
+    Serial.println(deveui);
+
     //入网
     if(node.join()){
         Serial.println("JOIN......");

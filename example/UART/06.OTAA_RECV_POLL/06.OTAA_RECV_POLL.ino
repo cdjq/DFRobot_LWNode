@@ -67,6 +67,11 @@ void setup(void){
         delay(2000);
         Serial.println("DataRate set fail");
     }
+
+    String deveui = node.getDevEUI();
+    Serial.print("DEVEUI: ");
+    Serial.println(deveui);
+
    //join
    if(node.join()){
       Serial.println("JOIN......");

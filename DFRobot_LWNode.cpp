@@ -119,6 +119,7 @@ bool LWNode::setSF(uint8_t sf){
 
 Stream *uarts;
 static uint8_t data[256];
+/*
 #if defined(HAVE_HWSERIAL0)
 void serialEvent(){
   if(uarts == &Serial) {
@@ -228,6 +229,7 @@ void serialEvent3(){
   }
 }
 #endif
+*/
 void LWNode::setRxCB(rxCB *callback){
   _rxCB = callback;
 }
@@ -682,6 +684,7 @@ void DFRobot_LWNode_UART::sleep(uint32_t ms){
         if(!uarts->available()) delay(5);
       }
       p = data;
+      Serial.printf("recv   --- > %s\n",(char *)p);
       data[total] = 0;
       left = total;
       if(_rxCB) {
@@ -745,7 +748,7 @@ bool DFRobot_LWNode_UART::begin(Stream *s_, Stream *dbgs_){
           setAppSKey(_appeSKey);
           setNwkSKey(_nwkSKey);
           setDevAddr(_devAddr);
-          join();
+          //join();
           return true;
         }else{
           return false;
@@ -852,10 +855,9 @@ void DFRobot_LWNode_IIC::sleep(uint32_t ms){
     }
     String str  = readACK();
     uint16_t total = str.length();
-    if(total == 0) continue;
+    if((total == 0) || (total == 255))  continue; //这里为什么会返回255，请冯立查一下
     p = (uint8_t*)str.c_str();
     left = total;
-
     if(_rxCB != NULL){
       while(left){
         if(memcmp("+RECV=", p, 6) != 0) {total=left = 0; continue;};
@@ -914,7 +916,7 @@ bool DFRobot_LWNode_IIC::begin(TwoWire *pWire,Stream *dbgs_){
         setAppSKey(_appeSKey);
         setNwkSKey(_nwkSKey);
         setDevAddr(_devAddr);
-        join();
+        //join();
         return true;
       }else{
         return false;

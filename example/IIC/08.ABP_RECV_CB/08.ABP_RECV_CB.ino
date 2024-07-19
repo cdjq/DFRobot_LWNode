@@ -67,6 +67,11 @@ void setup(void){
         Serial.println("SubBand set fail");
     }
     #endif
+    
+    String deveui = node.getDevEUI();
+    Serial.print("DEVEUI: ");
+    Serial.println(deveui);
+
     node.setRxCB(LWRxCB);
 }
 
