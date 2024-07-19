@@ -684,7 +684,7 @@ void DFRobot_LWNode_UART::sleep(uint32_t ms){
         if(!uarts->available()) delay(5);
       }
       p = data;
-      Serial.printf("recv   --- > %s\n",(char *)p);
+
       data[total] = 0;
       left = total;
       if(_rxCB) {
