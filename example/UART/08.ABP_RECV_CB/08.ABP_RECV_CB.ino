@@ -32,7 +32,6 @@ const char NWKSKEY[]={"87888888888888888888888888888888"};
 const char APPSKEY[]={"89888888888888888888888888888888"};
 
 uint32_t devAddr = 0xDF000011;
-uint8_t _DEVEUI[16]={0x0};
 
 void uartRxCB(void *buf, uint16_t size, int8_t rssi, int8_t snr){
   uint8_t *data = (uint8_t *)buf;

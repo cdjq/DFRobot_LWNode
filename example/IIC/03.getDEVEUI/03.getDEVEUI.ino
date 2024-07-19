@@ -13,7 +13,6 @@
 #include "DFRobot_LWNode.h"
 const char _APPEUI[]={"DFDFDFDF00000000"} ;
 const char _APPKEY[]={"0102030405060708090A0B0C0D0E0F10"};
-uint8_t _DEVEUI[8]={0x0};
 
 
 

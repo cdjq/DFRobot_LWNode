@@ -30,7 +30,6 @@
 
 const char _APPEUI[]={"DFDFDFDF00000000"} ;
 const char _APPKEY[]={"0102030405060708090A0B0C0D0E0F10"};
-uint8_t _DEVEUI[16]={0x0};
 uint8_t buf[256]={0x0};
 
 DFRobot_LWNode_IIC node(_APPEUI,_APPKEY);
