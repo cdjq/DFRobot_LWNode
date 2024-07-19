@@ -73,6 +73,7 @@ void setup(void){
     Serial.println(deveui);
 
     node.setRxCB(LWRxCB);
+    node.start();
 }
 
 void loop(){

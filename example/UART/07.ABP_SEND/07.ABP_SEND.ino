@@ -86,7 +86,8 @@ void setup(void){
         delay(2000);
         Serial.println("ADR set fail");
     }
-
+    node.start();
+    
     String deveui = node.getDevEUI();
     Serial.print("DEVEUI: ");
     Serial.println(deveui);
@@ -96,6 +97,7 @@ void setup(void){
 
     Serial.print("EIRP: ");
     Serial.println(node.getEIRP());
+    
 }
 
 void loop(){

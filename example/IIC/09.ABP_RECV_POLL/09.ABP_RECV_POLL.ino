@@ -57,6 +57,7 @@ void setup(void){
     String deveui = node.getDevEUI();
     Serial.print("DEVEUI: ");
     Serial.println(deveui);
+    node.start();
 }
 
 
