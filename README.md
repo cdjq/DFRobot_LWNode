@@ -1,11 +1,11 @@
 # DFRobot_LWNode
-
-LoRaWan  arduino 节点
+* [中文版](./README_CN.md)
+LoRaWan  arduino node
 
 ![Product Image](./resources/images/SEN0486.png)
 
-## 产品链接（https://www.dfrobot.com.cn/goods-3398.html)
-    DFR1115：Gravity
+## 产品链接(https://www.dfrobot.com.cn)
+    SKU：DFR1115
 ## Table of Contents
 
 * [Summary](#summary)
@@ -18,7 +18,7 @@ LoRaWan  arduino 节点
 ## Summary
 
 
-Provide an Arduino library to get Humidity and Temperature by reading data from DFR1115
+Provides an Arduino library to control the DFR1115 for LoRa communication.
 
 ## Installation
 
@@ -26,167 +26,280 @@ To use this library, first download the library file, paste it into the \Arduino
 
 ## Methods
 ```C++
-
   /**
-   * @brief 设置 LoRaWAN 区域。
-   * @param region 区域枚举值
-   * @return 设置成功返回 true，否则返回 false
+   * @fn setRegion
+   * @brief Sets the LoRaWAN region.
+   * @param region Region enum value
+   * @return Returns true if successful, otherwise false
    */
   bool setRegion(eRegion_t region);
 
   /**
-   * @brief 设置接收回调函数。网关主动给节点发送数据时，此回调函数将被调用。
-   * @param callback 回调函数指针
+   * @fn setFreq
+   * @brief Sets the frequency.
+   * @param freq Frequency value
+   * @return Returns true if successful, otherwise false
+   */
+  bool setFreq(uint32_t freq);
+
+  /**
+   * @fn setBW
+   * @brief Sets the bandwidth.
+   * @param bw Bandwidth value
+   * @return Returns true if successful, otherwise false
+   */
+  bool setBW(uint32_t bw);
+
+  /**
+   * @fn setSF
+   * @brief Sets the spreading factor.
+   * @param sf Spreading factor value
+   * @return Returns true if successful, otherwise false
+   */
+  bool setSF(uint8_t sf);
+
+  /**
+   * @fn setRxCB
+   * @brief Sets the receive callback function. This function is called when the gateway sends data to the node.
+   * @param callback Pointer to the callback function
    */
   void setRxCB(rxCB *callback);
 
   /**
-   * @brief 设置应用 EUI。
-   * @param appeui 应用 EUI
-   * @return 设置成功返回 true，否则返回 false
+   * @fn setRxCB
+   * @brief Sets the receive callback function for a specific case.
+   * @param callback Pointer to the callback function
    */
-  bool setAppEUI(const uint8_t *appeui);
-  /**
-   * @brief 设置应用密钥。
-   * @param appkey 应用密钥
-   * @return 设置成功返回 true，否则返回 false
-   */
-  bool setAppKEY(const uint8_t *appkey);
-  
-  /**
-   * @brief 设置设备类型。
-   * @param classType 设备类别枚举值
-   * @return 设置成功返回 true，否则返回 false
-   */
-  bool setDevType(eDeviceClass_t classType);
-  
-  /**
-   * @brief 设置数据速率。
-   * @param dataRate 数据速率枚举值
-   * @return 设置成功返回 true，否则返回 false
-   */
-  bool setDataRate(eDataRate_t dataRate);
-  
-  /**
-   * @brief 设置发射功率。
-   * @param txPower 发射功率值
-   * @return 设置成功返回 true，否则返回 false
-   */
-  bool setTXPower(uint8_t txPower);
-  
-  /**
-   * @brief 设置子频段。
-   * @param subBand 子频段值
-   * @return 设置成功返回 true，否则返回 false
-   */
-  bool setSubBand(uint8_t subBand);
-  
-  /**
-   * @brief 启用或禁用自适应数据速率（ADR）。
-   * @param adr 如果为 true，启用 ADR；如果为 false，禁用 ADR
-   * @return 设置成功返回 true，否则返回 false
-   */
-  bool enableADR(bool adr);
-  
-  /**
-   * @brief 设置设备地址。
-   * @param devAddr 设备地址
-   * @return 设置成功返回 true，否则返回 false
-   */
-  bool setDevAddr(const uint32_t devAddr);
-  
-  /**
-   * @brief 设置应用会话密钥。
-   * @param appSKey 应用会话密钥
-   * @return 设置成功返回 true，否则返回 false
-   */
-  bool setAppSKey(const uint8_t *appSKey);
-  
-  /**
-   * @brief 设置网络会话密钥。
-   * @param nwkSKey 网络会话密钥
-   * @return 设置成功返回 true，否则返回 false
-   */
-  bool setNwkSKey(const uint8_t *nwkSKey);
+  void setRxCB(rxCB3 *callback);
 
   /**
-   * @brief 发起 LoRaWAN 入网。设备自动发起入网.
-   * @return true 已成功发起入网，false 未能成功发起入网
+   * @fn setAppEUI
+   * @brief Sets the Application EUI.
+   * @param appeui Application EUI
+   * @return Returns true if successful, otherwise false
+   */
+  bool setAppEUI(const char *appeui);
+
+  /**
+   * @fn setAppKEY
+   * @brief Sets the Application Key.
+   * @param appkey Application Key
+   * @return Returns true if successful, otherwise false
+   */
+  bool setAppKEY(const char *appkey);
+
+  /**
+   * @fn setDevType
+   * @brief Sets the device type.
+   * @param classType Device class enum value
+   * @return Returns true if successful, otherwise false
+   */
+  bool setDevType(eDeviceClass_t classType);
+
+  /**
+   * @fn setDataRate
+   * @brief Sets the data rate.
+   * @param dataRate Data rate enum value
+   * @return Returns true if successful, otherwise false
+   */
+  bool setDataRate(eDataRate_t dataRate);
+
+  /**
+   * @fn setEIRP
+   * @brief Sets the transmission power.
+   * @param EIRP Transmission power value
+   * @return Returns true if successful, otherwise false
+   */
+  bool setEIRP(uint8_t EIRP);
+
+  /**
+   * @fn setSubBand
+   * @brief Sets the sub-band.
+   * @param subBand Sub-band value
+   * @return Returns true if successful, otherwise false
+   */
+  bool setSubBand(uint8_t subBand);
+
+  /**
+   * @fn enableADR
+   * @brief Enables or disables Adaptive Data Rate (ADR).
+   * @param adr If true, enables ADR; if false, disables ADR
+   * @return Returns true if successful, otherwise false
+   */
+  bool enableADR(bool adr);
+
+  /**
+   * @fn setDevAddr
+   * @brief Sets the device address.
+   * @param devAddr Device address
+   * @return Returns true if successful, otherwise false
+   */
+  bool setDevAddr(const uint32_t devAddr);
+
+  /**
+   * @fn setAppSKey
+   * @brief Sets the Application Session Key.
+   * @param appSKey Application Session Key
+   * @return Returns true if successful, otherwise false
+   */
+  bool setAppSKey(const char *appSKey);
+
+  /**
+   * @fn setNwkSKey
+   * @brief Sets the Network Session Key.
+   * @param nwkSKey Network Session Key
+   * @return Returns true if successful, otherwise false
+   */
+  bool setNwkSKey(const char *nwkSKey);
+
+  /**
+   * @fn join
+   * @brief Initiates the LoRaWAN join procedure. The device automatically attempts to join the network.
+   * @return Returns true if successfully initiated, otherwise false
    */
   bool join();
-  
+
   /**
-   * @brief 查询设备是否已经入网。
-   * @return true 已经入网，false 没有入网
+   * @fn start
+   * @brief Starts the device's operation.
+   * @return Returns true if successful, otherwise false
+   */
+  bool start();
+
+  /**
+   * @fn setLoRaAddr
+   * @brief Sets the LoRa address.
+   * @param addr LoRa address
+   * @return Returns true if successful, otherwise false
+   */
+  bool setLoRaAddr(uint8_t addr);
+
+  /**
+   * @fn isJoined
+   * @brief Checks if the device is already joined to the network.
+   * @return Returns true if joined, otherwise false
    */
   bool isJoined();
-  
+
   /**
-   * @brief 发送数据包。
-   * @param buffer 要发送的数据地址
-   * @param size 要发送的数据长度
-   * @return true 发送成功，false 发送失败
+   * @fn sendPacket
+   * @brief Sends a data packet.
+   * @param v Value to be sent
+   * @return Returns true if successful, otherwise false
    */
+  bool sendPacket(double v);
+  bool sendPacket(int32_t v);
+  bool sendPacket(uint32_t v);
   bool sendPacket(void *buffer, uint8_t size);
-  
+
   /**
-   * @brief 发送字符串数据包。
-   * @param data 要发送的数据字符串
-   * @return true 发送成功，false 发送失败
+   * @fn sendPacket
+   * @brief Sends a data packet to a specific address.
+   * @param addr Destination address
+   * @param v Value to be sent
+   * @return Returns true if successful, otherwise false
+   */
+  bool sendPacket(uint8_t addr, double v);
+  bool sendPacket(uint8_t addr, int32_t v);
+  bool sendPacket(uint8_t addr, uint32_t v);
+  bool sendPacket(uint8_t addr, void *buffer, uint8_t size);
+
+  /**
+   * @fn sendPacket
+   * @brief Sends a string data packet.
+   * @param data String data to be sent
+   * @return Returns true if successful, otherwise false
    */
   bool sendPacket(String data);
   
   /**
-   * @brief 发送通用 AT 指令。
-   * @param cmd 已经封装的 AT 指令，不带\r\n
-   * @return AT 指令的返回值
+   * @fn sendPacket
+   * @brief Sends a string data packet to a specific address.
+   * @param addr Destination address
+   * @param data String data to be sent
+   * @return Returns true if successful, otherwise false
+   */
+  bool sendPacket(uint8_t addr, String data);
+
+  /**
+   * @fn sendATCmd
+   * @brief Sends a generic AT command.
+   * @param cmd Preformatted AT command without \r\n
+   * @return The response to the AT command
    */
   String sendATCmd(String cmd);
-  
+
   /**
-   * @brief 设置 LoRaWAN 子频段。
-   * @param subBand 子频段值
-   * @return true 设置成功，false 设置失败
+   * @fn sendATCmdTest
+   * @brief Sends a test AT command.
+   * @param cmd Test AT command
+   * @return The response to the test AT command
    */
-  // bool setSubBand(uint8_t subBand = 11);
-  
+  String sendATCmdTest(char *cmd);
+
   /**
-   * @brief 设置数据包类型。
-   * @param type 数据包类型（CONFIRMED_PACKET 或 UNCONFIRMED_PACKET）
-   * @return true 设置成功，false 设置失败
+   * @fn setPacketType
+   * @brief Sets the packet type.
+   * @param type Packet type (CONFIRMED_PACKET or UNCONFIRMED_PACKET)
+   * @return Returns true if successful, otherwise false
    */
   bool setPacketType(ePacketType_t type = UNCONFIRMED_PACKET);
-  
+
   /**
-   * @brief 获取设备 EUI。
-   * @param eui 存放设备 EUI 的缓冲区，由应用层传入
-   * @return true 成功获取，false 获取失败
+   * @fn getDevEUI
+   * @brief Retrieves the device EUI.
+   * @return The device EUI as a string
    */
-  bool getDevEUI(uint8_t *eui);
-  
+  String getDevEUI();
+
   /**
-   * @brief 获取网络 ID。
-   * @return 3 字节的网络 ID 信息
+   * @fn getNetID
+   * @brief Retrieves the network ID.
+   * @return 3-byte network ID information
    */
   uint32_t getNetID();
-  
+
   /**
-   * @brief 获取设备地址。在 OTAA 模式下，该地址由网关分配。
-   * @return 4 字节的设备地址信息
+   * @fn getDevAddr
+   * @brief Retrieves the device address. In OTAA mode, this address is assigned by the gateway.
+   * @return 4-byte device address information
    */
   uint32_t getDevAddr();
-  
+
   /**
-   * @brief 获取设备速率。
-   * @return 设备当前的数据速率
+   * @fn getDataRate
+   * @brief Retrieves the current data rate.
+   * @return The current data rate
    */
   uint8_t getDataRate();
-  
+
   /**
-   * @brief 获取当前的发射功率。
-   * @return 设备当前的发射功率
+   * @fn getEIRP
+   * @brief Retrieves the current transmission power.
+   * @return The current transmission power
    */
-  uint8_t getTxPower();
+  uint8_t getEIRP();
+
+  /**
+   * @fn getRSSI
+   * @brief Retrieves the Received Signal Strength Indicator (RSSI).
+   * @return The RSSI value
+   */
+  int16_t getRSSI();
+
+  /**
+   * @fn getSNR
+   * @brief Retrieves the Signal-to-Noise Ratio (SNR).
+   * @return The SNR value
+   */
+  int8_t getSNR();
+
+  /**
+   * @fn atTest
+   * @brief Executes an AT test command.
+   * @return The result of the test command
+   */
+  bool atTest();
 ```
 
 ## Compatibility
@@ -202,11 +315,11 @@ Microbit|      √       |              |             |
 
 ## History
 
-- 2020/07/02 - Version 1.0.0 released.
+- 2024/07/02 - Version 1.0.0 released.
 
 ## Credits
 
-Written by fengli(li.feng@dfrobot.com), 2021.7.2 (Welcome to our [website](https://www.dfrobot.com/))
+Written by fengli(li.feng@dfrobot.com), 2024.7.2 (Welcome to our [website](https://www.dfrobot.com/))
 
 
 

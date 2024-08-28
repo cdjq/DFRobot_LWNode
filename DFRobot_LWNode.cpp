@@ -1,3 +1,14 @@
+/*!
+ *@file DFRobot_LWNode.cpp
+ *@brief Define the basic structure of class DFRobot_LWNode, the implementation of basic methods.
+ *@details  
+ *@copyright   Copyright (c) 2010 DFRobot Co.Ltd (http://www.dfrobot.com)
+ *@license     The MIT license (MIT)
+ *@author [fengli](li.feng@dfrobot.com)
+ *@version  V1.0
+ *@date  2023-12-26
+ *@https://github.com/DFRobot/DFRobot_LWNode
+*/
 #include "DFRobot_LWNode.h"
 
 static rxCB *_rxCB =NULL;

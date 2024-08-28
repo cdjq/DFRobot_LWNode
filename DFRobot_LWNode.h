@@ -1,3 +1,17 @@
+/*!
+ *@file DFRobot_LWNode.h
+ *@brief Define the basic structure of class DFRobot_LWNode, the implementation of basic methods.
+ *@details  
+ *@copyright   Copyright (c) 2010 DFRobot Co.Ltd (http://www.dfrobot.com)
+ *@license     The MIT license (MIT)
+ *@author [fengli](li.feng@dfrobot.com)
+ *@version  V1.0
+ *@date  2023-12-26
+ *@https://github.com/DFRobot/DFRobot_LWNode
+*/
+
+
+
 #ifndef _DFROBOT_LORANWANNODE_H
 #define _DFROBOT_LORANWANNODE_H
 
@@ -27,472 +41,632 @@ typedef void sendCallback(void);
 #define REG_READ_AT_LONG        0x43
 
 /**
- * @brief 设备类别的 LoRaWAN 枚举。
+ * @brief Enumeration for device classes in LoRaWAN.
  */
 typedef enum {
-  CLASS_A, ///< A 类设备
-  CLASS_C  ///< C 类设备
+  CLASS_A, ///< Class A device
+  CLASS_C  ///< Class C device
 } eDeviceClass_t;
 
 /**
- * @brief LoRaWAN 中数据包类型的枚举。
+ * @brief Enumeration for packet types in LoRaWAN.
  */
 typedef enum {
-  CONFIRMED_PACKET,   ///< 确认数据包
-  UNCONFIRMED_PACKET  ///< 非确认数据包
+  CONFIRMED_PACKET,   ///< Confirmed packet
+  UNCONFIRMED_PACKET  ///< Unconfirmed packet
 } ePacketType_t;
 
 /**
- * @brief 发射功率的枚举。
+ * @brief Enumeration for transmit power levels.
  */
 typedef enum {
-  DBM0 =0,
-  DBM2 = 2,
-  DBM4 = 4,
-  DBM6 = 6,
-  DBM8 = 8,
-  DBM10 = 10,
-  DBM12 = 12,
-  DBM14 = 14,
-  DBM16 = 16,
-  DBM18 = 18,
-  DBM20 = 20,
-  DBM22 = 22,
-  DBM24 = 24,
-  DBM26 = 26,
-  DBM28 = 28,
+  DBM0 = 0,   ///< 0 dBm
+  DBM2 = 2,   ///< 2 dBm
+  DBM4 = 4,   ///< 4 dBm
+  DBM6 = 6,   ///< 6 dBm
+  DBM8 = 8,   ///< 8 dBm
+  DBM10 = 10, ///< 10 dBm
+  DBM12 = 12, ///< 12 dBm
+  DBM14 = 14, ///< 14 dBm
+  DBM16 = 16, ///< 16 dBm
+  DBM18 = 18, ///< 18 dBm
+  DBM20 = 20, ///< 20 dBm
+  DBM22 = 22, ///< 22 dBm
+  DBM24 = 24, ///< 24 dBm
+  DBM26 = 26, ///< 26 dBm
+  DBM28 = 28  ///< 28 dBm
 } etxPower_t;
 
 /**
- * @brief LoRaWAN 区域的枚举。
+ * @brief Enumeration for LoRaWAN regions.
  */
 typedef enum {
-  EU868, ///< 欧洲 868MHz
-  US915, ///< 美国 915MHz
-  CN470  ///< 中国 470MHz
+  EU868, ///< Europe 868 MHz
+  US915, ///< USA 915 MHz
+  CN470  ///< China 470 MHz
 } eRegion_t;
 
 /**
- * @brief 数据速率的枚举。
+ * @brief Enumeration for data rates.
  */
 typedef enum {
   DR0, DR1, DR2, DR3, DR4, DR5, DR6, DR7, DR8, DR9, DR10, DR11, DR12
 } eDataRate_t;
 
+
+
 /**
- * @brief 表示 LoRaWAN 节点的类。
+ * @brief Represents a LoRaWAN node class.
  */
 class LWNode {
 public:
   /**
-   * @brief 用于 OTAA 设备的构造函数。
-   * @param appEui 应用 EUI
-   * @param appKey 应用密钥
-   * @param classType 设备类别（默认：CLASS_C）
-   * @param dataRate 数据速率（默认：DR5）
-   * @param txPower 发射功率（默认：DBM8）
-   * @param adr 自适应数据速率（默认：true）
-   * @param subBand 用于 CN470 和 US915 的子频段（默认：11）
+   * @fn LWNode
+   * @brief Constructor for OTAA devices.
+   * @param appEui Application EUI
+   * @param appKey Application Key
+   * @param classType Device class (default: CLASS_C)
+   * @param dataRate Data rate (default: DR5)
+   * @param txPower Transmission power (default: DBM8)
+   * @param adr Adaptive Data Rate (default: true)
+   * @param subBand Sub-band for CN470 and US915 (default: 11)
    */
   LWNode(const uint8_t *appEui = nullptr, const uint8_t *appKey = nullptr,
          eDeviceClass_t classType = CLASS_C, eDataRate_t dataRate = DR5,
          etxPower_t txPower = DBM8, bool adr = true, uint8_t subBand = 11);
 
   /**
-   * @brief 用于 ABP 设备的构造函数。
-   * @param devAddr 设备地址
-   * @param nwkSKey 网络会话密钥
-   * @param appSKey 应用会话密钥
-   * @param classType 设备类别（默认：CLASS_C）
-   * @param dataRate 数据速率（默认：DR5）
-   * @param txPower 发射功率（默认：DBM8）
-   * @param adr 自适应数据速率（默认：true）
-   * @param subBand 用于 CN470 和 US915 的子频段（默认：11）
+   * @fn LWNode
+   * @brief Constructor for ABP devices.
+   * @param devAddr Device Address
+   * @param nwkSKey Network Session Key
+   * @param appSKey Application Session Key
+   * @param classType Device class (default: CLASS_C)
+   * @param dataRate Data rate (default: DR5)
+   * @param txPower Transmission power (default: DBM8)
+   * @param adr Adaptive Data Rate (default: true)
+   * @param subBand Sub-band for CN470 and US915 (default: 11)
    */
   LWNode(const uint32_t devAddr, const uint8_t *nwkSKey, const uint8_t *appSKey,
          eDeviceClass_t classType = CLASS_C, eDataRate_t dataRate = DR5,
          etxPower_t txPower = DBM8, bool adr = true, uint8_t subBand = 11);
 
-
+  /**
+   * @fn LWNode
+   * @brief Constructor for device using only device address.
+   * @param devAddr Device Address
+   */
   LWNode(const uint8_t devAddr);
 
   /**
-   * @brief 设置 LoRaWAN 区域。
-   * @param region 区域枚举值
-   * @return 设置成功返回 true，否则返回 false
+   * @fn setRegion
+   * @brief Sets the LoRaWAN region.
+   * @param region Region enum value
+   * @return Returns true if successful, otherwise false
    */
   bool setRegion(eRegion_t region);
 
-  bool setFreq(uint32_t freq);
-  bool setBW(uint32_t bw);
-  bool setSF(uint8_t  sf);
   /**
-   * @brief 设置接收回调函数。网关主动给节点发送数据时，此回调函数将被调用。
-   * @param callback 回调函数指针
+   * @fn setFreq
+   * @brief Sets the frequency.
+   * @param freq Frequency value
+   * @return Returns true if successful, otherwise false
+   */
+  bool setFreq(uint32_t freq);
+
+  /**
+   * @fn setBW
+   * @brief Sets the bandwidth.
+   * @param bw Bandwidth value
+   * @return Returns true if successful, otherwise false
+   */
+  bool setBW(uint32_t bw);
+
+  /**
+   * @fn setSF
+   * @brief Sets the spreading factor.
+   * @param sf Spreading factor value
+   * @return Returns true if successful, otherwise false
+   */
+  bool setSF(uint8_t sf);
+
+  /**
+   * @fn setRxCB
+   * @brief Sets the receive callback function. This function is called when the gateway sends data to the node.
+   * @param callback Pointer to the callback function
    */
   void setRxCB(rxCB *callback);
-  void setRxCB(rxCB3 *callback);
+
   /**
-   * @brief 设置应用 EUI。
-   * @param appeui 应用 EUI
-   * @return 设置成功返回 true，否则返回 false
+   * @fn setRxCB
+   * @brief Sets the receive callback function for a specific case.
+   * @param callback Pointer to the callback function
+   */
+  void setRxCB(rxCB3 *callback);
+
+  /**
+   * @fn setAppEUI
+   * @brief Sets the Application EUI.
+   * @param appeui Application EUI
+   * @return Returns true if successful, otherwise false
    */
   bool setAppEUI(const char *appeui);
+
   /**
-   * @brief 设置应用密钥。
-   * @param appkey 应用密钥
-   * @return 设置成功返回 true，否则返回 false
+   * @fn setAppKEY
+   * @brief Sets the Application Key.
+   * @param appkey Application Key
+   * @return Returns true if successful, otherwise false
    */
   bool setAppKEY(const char *appkey);
-  
+
   /**
-   * @brief 设置设备类型。
-   * @param classType 设备类别枚举值
-   * @return 设置成功返回 true，否则返回 false
+   * @fn setDevType
+   * @brief Sets the device type.
+   * @param classType Device class enum value
+   * @return Returns true if successful, otherwise false
    */
   bool setDevType(eDeviceClass_t classType);
-  
+
   /**
-   * @brief 设置数据速率。
-   * @param dataRate 数据速率枚举值
-   * @return 设置成功返回 true，否则返回 false
+   * @fn setDataRate
+   * @brief Sets the data rate.
+   * @param dataRate Data rate enum value
+   * @return Returns true if successful, otherwise false
    */
   bool setDataRate(eDataRate_t dataRate);
-  
+
   /**
-   * @brief 设置发射功率。
-   * @param EIRP 发射功率值
-   * @return 设置成功返回 true，否则返回 false
+   * @fn setEIRP
+   * @brief Sets the transmission power.
+   * @param EIRP Transmission power value
+   * @return Returns true if successful, otherwise false
    */
   bool setEIRP(uint8_t EIRP);
-  
+
   /**
-   * @brief 设置子频段。
-   * @param subBand 子频段值
-   * @return 设置成功返回 true，否则返回 false
+   * @fn setSubBand
+   * @brief Sets the sub-band.
+   * @param subBand Sub-band value
+   * @return Returns true if successful, otherwise false
    */
   bool setSubBand(uint8_t subBand);
-  
+
   /**
-   * @brief 启用或禁用自适应数据速率（ADR）。
-   * @param adr 如果为 true，启用 ADR；如果为 false，禁用 ADR
-   * @return 设置成功返回 true，否则返回 false
+   * @fn enableADR
+   * @brief Enables or disables Adaptive Data Rate (ADR).
+   * @param adr If true, enables ADR; if false, disables ADR
+   * @return Returns true if successful, otherwise false
    */
   bool enableADR(bool adr);
-  
+
   /**
-   * @brief 设置设备地址。
-   * @param devAddr 设备地址
-   * @return 设置成功返回 true，否则返回 false
+   * @fn setDevAddr
+   * @brief Sets the device address.
+   * @param devAddr Device address
+   * @return Returns true if successful, otherwise false
    */
   bool setDevAddr(const uint32_t devAddr);
-  
+
   /**
-   * @brief 设置应用会话密钥。
-   * @param appSKey 应用会话密钥
-   * @return 设置成功返回 true，否则返回 false
+   * @fn setAppSKey
+   * @brief Sets the Application Session Key.
+   * @param appSKey Application Session Key
+   * @return Returns true if successful, otherwise false
    */
   bool setAppSKey(const char *appSKey);
-  
+
   /**
-   * @brief 设置网络会话密钥。
-   * @param nwkSKey 网络会话密钥
-   * @return 设置成功返回 true，否则返回 false
+   * @fn setNwkSKey
+   * @brief Sets the Network Session Key.
+   * @param nwkSKey Network Session Key
+   * @return Returns true if successful, otherwise false
    */
   bool setNwkSKey(const char *nwkSKey);
 
-
-
   /**
-   * @brief 发起 LoRaWAN 入网。设备自动发起入网.
-   * @return true 已成功发起入网，false 未能成功发起入网
+   * @fn join
+   * @brief Initiates the LoRaWAN join procedure. The device automatically attempts to join the network.
+   * @return Returns true if successfully initiated, otherwise false
    */
   bool join();
-  bool start();
-  bool setLoRaAddr(uint8_t addr);
+
   /**
-   * @brief 查询设备是否已经入网。
-   * @return true 已经入网，false 没有入网
+   * @fn start
+   * @brief Starts the device's operation.
+   * @return Returns true if successful, otherwise false
+   */
+  bool start();
+
+  /**
+   * @fn setLoRaAddr
+   * @brief Sets the LoRa address.
+   * @param addr LoRa address
+   * @return Returns true if successful, otherwise false
+   */
+  bool setLoRaAddr(uint8_t addr);
+
+  /**
+   * @fn isJoined
+   * @brief Checks if the device is already joined to the network.
+   * @return Returns true if joined, otherwise false
    */
   bool isJoined();
-  
+
   /**
-   * @brief 发送数据包。
-   * @param buffer 要发送的数据地址
-   * @param size 要发送的数据长度
-   * @return true 发送成功，false 发送失败
+   * @fn sendPacket
+   * @brief Sends a data packet.
+   * @param v Value to be sent
+   * @return Returns true if successful, otherwise false
    */
-  //LoRaWAN
   bool sendPacket(double v);
   bool sendPacket(int32_t v);
   bool sendPacket(uint32_t v);
   bool sendPacket(void *buffer, uint8_t size);
 
-  //LoRa
+  /**
+   * @fn sendPacket
+   * @brief Sends a data packet to a specific address.
+   * @param addr Destination address
+   * @param v Value to be sent
+   * @return Returns true if successful, otherwise false
+   */
   bool sendPacket(uint8_t addr, double v);
   bool sendPacket(uint8_t addr, int32_t v);
   bool sendPacket(uint8_t addr, uint32_t v);
   bool sendPacket(uint8_t addr, void *buffer, uint8_t size);
 
   /**
-   * @brief 发送字符串数据包。
-   * @param data 要发送的数据字符串
-   * @return true 发送成功，false 发送失败
+   * @fn sendPacket
+   * @brief Sends a string data packet.
+   * @param data String data to be sent
+   * @return Returns true if successful, otherwise false
    */
   bool sendPacket(String data);
   
+  /**
+   * @fn sendPacket
+   * @brief Sends a string data packet to a specific address.
+   * @param addr Destination address
+   * @param data String data to be sent
+   * @return Returns true if successful, otherwise false
+   */
   bool sendPacket(uint8_t addr, String data);
 
   /**
-   * @brief 发送通用 AT 指令。
-   * @param cmd 已经封装的 AT 指令，不带\r\n
-   * @return AT 指令的返回值
+   * @fn sendATCmd
+   * @brief Sends a generic AT command.
+   * @param cmd Preformatted AT command without \r\n
+   * @return The response to the AT command
    */
   String sendATCmd(String cmd);
-  String sendATCmdTest(char *cmd);
-  //void readACKTest(char * buf);
 
-  
   /**
-   * @brief 设置数据包类型。
-   * @param type 数据包类型（CONFIRMED_PACKET 或 UNCONFIRMED_PACKET）
-   * @return true 设置成功，false 设置失败
+   * @fn sendATCmdTest
+   * @brief Sends a test AT command.
+   * @param cmd Test AT command
+   * @return The response to the test AT command
+   */
+  String sendATCmdTest(char *cmd);
+
+  /**
+   * @fn setPacketType
+   * @brief Sets the packet type.
+   * @param type Packet type (CONFIRMED_PACKET or UNCONFIRMED_PACKET)
+   * @return Returns true if successful, otherwise false
    */
   bool setPacketType(ePacketType_t type = UNCONFIRMED_PACKET);
-  
+
   /**
-   * @brief 获取设备 EUI。
-   * @param eui 存放设备 EUI 的缓冲区，由应用层传入
-   * @return true 成功获取，false 获取失败
+   * @fn getDevEUI
+   * @brief Retrieves the device EUI.
+   * @return The device EUI as a string
    */
   String getDevEUI();
-  
+
   /**
-   * @brief 获取网络 ID。
-   * @return 3 字节的网络 ID 信息
+   * @fn getNetID
+   * @brief Retrieves the network ID.
+   * @return 3-byte network ID information
    */
   uint32_t getNetID();
-  
+
   /**
-   * @brief 获取设备地址。在 OTAA 模式下，该地址由网关分配。
-   * @return 4 字节的设备地址信息
+   * @fn getDevAddr
+   * @brief Retrieves the device address. In OTAA mode, this address is assigned by the gateway.
+   * @return 4-byte device address information
    */
   uint32_t getDevAddr();
-  
+
   /**
-   * @brief 获取设备速率。
-   * @return 设备当前的数据速率
+   * @fn getDataRate
+   * @brief Retrieves the current data rate.
+   * @return The current data rate
    */
   uint8_t getDataRate();
-  
+
   /**
-   * @brief 获取当前的发射功率。
-   * @return 设备当前的发射功率
+   * @fn getEIRP
+   * @brief Retrieves the current transmission power.
+   * @return The current transmission power
    */
-  uint8_t getEIRP( void );
-  int16_t getRSSI( void );
-  int8_t getSNR( void );
-  
+  uint8_t getEIRP();
+
   /**
-   * @brief 执行 AT 测试命令。
-   * @return 执行测试命令的结果
+   * @fn getRSSI
+   * @brief Retrieves the Received Signal Strength Indicator (RSSI).
+   * @return The RSSI value
+   */
+  int16_t getRSSI();
+
+  /**
+   * @fn getSNR
+   * @brief Retrieves the Signal-to-Noise Ratio (SNR).
+   * @return The SNR value
+   */
+  int8_t getSNR();
+
+  /**
+   * @fn atTest
+   * @brief Executes an AT test command.
+   * @return The result of the test command
    */
   bool atTest();
-  
+
   /**
-   * @brief 纯虚函数，用于发送数据。
-   * @param data 指向要发送的数据的指针
-   * @param len 数据的长度
+   * @fn sendData
+   * @brief Pure virtual function for sending data.
+   * @param data Pointer to the data to be sent
+   * @param len Length of the data
    */
   virtual void sendData(uint8_t *data, uint8_t len) = 0;
-  
+
   /**
-   * @brief 纯虚函数，用于读取确认消息。
-   * @return 作为字符串的确认消息
+   * @fn readACK
+   * @brief Pure virtual function for reading acknowledgment messages.
+   * @return The acknowledgment message as a string
    */
   virtual String readACK() = 0;
-    char _appeui[17],_appKey[33];
-    char _appeSKey[33],_nwkSKey[33];
-    bool _isOtaa = true;
-    eDeviceClass_t _deviceClass;
-    eDataRate_t _dataRate = DR4;
-    
-    eDeviceClass_t _classType = CLASS_A;
-    etxPower_t _txPower;
-    bool _adr = false;
-    uint8_t _subBand = 0;
-    uint8_t _region = EU868;
-    uint32_t _devAddr;
-    uint8_t joinType = 1; //0 ABP 1 OTAA 2 NONE
-  public:
-   uint8_t _from;
-  protected:
+
+  char _appeui[17], _appKey[33];
+  char _appeSKey[33], _nwkSKey[33];
+  bool _isOtaa = true;
+  eDeviceClass_t _deviceClass;
+  eDataRate_t _dataRate = DR4;
+  eDeviceClass_t _classType = CLASS_A;
+  etxPower_t _txPower;
+  bool _adr = false;
+  uint8_t _subBand = 0;
+  uint8_t _region = EU868;
+  uint32_t _devAddr;
+  uint8_t joinType = 1; // 0 ABP, 1 OTAA, 2 NONE
+
+public:
+  uint8_t _from;
 };
 
 
 
 
 /**
- * @brief 通过 UART 通信的 LoRaWAN 节点类。
+ * @brief LoRaWAN node class for communication via UART.
  */
 class DFRobot_LWNode_UART : public LWNode {
 
 public:
   /**
-   * @brief 构造函数，用于 OTAA 设备。
-   * @param appEui 应用 EUI
-   * @param appKey 应用密钥
-   * @param classType 设备类别（默认：CLASS_C）
-   * @param dataRate 数据速率（默认：DR5）
-   * @param txPower 发射功率（默认：DBM8）
-   * @param adr 自适应数据速率（默认：true）
-   * @param subBand 用于 CN470 和 US915 的子频段（默认：11）
+   * @fn DFRobot_LWNode_UART
+   * @brief Constructor for OTAA devices.
+   * @param appEui Application EUI
+   * @param appKey Application Key
+   * @param classType Device class (default: CLASS_C)
+   * @param dataRate Data rate (default: DR5)
+   * @param txPower Transmission power (default: DBM8)
+   * @param adr Adaptive Data Rate (default: true)
+   * @param subBand Sub-band for CN470 and US915 (default: 11)
    */
   DFRobot_LWNode_UART(const char *appEui = nullptr, const char *appKey = nullptr,
                       eDeviceClass_t classType = CLASS_C, eDataRate_t dataRate = DR5,
                       etxPower_t txPower = DBM8, bool adr = true, uint8_t subBand = 11);
 
   /**
-   * @brief 构造函数，用于 ABP 设备。
-   * @param devAddr 设备地址
-   * @param nwkSKey 网络会话密钥
-   * @param appSKey 应用会话密钥
-   * @param classType 设备类别（默认：CLASS_C）
-   * @param dataRate 数据速率（默认：DR5）
-   * @param txPower 发射功率（默认：DBM8）
-   * @param adr 自适应数据速率（默认：true）
-   * @param subBand 用于 CN470 和 US915 的子频段（默认：11）
+   * @fn DFRobot_LWNode_UART
+   * @brief Constructor for ABP devices.
+   * @param devAddr Device Address
+   * @param nwkSKey Network Session Key
+   * @param appSKey Application Session Key
+   * @param classType Device class (default: CLASS_C)
+   * @param dataRate Data rate (default: DR5)
+   * @param txPower Transmission power (default: DBM8)
+   * @param adr Adaptive Data Rate (default: true)
+   * @param subBand Sub-band for CN470 and US915 (default: 11)
    */
   DFRobot_LWNode_UART(const uint32_t devAddr, const char *nwkSKey, const char *appSKey,
                       eDeviceClass_t classType = CLASS_C, eDataRate_t dataRate = DR5,
                       etxPower_t txPower = DBM8, bool adr = true, uint8_t subBand = 11);
 
-  DFRobot_LWNode_UART(const uint8_t from);
   /**
-   * @brief 初始化 LoRaWAN 节点。
-   * @param s_ 用于通信的 UART 对象
-   * @param dbgs 用于调试的串口对象（默认：Serial）
-   * @return true 初始化成功，false 初始化失败
+   * @fn DFRobot_LWNode_UART
+   * @brief Constructor with address for device communication.
+   * @param from Communication address
+   */
+  DFRobot_LWNode_UART(const uint8_t from);
+
+  /**
+   * @fn begin
+   * @brief Initializes the LoRaWAN node.
+   * @param s_ UART object for communication
+   * @param dbgs_ Serial object for debugging (default: Serial)
+   * @return true if initialization is successful, false otherwise
    */
   bool begin(Stream *s_, Stream *dbgs_ = &Serial);
-  
-  void sleep(uint32_t ms);
+
   /**
-   * @brief 读取数据。
-   * @return 作为字符串的数据消息
+   * @fn sleep
+   * @brief Puts the device to sleep for a specified duration.
+   * @param ms Duration in milliseconds
+   */
+  void sleep(uint32_t ms);
+
+  /**
+   * @fn readData
+   * @brief Reads data from the device.
+   * @return Data message as a string
    */
   String readData();
-  size_t readData(uint8_t *buf);
+
   /**
-   * @brief 发送数据。
-   * @param data 指向要发送的数据的指针
-   * @param len 数据的长度
+   * @fn readData
+   * @brief Reads data into a buffer.
+   * @param buf Buffer to store the read data
+   * @return Number of bytes read
+   */
+  size_t readData(uint8_t *buf);
+
+  /**
+   * @fn sendData
+   * @brief Sends data to the device.
+   * @param data Pointer to the data to be sent
+   * @param len Length of the data
    */
   void sendData(uint8_t *data, uint8_t len);
 
   /**
-   * @brief 读取确认消息。
-   * @return 作为字符串的确认消息
+   * @fn readACK
+   * @brief Reads the acknowledgment message.
+   * @return Acknowledgment message as a string
    */
   String readACK();
 
 private:
-  Stream *s;    ///< UART 通信流
-  Stream *dbgs; ///< 调试信息流
+  Stream *s;    ///< UART communication stream
+  Stream *dbgs; ///< Debugging information stream
 };
 
+
 /**
- * @brief 通过 IIC 通信的 LoRaWAN 节点类。
+ * @brief LoRaWAN node class for communication via IIC.
  */
 class DFRobot_LWNode_IIC : public LWNode {
 
 public:
   /**
-   * @brief 构造函数，用于 OTAA 设备。
-   * @param appEui 应用 EUI
-   * @param appKey 应用密钥
-   * @param classType 设备类别（默认：CLASS_C）
-   * @param dataRate 数据速率（默认：DR5）
-   * @param txPower 发射功率（默认：DBM8）
-   * @param adr 自适应数据速率（默认：true）
-   * @param subBand 用于 CN470 和 US915 的子频段（默认：11）
+   * @fn DFRobot_LWNode_IIC
+   * @brief Constructor for OTAA devices.
+   * @param appEui Application EUI
+   * @param appKey Application Key
+   * @param classType Device class (default: CLASS_C)
+   * @param dataRate Data rate (default: DR5)
+   * @param txPower Transmission power (default: DBM8)
+   * @param adr Adaptive Data Rate (default: true)
+   * @param subBand Sub-band for CN470 and US915 (default: 11)
    */
   DFRobot_LWNode_IIC(const char *appEui = nullptr, const char *appKey = nullptr,
                      eDeviceClass_t classType = CLASS_C, eDataRate_t dataRate =DR5,
                      etxPower_t txPower = DBM8, bool adr = true, uint8_t subBand = 11);
 
   /**
-   * @brief 构造函数，用于 ABP 设备。
-   * @param devAddr 设备地址
-   * @param nwkSKey 网络会话密钥
-   * @param appSKey 应用会话密钥
-   * @param classType 设备类别（默认：CLASS_C）
-   * @param dataRate 数据速率（默认：DR5）
-   * @param txPower 发射功率（默认：DBM8）
-   * @param adr 自适应数据速率（默认：true）
-   * @param subBand 用于 CN470 和 US915 的子频段（默认：11）
+   * @fn DFRobot_LWNode_IIC
+   * @brief Constructor for ABP devices.
+   * @param devAddr Device Address
+   * @param nwkSKey Network Session Key
+   * @param appSKey Application Session Key
+   * @param classType Device class (default: CLASS_C)
+   * @param dataRate Data rate (default: DR5)
+   * @param txPower Transmission power (default: DBM8)
+   * @param adr Adaptive Data Rate (default: true)
+   * @param subBand Sub-band for CN470 and US915 (default: 11)
    */
   DFRobot_LWNode_IIC(const uint32_t devAddr, const char *nwkSKey, const char *appSKey,
                      eDeviceClass_t classType = CLASS_C, eDataRate_t dataRate = DR5,
                      etxPower_t txPower = DBM8, bool adr = true, uint8_t subBand = 11);
 
-  DFRobot_LWNode_IIC( const uint8_t from );
   /**
-   * @brief 初始化 LoRaWAN 节点。
-   * @param pWire 用于通信的 IIC 对象（默认：Wire）
-   * @param dbgs 用于调试的串口对象（默认：Serial）
-   * @return true 初始化成功，false 初始化失败
+   * @fn DFRobot_LWNode_IIC
+   * @brief Constructor with address for device communication.
+   * @param from Communication address
+   */
+  DFRobot_LWNode_IIC(const uint8_t from);
+
+  /**
+   * @fn begin
+   * @brief Initializes the LoRaWAN node.
+   * @param pWire IIC object for communication (default: Wire)
+   * @param dbgs_ Serial object for debugging (default: Serial)
+   * @return true if initialization is successful, false otherwise
    */
   bool begin(TwoWire *pWire = &Wire, Stream *dbgs_ = &Serial);
-  void sleep(uint32_t ms);
+
   /**
-   * @brief 发送数据。
-   * @param data 指向要发送的数据的指针
-   * @param len 数据的长度
+   * @fn sleep
+   * @brief Puts the device to sleep for a specified duration.
+   * @param ms Duration in milliseconds
+   */
+  void sleep(uint32_t ms);
+
+  /**
+   * @fn sendData
+   * @brief Sends data to the device.
+   * @param data Pointer to the data to be sent
+   * @param len Length of the data
    */
   void sendData(uint8_t *data, uint8_t len);
 
   /**
-   * @brief 读取确认消息。
-   * @return 作为字符串的确认消息
+   * @fn readACK
+   * @brief Reads the acknowledgment message.
+   * @return Acknowledgment message as a string
    */
   String readACK();
 
   /**
-   * @brief 读取数据。
-   * @return 作为字符串的数据消息
+   * @fn readData
+   * @brief Reads data from the device.
+   * @return Data message as a string
    */
   String readData();
-  size_t readData(uint8_t *buf);
+
   /**
-   * @brief 读取寄存器。
-   * @param reg 寄存器地址
-   * @param data 存放读取数据的缓冲区
-   * @param length 读取的数据长度
-   * @return 读取成功返回 1，否则返回 0
+   * @fn readData
+   * @brief Reads data into a buffer.
+   * @param buf Buffer to store the read data
+   * @return Number of bytes read
+   */
+  size_t readData(uint8_t *buf);
+
+  /**
+   * @fn readReg
+   * @brief Reads data from a register.
+   * @param reg Register address
+   * @param data Buffer to store the read data
+   * @param length Length of the data to be read
+   * @return 1 if successful, 0 otherwise
    */
   uint8_t readReg(uint16_t reg, uint8_t data[], uint8_t length);
 
   /**
-   * @brief 写入寄存器。
-   * @param reg 寄存器地址
-   * @param data 指向要写入数据的指针
-   * @param len 写入的数据长度
+   * @fn writeReg
+   * @brief Writes data to a register.
+   * @param reg Register address
+   * @param data Pointer to the data to be written
+   * @param len Length of the data
    */
   void writeReg(uint8_t reg, uint8_t *data, uint8_t len);
 
   /**
-   * @brief 读取单个寄存器。
-   * @param reg 寄存器地址
-   * @return 读取的寄存器值
+   * @fn readReg
+   * @brief Reads a single register.
+   * @param reg Register address
+   * @return Value of the register
    */
   uint8_t readReg(uint8_t reg);
-  
+
 private:
-  TwoWire *_pWire; ///< IIC 通信对象
-  uint8_t _deviceAddr; ///< IIC 设备地址
-  Stream *dbgs; ///< 调试信息流
+  TwoWire *_pWire; ///< IIC communication object
+  uint8_t _deviceAddr; ///< IIC device address
+  Stream *dbgs; ///< Debugging information stream
 };
+
 
 
 #endif
