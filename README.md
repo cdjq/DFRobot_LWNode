@@ -4,7 +4,7 @@ LoRaWan  arduino node
 
 ![Product Image](./resources/images/SEN0486.png)
 
-## 产品链接(https://www.dfrobot.com.cn)
+## 产品链接(https://www.dfrobot.com)
     SKU：DFR1115
 ## Table of Contents
 
