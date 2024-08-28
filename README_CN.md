@@ -6,7 +6,7 @@ LoRaWan  arduino 节点
 ![Product Image](./resources/images/SEN0486.png)
 
 ## 产品链接（https://www.dfrobot.com)
-    DFR1115：Gravity
+    SKU：DFR1115
 	
 ## 目录
   - [概述](#概述)
