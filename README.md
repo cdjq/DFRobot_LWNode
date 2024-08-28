@@ -1,5 +1,5 @@
 # DFRobot_LWNode
-* [中文版](./README_CN.md)
+* [中文版](./README_CN.md)<br>
 LoRaWan  arduino node
 
 ![Product Image](./resources/images/SEN0486.png)
