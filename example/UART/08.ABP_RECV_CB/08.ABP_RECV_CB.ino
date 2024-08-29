@@ -1,6 +1,6 @@
 /*!
  *@file ABP_RECV_CB.ino
- *@brief LoRaWan ABP模式节点 通过回调函数方式从网关接受数据
+ *@brief The LoRaWAN ABP mode node receives data from the gateway using a callback function.
  *@details  
  *@copyright   Copyright (c) 2010 DFRobot Co.Ltd (http://www.dfrobot.com)
  *@license     The MIT license (MIT)

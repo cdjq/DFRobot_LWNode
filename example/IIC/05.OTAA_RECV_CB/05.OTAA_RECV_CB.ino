@@ -1,6 +1,6 @@
 /*!
  *@file OTAA_RECV_CB.ino
- *@brief LoRaWan OTAA模式节点 入网后通过回调函数方式从网关接收数据
+ *@brief The LoRaWAN OTAA mode node, after joining the network, receives data from the gateway using a callback function.
  *@details  
  *@copyright   Copyright (c) 2010 DFRobot Co.Ltd (http://www.dfrobot.com)
  *@license     The MIT license (MIT)

@@ -1,6 +1,6 @@
 /*!
  *@file getDEVEUI.ino
- *@brief LoRaWan节点 获取设备的 DEVEUI
+ *@brief The LoRaWAN node retrieves the device's DEVEUI (Device EUI).
  *@details  
  *@copyright   Copyright (c) 2010 DFRobot Co.Ltd (http://www.dfrobot.com)
  *@license     The MIT license (MIT)

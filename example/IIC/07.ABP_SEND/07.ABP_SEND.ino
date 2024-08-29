@@ -1,6 +1,6 @@
 /*!
  *@file ABP_SEND.ino
- *@brief LoRaWan ABP模式节点 向网关发送数据
+ *@brief The LoRaWAN ABP  mode node sends data to the gateway.
  *@details  
  *@copyright   Copyright (c) 2010 DFRobot Co.Ltd (http://www.dfrobot.com)
  *@license     The MIT license (MIT)

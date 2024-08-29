@@ -1,6 +1,6 @@
 /*!
  *@file LoRa_UART.ino
- *@brief LoRa发射节点 设置节点地址为3，向地址为4的节点发射数据
+ *@brief The LoRa transmitting node is set with the address 3 and sends data to the node with address 4.
  *@details  
  *@copyright   Copyright (c) 2010 DFRobot Co.Ltd (http://www.dfrobot.com)
  *@license     The MIT license (MIT)

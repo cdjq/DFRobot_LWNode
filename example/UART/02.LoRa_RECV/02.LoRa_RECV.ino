@@ -1,6 +1,6 @@
 /*!
  *@file LoRa_UART.ino
- *@brief LoRa接收节点 设置节点地址为4
+ *@brief The LoRa receiving node is set with the address 4.
  *@details  
  *@copyright   Copyright (c) 2010 DFRobot Co.Ltd (http://www.dfrobot.com)
  *@license     The MIT license (MIT)

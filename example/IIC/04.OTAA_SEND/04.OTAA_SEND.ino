@@ -1,6 +1,6 @@
 /*!
  *@file OTAA_SEND.ino
- *@brief LoRaWan OTAA模式节点 入网并向网关发送数据
+ *@brief The LoRaWAN OTAA mode node joins the network and sends data to the gateway.
  *@details  
  *@copyright   Copyright (c) 2010 DFRobot Co.Ltd (http://www.dfrobot.com)
  *@license     The MIT license (MIT)

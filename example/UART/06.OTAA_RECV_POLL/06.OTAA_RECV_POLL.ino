@@ -1,6 +1,6 @@
 /*!
  *@file OTAA_RECV_POLL.ino
- *@brief LoRaWan OTAA模式节点  入网后通过轮询的方式从网关接收数据
+ *@brief The LoRaWAN OTAA mode node, after joining the network, receives data from the gateway using a polling method.
  *@details  
  *@copyright   Copyright (c) 2010 DFRobot Co.Ltd (http://www.dfrobot.com)
  *@license     The MIT license (MIT)
