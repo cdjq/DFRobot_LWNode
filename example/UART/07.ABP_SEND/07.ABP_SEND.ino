@@ -59,7 +59,10 @@ void setup(void){
          delay(2000);
          Serial.println("devAddr set fail");
     }
-
+    while(!node.setDevType(CLASS_C)){
+        delay(2000);
+        Serial.println("DevType set fail");
+    }
     //EU868 DR0  - DR5
     //US915 DR0  - DR3
     //CN470 DR0  - DR5

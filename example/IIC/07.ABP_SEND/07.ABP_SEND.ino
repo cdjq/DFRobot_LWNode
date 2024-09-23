@@ -58,7 +58,10 @@ void setup(void) {
         delay(2000);
         Serial.println("DataRate set fail");
     }
-
+    while(!node.setDevType(CLASS_C)){
+        delay(2000);
+        Serial.println("DevType set fail");
+    }
     //EU868 DBM0  DBM2 DBM4 DBM6 DBM8 DBM10 DBM12 DBM14 DBM16
     //US915 DBM0  DBM2 DBM4 DBM6 DBM8 DBM10 DBM12 DBM14 DBM16 DBM18 DBM20 DBM22
     //CN470 DBM0  DBM2 DBM4 DBM6 DBM8 DBM10 DBM12 DBM14 DBM16 DBM18 
