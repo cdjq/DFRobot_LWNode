@@ -864,7 +864,7 @@ void DFRobot_LWNode_IIC::sleep(uint32_t ms){
       delay(ms>100?100:ms);
       continue;
     }
-    String str  = readACK();
+    String str  = readLoraData();
     uint16_t total = str.length();
     if((total == 0) || (total == 255))  continue; //这里为什么会返回255，请冯立查一下
     p = (uint8_t*)str.c_str();
@@ -986,14 +986,42 @@ String DFRobot_LWNode_IIC::readACK(){
   return ack;
 }
 
+
+String DFRobot_LWNode_IIC::readLoraData(){
+  //static char data[128];
+  uint8_t * dataP = (uint8_t *)data ;
+  String ack;
+
+  //writeReg(REG_READ_NUM_QUEUE);
+
+  
+  uint8_t dataLen = readReg(REG_READ_DATA_LEN);
+  uint8_t len = dataLen;
+  delay(100);  
+  if(len == 0 || len > 128){
+    return "";
+  }
+  while(dataLen > 30){
+    readReg(REG_READ_DATA,dataP,30);
+    dataP+=30;
+    dataLen = dataLen-30;
+  }
+  readReg(REG_READ_DATA,dataP,dataLen);
+  
+  for(uint8_t i =0;i<len;i++){
+    ack += (char)data[i];
+  }
+  return ack;    
+}
+
 String DFRobot_LWNode_IIC::readData(){
-  String str  = readACK();
+  String str  = readLoraData();
   if((str == "") || (str.length()<=9)) return "";
   return str.substring(9,255);
 }
 
 size_t DFRobot_LWNode_IIC::readData(uint8_t *buf) {
-  String str  = readACK();
+  String str  = readLoraData();
   if((str == "") || (str.length()<=9)) return 0;
   strcpy((char*)buf, str.c_str()+9);
   return str.length()-9;
@@ -1011,7 +1039,6 @@ void DFRobot_LWNode_IIC::writeReg(uint8_t reg ,uint8_t * data,uint8_t len) {
       dbgs->write(data,len);
     }
   _pWire->endTransmission();
-
 }
 
 uint8_t DFRobot_LWNode_IIC::readReg(uint8_t reg){

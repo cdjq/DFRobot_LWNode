@@ -39,7 +39,15 @@ typedef void sendCallback(void);
 #define REG_READ_AT_LEN         0x41
 #define REG_READ_AT             0x42
 #define REG_READ_AT_LONG        0x43
+#define REG_READ_DATA           0x45
 
+//该寄存器保存着，数据队列的个数，当主机发送读取这个寄存器时，不管上一个队列有没有读取完
+//都将切换到下一个数据
+#define REG_READ_NUM_QUEUE			0x46
+//目前队列剩余长度
+#define REG_READ_DATA_LEN 			0x47
+
+#define REG_READ_NEXT_DATA 			0x48
 /**
  * @brief Enumeration for device classes in LoRaWAN.
  */
@@ -660,6 +668,13 @@ public:
    * @return Value of the register
    */
   uint8_t readReg(uint8_t reg);
+
+  /**
+   * @fn readLoraData
+   * @brief Reads data from LoRaWAN and LoRa.
+   * @return Data in string format.
+   */
+  String readLoraData();
 
 private:
   TwoWire *_pWire; ///< IIC communication object
