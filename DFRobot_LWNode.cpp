@@ -917,7 +917,7 @@ bool DFRobot_LWNode_IIC::begin(TwoWire *pWire,Stream *dbgs_){
   delay(100);
   sendATCmd("AT+REBOOT\r\n");
 
-  while(!atTest());
+  // while(!atTest());
   sendATCmd("AT+RECV=1");
   
   if(joinType == 0){
@@ -986,7 +986,6 @@ String DFRobot_LWNode_IIC::readACK(){
   return ack;
 }
 
-
 String DFRobot_LWNode_IIC::readLoraData(){
   //static char data[128];
   uint8_t * dataP = (uint8_t *)data ;
@@ -1014,17 +1013,76 @@ String DFRobot_LWNode_IIC::readLoraData(){
   return ack;    
 }
 
+uint8_t DFRobot_LWNode_IIC::available(){
+
+    return readReg(REG_READ_NUM_QUEUE);
+
+}
+
+int8_t DFRobot_LWNode_IIC::readSNR(){
+
+    return SNR;
+
+}
+
+int8_t DFRobot_LWNode_IIC::readRSSI()
+{
+    return RSSI;
+}
+
+uint8_t DFRobot_LWNode_IIC::readAddrFROM()
+{
+    return FROM;
+}
+
+
 String DFRobot_LWNode_IIC::readData(){
   String str  = readLoraData();
   if((str == "") || (str.length()<=9)) return "";
-  return str.substring(9,255);
+
+  if(joinType == 2) // lora
+  {
+      FROM = str[7];
+      RSSI = -str[8];
+      SNR = str[9] - 50;
+
+      return str.substring(11,255);
+  }
+  else  // lorawan
+  {
+      RSSI = -str[6];
+      SNR = str[7] - 50;
+      return str.substring(9,255);
+      // return str;
+  }
+  
 }
 
 size_t DFRobot_LWNode_IIC::readData(uint8_t *buf) {
   String str  = readLoraData();
   if((str == "") || (str.length()<=9)) return 0;
-  strcpy((char*)buf, str.c_str()+9);
-  return str.length()-9;
+
+  if(joinType == 2) // lora
+  {
+      FROM = str[7];
+      RSSI = -str[8];
+      SNR = str[9] - 50;
+
+      // return str.substring(11,255);
+
+      strcpy((char*)buf, str.c_str()+11);
+      return str.length()-11;
+  }
+  else  // lorawan
+  {
+      RSSI = -str[6];
+      SNR = str[7] - 50;
+
+      strcpy((char*)buf, str.c_str()+9);
+      return str.length()-9;
+
+  }
+
 }
 
 void DFRobot_LWNode_IIC::writeReg(uint8_t reg ,uint8_t * data,uint8_t len) {
@@ -1041,14 +1099,20 @@ void DFRobot_LWNode_IIC::writeReg(uint8_t reg ,uint8_t * data,uint8_t len) {
   _pWire->endTransmission();
 }
 
-uint8_t DFRobot_LWNode_IIC::readReg(uint8_t reg){
-  uint8_t value;
+int8_t DFRobot_LWNode_IIC::readReg(uint8_t reg){
+  int8_t value;
   _pWire->beginTransmission(_deviceAddr);
-  _pWire->write(reg);
+  _pWire->write(reg);   
   _pWire->endTransmission();
   
   _pWire->requestFrom(_deviceAddr,(uint8_t)1);
   value = _pWire->read();
+
+  if(value == -1)
+  {
+    return 0;
+  }
+
   return value;
 }
 uint8_t DFRobot_LWNode_IIC::readReg(uint16_t reg,uint8_t data[],uint8_t length)
@@ -1065,3 +1129,4 @@ uint8_t DFRobot_LWNode_IIC::readReg(uint16_t reg,uint8_t data[],uint8_t length)
 
   return 0;
 }
+

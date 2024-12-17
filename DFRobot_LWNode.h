@@ -22,7 +22,7 @@
 #endif
 #include <Wire.h>
 #include <stdint.h>
-//#define ENABLE_DBG
+// #define ENABLE_DBG
 #ifdef ENABLE_DBG
 #define LDBG(...)  {Serial.print("["); Serial.print(__FUNCTION__); Serial.print("(): "); Serial.print(__LINE__); Serial.print(" ] "); Serial.println(__VA_ARGS__);}
 #else
@@ -667,7 +667,7 @@ public:
    * @param reg Register address
    * @return Value of the register
    */
-  uint8_t readReg(uint8_t reg);
+  int8_t readReg(uint8_t reg);
 
   /**
    * @fn readLoraData
@@ -676,10 +676,44 @@ public:
    */
   String readLoraData();
 
+   /**
+   * @fn available
+   * @brief Reads data from LoRaWAN and LoRa.
+   * @return Data in string format.
+   */
+  uint8_t available();
+
+
+     /**
+   * @fn available
+   * @brief Reads data from LoRaWAN and LoRa.
+   * @return Data in string format.
+   */
+  int8_t readSNR();
+
+       /**
+   * @fn available
+   * @brief Reads data from LoRaWAN and LoRa.
+   * @return Data in string format.
+   */
+  int8_t readRSSI();
+
+       /**
+   * @fn available
+   * @brief Reads data from LoRaWAN and LoRa.
+   * @return Data in string format.
+   */
+  uint8_t readAddrFROM();
+
 private:
   TwoWire *_pWire; ///< IIC communication object
   uint8_t _deviceAddr; ///< IIC device address
   Stream *dbgs; ///< Debugging information stream
+
+  int8_t SNR;
+  int8_t RSSI;
+  uint8_t FROM;
+  
 };
 
 
